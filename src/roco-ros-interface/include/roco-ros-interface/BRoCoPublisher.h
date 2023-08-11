@@ -9,17 +9,17 @@
 #include "std_msgs/msg/string.hpp"
 
 #include "BRoCo/IODriver.h"
-#include "BRoCo/IOBus.h"
+#include "BRoCo/CANBus.h"
 #include "Protocol/Protocol.h"
 
 using namespace std::chrono_literals;
 
 class BRoCoPublisher {
 public:
-    BRoCoPublisher(IOBus* bus, rclcpp::Node* parent);
+    BRoCoPublisher(std::shared_ptr<CANBus> bus, rclcpp::Node* parent);
 
 private:
-    IOBus* bus;
+    std::shared_ptr<CANBus> bus;
     rclcpp::Clock::SharedPtr clk;
 
     rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub;

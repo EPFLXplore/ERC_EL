@@ -12,7 +12,7 @@
 using namespace std::chrono_literals;
 uint32_t seq = 0;
 
-BRoCoSubscriber::BRoCoSubscriber(IOBus* bus, CanSocketDriver* driver, rclcpp::Node* parent) : bus(bus), driver(driver) {
+BRoCoSubscriber::BRoCoSubscriber(std::shared_ptr<CANBus> bus, CanSocketDriver* driver, rclcpp::Node* parent) : bus(bus), driver(driver) {
   this->clk = parent->get_clock();
   this->timer = parent->create_wall_timer(1000ms, std::bind(&BRoCoSubscriber::callback, this));
 }

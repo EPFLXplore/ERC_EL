@@ -13,7 +13,8 @@ public:
 
 private:
     CanSocketDriver* driver;
-    IOBus* bus;
+    // IOBus* bus;
+    std::shared_ptr<CANBus> bus;
     BRoCoPublisher* pub;
     BRoCoSubscriber* sub;
 };

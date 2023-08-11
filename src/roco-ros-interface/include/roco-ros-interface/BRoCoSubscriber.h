@@ -7,17 +7,17 @@
 #include "rclcpp/rclcpp.hpp"
 
 #include "BRoCo/CanSocketDriver.h"
-#include "BRoCo/IOBus.h"
+#include "BRoCo/CANBus.h"
 #include "Protocol/Protocol.h"
 
 using namespace std::chrono_literals;
 
 class BRoCoSubscriber {
 public:
-    BRoCoSubscriber(IOBus* bus, CanSocketDriver* driver, rclcpp::Node* parent);
+    BRoCoSubscriber(std::shared_ptr<CANBus> bus, CanSocketDriver* driver, rclcpp::Node* parent);
 
 private:
-    IOBus* bus;
+    std::shared_ptr<CANBus> bus;
     CanSocketDriver* driver;
     rclcpp::Clock::SharedPtr clk;
     rclcpp::TimerBase::SharedPtr timer;

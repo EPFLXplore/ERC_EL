@@ -1,4 +1,0 @@
-<launch>
-  <node pkg="roco-ros-interface" exec="roco-interface" name="roco-interface" namespace="can0"/>
-  </node>
-</launch>
