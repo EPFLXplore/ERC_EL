@@ -13,14 +13,15 @@ using namespace std::chrono_literals;
 BRoCoPublisher::BRoCoPublisher(std::shared_ptr<CANBus> bus, rclcpp::Node* parent) : bus(bus) {
   auto node = rclcpp::Node::make_shared("brocopublisher");
   RCLCPP_INFO(node->get_logger(), "Adding handles...");
+
   this->clk = parent->get_clock();
   this->imu_pub = parent->create_publisher<sensor_msgs::msg::Imu>("/sensors/imu", 10);
   bus->handle<IMUPacket>(std::bind(&BRoCoPublisher::handleIMUPacket, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 void BRoCoPublisher::handleIMUPacket(uint8_t senderID, IMUPacket* packet) {
-  auto node = rclcpp::Node::make_shared("handleimu");
-  RCLCPP_DEBUG(node->get_logger(), "handle IMU called");
+  // auto node = rclcpp::Node::make_shared("handleimu");
+  // RCLCPP_INFO(node->get_logger(), "handle IMU called");
   auto msg = sensor_msgs::msg::Imu();
 
   msg.header.stamp = clk->now();

@@ -1,5 +1,4 @@
 #include "BRoCoSubscriber.h"
-#include "BRoCo/IOBus.h"
 #include "BRoCo/CANBus.h"
 #include "Time.h"
 
@@ -19,6 +18,6 @@ BRoCoSubscriber::BRoCoSubscriber(std::shared_ptr<CANBus> bus, CanSocketDriver* d
 
 void BRoCoSubscriber::callback() {
   static PingPacket packet;
-  this->driver->TxFrameConfig(123);
+  this->driver->TxFrameConfig(0x200);
   bus->send(&packet);
 }
