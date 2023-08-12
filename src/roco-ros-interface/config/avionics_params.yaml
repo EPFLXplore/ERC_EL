@@ -1,11 +1,12 @@
 roco-ros-interface:
   ros__parameters:
     # Node IDs (int)
-    JETSON_NDOE_ID: 0x000
-    SC1_NODE_ID:    0x100
-    SC2_NODE_ID:    0x200
-    HD_NODE_ID:     0x300
-    NAV_NODE_ID:    0x400
+    JETSON_NDOE_ID:  0x000
+    SC1_NODE_ID:     0x001
+    SC2_NODE_ID:     0x002
+    HD_NODE_ID:      0x004
+    NAV_NODE_ID:     0x008
+    GENERAL_NODE_ID: 0x7FF # for sending data to all nodes
 
     # Mass sensor calibration parameters
 

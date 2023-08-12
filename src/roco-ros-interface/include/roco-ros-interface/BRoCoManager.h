@@ -4,17 +4,16 @@
 #include "BRoCoPublisher.h"
 #include "BRoCoSubscriber.h"
 
-#include "BRoCo/IODriver.h"
-#include "BRoCo/IOBus.h"
+#include "BRoCo/CanSocketDriver.h"
 
 class BRoCoManager : public rclcpp::Node {
 public:
   BRoCoManager();
-
+  ~BRoCoManager();
 private:
     CanSocketDriver* driver;
     // IOBus* bus;
-    std::shared_ptr<CANBus> bus;
+    CANBus* bus;
     BRoCoPublisher* pub;
     BRoCoSubscriber* sub;
 };

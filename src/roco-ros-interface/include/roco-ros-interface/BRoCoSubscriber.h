@@ -5,8 +5,6 @@
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
-
-#include "BRoCo/CanSocketDriver.h"
 #include "BRoCo/CANBus.h"
 #include "Protocol/Protocol.h"
 
@@ -14,13 +12,13 @@ using namespace std::chrono_literals;
 
 class BRoCoSubscriber {
 public:
-    BRoCoSubscriber(std::shared_ptr<CANBus> bus, CanSocketDriver* driver, rclcpp::Node* parent);
+    BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent);
 
 private:
-    std::shared_ptr<CANBus> bus;
-    CanSocketDriver* driver;
+    CANBus* bus;
     rclcpp::Clock::SharedPtr clk;
     rclcpp::TimerBase::SharedPtr timer;
+    void set_destination_id(uint32_t id);
 
     void callback();
 };

@@ -10,7 +10,7 @@
 
 using namespace std::chrono_literals;
 
-BRoCoPublisher::BRoCoPublisher(std::shared_ptr<CANBus> bus, rclcpp::Node* parent) : bus(bus) {
+BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus) {
   auto node = rclcpp::Node::make_shared("brocopublisher");
   RCLCPP_INFO(node->get_logger(), "Adding handles...");
 
