@@ -1,0 +1,5 @@
+# ServoRequest.srv
+int8 channel
+float32 angle
+---
+bool success

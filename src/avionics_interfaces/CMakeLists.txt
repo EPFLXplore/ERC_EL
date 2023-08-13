@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(roco-ros-interface)
+project(avionics_interfaces)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -17,17 +17,13 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(geometry_msgs REQUIRED)
-find_package(BRoCo REQUIRED)
-find_package(avionics_interfaces REQUIRED)
 
-include_directories(
-  ${BRoCo_INCLUDE_DIRS} 
-  ${CMAKE_CURRENT_SOURCE_DIR}/../BRoCo/include
-  include/roco-ros-interface
-)
+find_package(rosidl_default_generators REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "srv/ServoRequest.srv"
+ )
+ament_export_dependencies(rosidl_default_runtime)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -39,24 +35,5 @@ if(BUILD_TESTING)
   #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
-
-add_executable(roco-interface
-  src/roco-interface.cpp
-  src/BRoCoManager.cpp
-  src/BRoCoPublisher.cpp
-  src/BRoCoSubscriber.cpp
-  src/Time.cpp
-)
-
-ament_target_dependencies(roco-interface rclcpp sensor_msgs BRoCo avionics_interfaces)
-
-install(TARGETS
-  roco-interface
-  DESTINATION lib/${PROJECT_NAME})
-
-install(DIRECTORY
-  launch
-  DESTINATION share/${PROJECT_NAME}/
-)
 
 ament_package()
