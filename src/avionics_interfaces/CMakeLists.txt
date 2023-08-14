@@ -21,7 +21,6 @@ find_package(ament_cmake REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "srv/ServoRequest.srv"
   "msg/AngleArray.msg"
   "msg/FourInOne.msg"
   "msg/LaserResponse.msg"
@@ -30,6 +29,11 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/NPK.msg"
   "msg/ServoResponse.msg"
   "msg/SpectroResponse.msg"
+
+  "msg/LaserRequest.msg"
+  "msg/LEDRequest.msg"
+  "msg/ServoRequest.msg"
+  "msg/SpectroRequest.msg"
  )
 ament_export_dependencies(rosidl_default_runtime)
 

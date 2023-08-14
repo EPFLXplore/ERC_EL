@@ -16,7 +16,11 @@
 #include "rclcpp/rclcpp.hpp"
 #include "BRoCo/CANBus.h"
 #include "Protocol/Protocol.h"
-#include "avionics_interfaces/srv/servo_request.hpp"
+
+#include "avionics_interfaces/msg/spectro_request.hpp"
+#include "avionics_interfaces/msg/servo_request.hpp"
+#include "avionics_interfaces/msg/laser_request.hpp"
+#include "avionics_interfaces/msg/led_request.hpp"
 
 #define MAKE_IDENTIFIABLE(PACKET) (PACKET).id = 0x000;
 
@@ -28,9 +32,17 @@ public:
 
 private:
     void set_destination_id(uint32_t id);
+    
+    rclcpp::Subscription<avionics_interfaces::msg::SpectroRequest>::SharedPtr spectro_req_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::ServoRequest>::SharedPtr servo_req_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::LaserRequest>::SharedPtr laser_req_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::LEDRequest>::SharedPtr led_req_sub;
 
-    void timer_ping_callback();
-    // void servo_request_callback();
+    void timerPingCallback();
+    void spectroReqCallback(const avionics_interfaces::msg::SpectroRequest::SharedPtr msg);
+    void servoReqCallback(const avionics_interfaces::msg::ServoRequest::SharedPtr msg);
+    void laserReqCallback(const avionics_interfaces::msg::LaserRequest::SharedPtr msg);
+    void ledReqCallback(const avionics_interfaces::msg::LEDRequest::SharedPtr msg);
 
     rclcpp::Clock::SharedPtr clk;
     rclcpp::TimerBase::SharedPtr timer;
