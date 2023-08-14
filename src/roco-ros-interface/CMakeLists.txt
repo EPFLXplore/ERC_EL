@@ -45,7 +45,6 @@ add_executable(roco-interface
   src/BRoCoManager.cpp
   src/BRoCoPublisher.cpp
   src/BRoCoSubscriber.cpp
-  src/Time.cpp
 )
 
 ament_target_dependencies(roco-interface rclcpp sensor_msgs BRoCo avionics_interfaces)

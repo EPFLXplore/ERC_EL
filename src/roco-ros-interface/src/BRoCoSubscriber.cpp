@@ -6,7 +6,6 @@
 
 #include "BRoCoSubscriber.h"
 #include "BRoCo/CanSocketDriver.h"
-#include "Time.h"
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -29,9 +28,7 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
         ("/spectro_req", 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
     this->led_req_sub = parent->create_subscription<avionics_interfaces::msg::LEDRequest>
         ("/spectro_req", 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
-
 }
-
 
 void BRoCoSubscriber::timerPingCallback() {
     static PingPacket packet;
