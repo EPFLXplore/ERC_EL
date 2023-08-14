@@ -1,3 +1,9 @@
+/*
+ * BRoCoManager.cpp
+ *
+ *      Author: Vincent Nguyen
+ */
+
 #include "rclcpp/rclcpp.hpp"
 
 #include "BRoCoManager.h"

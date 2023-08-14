@@ -1,3 +1,9 @@
+/*
+ * BRoCoManager.h
+ *
+ *      Author: Vincent Nguyen
+ */
+
 #ifndef BROCO_MANAGER
 #define BROCO_MANAGER
 

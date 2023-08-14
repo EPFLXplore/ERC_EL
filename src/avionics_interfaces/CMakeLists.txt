@@ -22,6 +22,14 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/ServoRequest.srv"
+  "msg/AngleArray.msg"
+  "msg/FourInOne.msg"
+  "msg/LaserResponse.msg"
+  "msg/LEDResponse.msg"
+  "msg/MassArray.msg"
+  "msg/NPK.msg"
+  "msg/ServoResponse.msg"
+  "msg/SpectroResponse.msg"
  )
 ament_export_dependencies(rosidl_default_runtime)
 
