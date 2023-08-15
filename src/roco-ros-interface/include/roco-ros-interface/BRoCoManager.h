@@ -22,12 +22,6 @@ public:
   BRoCoManager();
   ~BRoCoManager();
 
-  template <typename T> 
-  T get_param(const std::string& parameter_name);
-
-  // For some reason these functions have to be defined in the header file
-  // We write custom functions for yaml files to be able to write to the same
-  // Config file from multiple nodes
   template <typename T>
   void update_yaml_file(const std::string& yaml_file_path, const std::string& parameter_name, const T& value)
   {
@@ -44,6 +38,18 @@ public:
       std::ofstream yaml_file(yaml_file_path);
       yaml_file << yaml_node;
       yaml_file.close();
+  }
+
+  template <typename T>
+  T get_param(const std::string& parameter_name)
+  {
+      T value;
+      if (this->get_parameter(parameter_name, value)) {
+          return value;
+      } else {
+          RCLCPP_WARN(this->get_logger(), "Parameter [%s] not found, using default value.", parameter_name.c_str());
+          return T();
+      }
   }
 
   template <typename T>

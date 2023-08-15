@@ -24,9 +24,6 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
   this->declare_parameter("NAV_NODE_ID");
   this->declare_parameter("HD_NODE_ID");
   this->declare_parameter("GENERAL_NODE_ID");
-
-  RCLCPP_INFO(this->get_logger(), "JETSON_NODE_ID: %d", get_param<uint32_t>("JETSON_NODE_ID"));
-
 }
 
 BRoCoManager::~BRoCoManager() {
@@ -34,16 +31,4 @@ BRoCoManager::~BRoCoManager() {
     delete this->pub;
     delete this->bus;
     delete this->driver;
-}
-
-template <typename T>
-T BRoCoManager::get_param(const std::string& parameter_name)
-{
-    T value;
-    if (this->get_parameter(parameter_name, value)) {
-        return value;
-    } else {
-        RCLCPP_WARN(this->get_logger(), "Parameter [%s] not found, using default value.", parameter_name.c_str());
-        return T();
-    }
 }

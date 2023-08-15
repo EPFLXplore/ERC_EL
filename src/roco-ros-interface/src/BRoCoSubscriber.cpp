@@ -35,7 +35,6 @@ void BRoCoSubscriber::timerPingCallback() {
     static PingPacket packet;
     MAKE_IDENTIFIABLE(packet);
     set_destination_id("GENERAL_NODE_ID");
-    set_param("JETSON_NODE_ID", 0x002);
     bus->send(&packet);
 }
 
