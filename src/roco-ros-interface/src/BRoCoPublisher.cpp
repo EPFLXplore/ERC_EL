@@ -5,6 +5,7 @@
  */
 
 #include "BRoCoPublisher.h"
+#include "BRoCoManager.h"
 
 #include "rclcpp/rclcpp.hpp"
 
@@ -15,7 +16,7 @@
 
 using namespace std::chrono_literals;
 
-BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus) {
+BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
   auto node = rclcpp::Node::make_shared("brocopublisher");
   RCLCPP_INFO(node->get_logger(), "Adding handles...");
 
@@ -41,6 +42,10 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus) {
   bus->handle<LaserResponsePacket>(std::bind(&BRoCoPublisher::handleLaserPacket, this, std::placeholders::_1, std::placeholders::_2));
   bus->handle<ServoResponsePacket>(std::bind(&BRoCoPublisher::handleServoPacket, this, std::placeholders::_1, std::placeholders::_2));
   bus->handle<LEDResponsePacket>(std::bind(&BRoCoPublisher::handleLEDPacket, this, std::placeholders::_1, std::placeholders::_2));
+}
+
+uint32_t BRoCoPublisher::get_node_id(std::string node_name) {
+    return dynamic_cast<BRoCoManager*>(parent)->get_param<uint32_t>(node_name);
 }
 
 void BRoCoPublisher::handleFourInOnePacket(uint8_t senderID, FOURINONEPacket* packet) {
@@ -77,10 +82,9 @@ void BRoCoPublisher::handleMassPacket(uint8_t senderID, MassPacket* packet) {
 
   for (uint8_t i = 0; i < 4; ++i)
     msg.mass[i] = packet->mass[i];
-
-  if (packet->id == 0x001)
+  if (packet->id == get_node_id("SC_DRILL_NODE_ID"))
     drill_mass_pub->publish(msg);
-  else if (packet->id == 0x002)
+  else if (packet->id == get_node_id("SC_CONTAINER_NODE_ID"))
     container_mass_pub->publish(msg);
   else
     std::cout << "Mass received but ID is not valid" << std::endl;

@@ -34,6 +34,7 @@ public:
 
 private:
     CANBus* bus;
+    rclcpp::Node* parent;
     rclcpp::Clock::SharedPtr clk;
 
     // Publishers
@@ -50,6 +51,8 @@ private:
     rclcpp::Publisher<avionics_interfaces::msg::LEDResponse>::SharedPtr led_response_pub;
 
     rclcpp::TimerBase::SharedPtr timer;
+
+    uint32_t get_node_id(std::string node_name);
 
     // Ping callback
     void timerCallback();
