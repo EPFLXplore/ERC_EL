@@ -24,7 +24,7 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus) {
   this->npk_pub = parent->create_publisher<avionics_interfaces::msg::NPK>("/npk", 10);
   this->voltage_pub = parent->create_publisher<std_msgs::msg::Float32>("/voltage", 10);
   this->drill_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>("/drill/mass", 10);
-  this->container_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>("container/mass", 10);
+  this->container_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>("/container/mass", 10);
   this->imu_pub = parent->create_publisher<sensor_msgs::msg::Imu>("/imu", 10);
   this->potentiometer_pub = parent->create_publisher<avionics_interfaces::msg::AngleArray>("/potentiometer", 10);
   this->spectro_response_pub = parent->create_publisher<avionics_interfaces::msg::SpectroResponse>("/spectro_response", 10);

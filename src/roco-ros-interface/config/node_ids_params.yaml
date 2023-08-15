@@ -1,0 +1,8 @@
+/**:
+  ros__parameters:
+    JETSON_NODE_ID: 0x000
+    SC_CONTAINER_NODE_ID: 0x001
+    SC_DRILL_NODE_ID: 0x002
+    HD_NODE_ID: 0x004
+    NAV_NODE_ID: 0x008
+    GENERAL_NODE_ID: 0x7FF

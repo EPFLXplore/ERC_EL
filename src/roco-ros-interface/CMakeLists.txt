@@ -22,10 +22,12 @@ find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(BRoCo REQUIRED)
 find_package(avionics_interfaces REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
 include_directories(
   ${BRoCo_INCLUDE_DIRS} 
   ${CMAKE_CURRENT_SOURCE_DIR}/../BRoCo/include
+  ${YAML_CPP_INCLUDE_DIRS}
   include/roco-ros-interface
 )
 
@@ -40,22 +42,28 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(roco-interface
-  src/roco-interface.cpp
+add_executable(roco_interface
+  src/roco_interface.cpp
   src/BRoCoManager.cpp
   src/BRoCoPublisher.cpp
   src/BRoCoSubscriber.cpp
 )
 
-ament_target_dependencies(roco-interface rclcpp sensor_msgs BRoCo avionics_interfaces)
+ament_target_dependencies(roco_interface rclcpp sensor_msgs BRoCo avionics_interfaces yaml-cpp)
+target_link_libraries(roco_interface ${YAML_CPP_LIBRARIES})
 
 install(TARGETS
-  roco-interface
+  roco_interface
   DESTINATION lib/${PROJECT_NAME})
 
 install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME}/
+)
+
+install(DIRECTORY
+  config
+  DESTINATION share/${PROJECT_NAME}
 )
 
 ament_package()

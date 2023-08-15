@@ -5,6 +5,7 @@
  */
 
 #include "BRoCoSubscriber.h"
+#include "BRoCoManager.h"
 #include "BRoCo/CanSocketDriver.h"
 
 #include "rclcpp/rclcpp.hpp"
@@ -33,7 +34,8 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
 void BRoCoSubscriber::timerPingCallback() {
     static PingPacket packet;
     MAKE_IDENTIFIABLE(packet);
-    set_destination_id(0x7FF);
+    set_destination_id("GENERAL_NODE_ID");
+    set_param("JETSON_NODE_ID", 0x002);
     bus->send(&packet);
 }
 
@@ -41,7 +43,7 @@ void BRoCoSubscriber::spectroReqCallback(const avionics_interfaces::msg::Spectro
     static SpectroPacket packet;
     packet.measure = msg->measure;
     MAKE_IDENTIFIABLE(packet);
-    set_destination_id(0x7FF);
+    set_destination_id("SC_DRILL_NODE_ID");
     bus->send(&packet);
 }
 void BRoCoSubscriber::servoReqCallback(const avionics_interfaces::msg::ServoRequest::SharedPtr msg) {
@@ -49,7 +51,7 @@ void BRoCoSubscriber::servoReqCallback(const avionics_interfaces::msg::ServoRequ
     packet.channel = msg->channel;
     packet.angle = msg->angle;
     MAKE_IDENTIFIABLE(packet);
-    set_destination_id(0x7FF);
+    set_destination_id("HD_NODE_ID");
     bus->send(&packet);
 }
 
@@ -57,7 +59,7 @@ void BRoCoSubscriber::laserReqCallback(const avionics_interfaces::msg::LaserRequ
     static LaserPacket packet;
     packet.enable = msg->enable;
     MAKE_IDENTIFIABLE(packet);
-    set_destination_id(0x7FF);
+    set_destination_id("HD_NODE_ID");
     bus->send(&packet);
 }
 
@@ -65,10 +67,20 @@ void BRoCoSubscriber::ledReqCallback(const avionics_interfaces::msg::LEDRequest:
     static LEDPacket packet;
     packet.state = msg->state;
     MAKE_IDENTIFIABLE(packet);
-    set_destination_id(0x7FF);
+    set_destination_id("NAV_NODE_ID");
     bus->send(&packet);
+}
+
+void BRoCoSubscriber::set_destination_id(std::string node_name) {
+    uint32_t id = dynamic_cast<BRoCoManager*>(parent)->get_param<uint32_t>(node_name);
+    dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
 }
 
 void BRoCoSubscriber::set_destination_id(uint32_t id) {
     dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
+}
+
+template <typename T>
+void BRoCoSubscriber::set_param(const std::string& parameter_name, const T& value) {
+    dynamic_cast<BRoCoManager*>(parent)->set_param(parameter_name, value);
 }

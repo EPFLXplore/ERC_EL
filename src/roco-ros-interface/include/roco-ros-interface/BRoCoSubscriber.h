@@ -32,6 +32,9 @@ public:
 
 private:
     void set_destination_id(uint32_t id);
+    void set_destination_id(std::string node_name);
+    template <typename T>
+    void set_param(const std::string& parameter_name, const T& value);
     
     rclcpp::Subscription<avionics_interfaces::msg::SpectroRequest>::SharedPtr spectro_req_sub;
     rclcpp::Subscription<avionics_interfaces::msg::ServoRequest>::SharedPtr servo_req_sub;
@@ -43,6 +46,7 @@ private:
     void servoReqCallback(const avionics_interfaces::msg::ServoRequest::SharedPtr msg);
     void laserReqCallback(const avionics_interfaces::msg::LaserRequest::SharedPtr msg);
     void ledReqCallback(const avionics_interfaces::msg::LEDRequest::SharedPtr msg);
+    
 
     rclcpp::Clock::SharedPtr clk;
     rclcpp::TimerBase::SharedPtr timer;
