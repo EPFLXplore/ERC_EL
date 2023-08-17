@@ -61,6 +61,7 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
 void BRoCoPublisher::timerPingCallback() {
     static PingPacket packet;
     MAKE_IDENTIFIABLE(packet);
+    RCLCPP_INFO(parent->get_logger(), "Sending ping...");
     set_destination_id("GENERAL_NODE_ID");
     bus->send(&packet);
 }
