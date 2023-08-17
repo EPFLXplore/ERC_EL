@@ -41,7 +41,6 @@ private:
     rclcpp::Subscription<avionics_interfaces::msg::LaserRequest>::SharedPtr laser_req_sub;
     rclcpp::Subscription<avionics_interfaces::msg::LEDRequest>::SharedPtr led_req_sub;
 
-    void timerPingCallback();
     void spectroReqCallback(const avionics_interfaces::msg::SpectroRequest::SharedPtr msg);
     void servoReqCallback(const avionics_interfaces::msg::ServoRequest::SharedPtr msg);
     void laserReqCallback(const avionics_interfaces::msg::LaserRequest::SharedPtr msg);

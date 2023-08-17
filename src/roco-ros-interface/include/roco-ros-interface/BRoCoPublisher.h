@@ -22,6 +22,7 @@
 #include "avionics_interfaces/msg/laser_response.hpp"
 #include "avionics_interfaces/msg/servo_response.hpp"
 #include "avionics_interfaces/msg/led_response.hpp"
+#include "avionics_interfaces/msg/node_state_array.hpp"
 
 #include "BRoCo/CANBus.h"
 #include "Protocol/Protocol.h"
@@ -36,6 +37,7 @@ private:
     CANBus* bus;
     rclcpp::Node* parent;
     rclcpp::Clock::SharedPtr clk;
+    std::vector<bool> node_state;
 
     // Publishers
     rclcpp::Publisher<avionics_interfaces::msg::FourInOne>::SharedPtr four_in_one_pub;
@@ -50,12 +52,23 @@ private:
     rclcpp::Publisher<avionics_interfaces::msg::ServoResponse>::SharedPtr servo_response_pub;
     rclcpp::Publisher<avionics_interfaces::msg::LEDResponse>::SharedPtr led_response_pub;
 
+    rclcpp::Publisher<avionics_interfaces::msg::NodeStateArray>::SharedPtr node_state_pub;
+
     rclcpp::TimerBase::SharedPtr timer;
+    std::vector<rclcpp::TimerBase::SharedPtr> watchdog_timers;
+    rclcpp::TimerBase::SharedPtr node_state_pub_timer;
+
+    template <typename T>
+    T get_param(const std::string& parameter_name);
 
     uint32_t get_node_id(std::string node_name);
+    void set_destination_id(uint32_t id);
+    void set_destination_id(std::string node_name);
 
     // Ping callback
-    void timerCallback();
+    void timerPingCallback();
+    void nodeStateCallback();
+    void watchdogCallback(size_t nodeID);
 
     // RoCo callbacks
     void handleFourInOnePacket(uint8_t senderID, FOURINONEPacket* packet);
@@ -68,6 +81,7 @@ private:
     void handleLaserPacket(uint8_t senderID, LaserResponsePacket* packet);
     void handleServoPacket(uint8_t senderID, ServoResponsePacket* packet);
     void handleLEDPacket(uint8_t senderID, LEDResponsePacket* packet);
+    void handlePingPacket(uint8_t senderID, PingPacket* packet);
 
 };
 

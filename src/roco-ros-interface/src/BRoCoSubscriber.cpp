@@ -20,7 +20,6 @@ uint32_t seq = 0;
 
 BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
     this->clk = parent->get_clock();
-    this->timer = parent->create_wall_timer(1000ms, std::bind(&BRoCoSubscriber::timerPingCallback, this));
     this->spectro_req_sub = parent->create_subscription<avionics_interfaces::msg::SpectroRequest>
         ("/spectro_req", 10, std::bind(&BRoCoSubscriber::spectroReqCallback, this, _1));
     this->servo_req_sub = parent->create_subscription<avionics_interfaces::msg::ServoRequest>
@@ -29,13 +28,6 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
         ("/spectro_req", 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
     this->led_req_sub = parent->create_subscription<avionics_interfaces::msg::LEDRequest>
         ("/spectro_req", 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
-}
-
-void BRoCoSubscriber::timerPingCallback() {
-    static PingPacket packet;
-    MAKE_IDENTIFIABLE(packet);
-    set_destination_id("GENERAL_NODE_ID");
-    bus->send(&packet);
 }
 
 void BRoCoSubscriber::spectroReqCallback(const avionics_interfaces::msg::SpectroRequest::SharedPtr msg) {

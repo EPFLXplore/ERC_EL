@@ -17,10 +17,23 @@
 using namespace std::chrono_literals;
 
 BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
-  auto node = rclcpp::Node::make_shared("brocopublisher");
-  RCLCPP_INFO(node->get_logger(), "Adding handles...");
+  RCLCPP_INFO(parent->get_logger(), "Adding handles...");
+
+  node_state.resize(get_param<uint32_t>("MAX_NUMBER_NODES"), false);
+  watchdog_timers.resize(get_param<uint32_t>("MAX_NUMBER_NODES"));
+  
+  for (size_t i = 0; i < get_param<uint32_t>("MAX_NUMBER_NODES"); ++i) {
+      watchdog_timers[i] = parent->create_wall_timer(
+          std::chrono::milliseconds(get_param<uint32_t>("NODE_STATE_WATCHDOG_TIMEOUT")),
+          [this, i]() {
+              this->watchdogCallback(i);
+          }
+      );
+  }
 
   this->clk = parent->get_clock();
+  this->timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_PING_PERIOD")), std::bind(&BRoCoPublisher::timerPingCallback, this));
+  this->node_state_pub_timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_STATE_PUBLISH_PERIOD")), std::bind(&BRoCoPublisher::nodeStateCallback, this));
   this->four_in_one_pub = parent->create_publisher<avionics_interfaces::msg::FourInOne>("/four_in_one", 10);
   this->npk_pub = parent->create_publisher<avionics_interfaces::msg::NPK>("/npk", 10);
   this->voltage_pub = parent->create_publisher<std_msgs::msg::Float32>("/voltage", 10);
@@ -32,6 +45,7 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
   this->laser_response_pub = parent->create_publisher<avionics_interfaces::msg::LaserResponse>("/laser_response", 10);
   this->servo_response_pub = parent->create_publisher<avionics_interfaces::msg::ServoResponse>("/servo_response", 10);
   this->led_response_pub = parent->create_publisher<avionics_interfaces::msg::LEDResponse>("/led_response", 10);
+  this->node_state_pub = parent->create_publisher<avionics_interfaces::msg::NodeStateArray>("/node_state", 10);
   bus->handle<FOURINONEPacket>(std::bind(&BRoCoPublisher::handleFourInOnePacket, this, std::placeholders::_1, std::placeholders::_2));
   bus->handle<NPKPacket>(std::bind(&BRoCoPublisher::handleNPKPacket, this, std::placeholders::_1, std::placeholders::_2));
   bus->handle<VoltmeterPacket>(std::bind(&BRoCoPublisher::handleVoltmeterPacket, this, std::placeholders::_1, std::placeholders::_2));
@@ -42,10 +56,35 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
   bus->handle<LaserResponsePacket>(std::bind(&BRoCoPublisher::handleLaserPacket, this, std::placeholders::_1, std::placeholders::_2));
   bus->handle<ServoResponsePacket>(std::bind(&BRoCoPublisher::handleServoPacket, this, std::placeholders::_1, std::placeholders::_2));
   bus->handle<LEDResponsePacket>(std::bind(&BRoCoPublisher::handleLEDPacket, this, std::placeholders::_1, std::placeholders::_2));
+  bus->handle<PingPacket>(std::bind(&BRoCoPublisher::handlePingPacket, this, std::placeholders::_1, std::placeholders::_2));
 }
 
-uint32_t BRoCoPublisher::get_node_id(std::string node_name) {
-    return dynamic_cast<BRoCoManager*>(parent)->get_param<uint32_t>(node_name);
+void BRoCoPublisher::timerPingCallback() {
+    static PingPacket packet;
+    MAKE_IDENTIFIABLE(packet);
+    set_destination_id("GENERAL_NODE_ID");
+    bus->send(&packet);
+}
+
+void BRoCoPublisher::nodeStateCallback() {
+  auto msg = avionics_interfaces::msg::NodeStateArray();
+  for (int i = 0; i < node_state.size(); ++i)
+    msg.node_state[i] = node_state[i];
+  node_state_pub->publish(msg);
+}
+
+void BRoCoPublisher::watchdogCallback(size_t nodeID) {
+    // This callback is triggered when the timer for nodeID expires
+    node_state[nodeID] = false;
+}
+
+void BRoCoPublisher::handlePingPacket(uint8_t senderID, PingPacket* packet) {
+  uint32_t id = packet->id;
+  if (id < watchdog_timers.size()) {
+      watchdog_timers[id]->reset();
+  }
+  // Update the node state for senderID to true
+  node_state[id] = true;
 }
 
 void BRoCoPublisher::handleFourInOnePacket(uint8_t senderID, FOURINONEPacket* packet) {
@@ -87,7 +126,7 @@ void BRoCoPublisher::handleMassPacket(uint8_t senderID, MassPacket* packet) {
   else if (packet->id == get_node_id("SC_CONTAINER_NODE_ID"))
     container_mass_pub->publish(msg);
   else
-    std::cout << "Mass received but ID is not valid" << std::endl;
+    RCLCPP_INFO(parent->get_logger(), "Mass packet received but ID is not valid");
 }
 
 void BRoCoPublisher::handleIMUPacket(uint8_t senderID, IMUPacket* packet) {
@@ -181,4 +220,23 @@ void BRoCoPublisher::handleLEDPacket(uint8_t senderID, LEDResponsePacket* packet
   msg.success = packet->success;
 
   led_response_pub->publish(msg);
+}
+
+uint32_t BRoCoPublisher::get_node_id(std::string node_name) {
+    return dynamic_cast<BRoCoManager*>(parent)->get_param<uint32_t>(node_name);
+}
+
+
+void BRoCoPublisher::set_destination_id(std::string node_name) {
+    uint32_t id = dynamic_cast<BRoCoManager*>(parent)->get_param<uint32_t>(node_name);
+    dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
+}
+
+void BRoCoPublisher::set_destination_id(uint32_t id) {
+    dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
+}
+
+template <typename T>
+T BRoCoPublisher::get_param(const std::string& parameter_name) {
+  dynamic_cast<BRoCoManager*>(parent)->get_param<T>(parameter_name);
 }

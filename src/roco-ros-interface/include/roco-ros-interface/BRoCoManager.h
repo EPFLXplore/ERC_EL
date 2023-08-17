@@ -22,6 +22,7 @@ public:
   BRoCoManager();
   ~BRoCoManager();
 
+  // These functions have to be written in the header for the compiler
   template <typename T>
   void update_yaml_file(const std::string& yaml_file_path, const std::string& parameter_name, const T& value)
   {
