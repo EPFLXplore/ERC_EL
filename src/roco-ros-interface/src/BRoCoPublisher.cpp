@@ -18,7 +18,6 @@ using namespace std::chrono_literals;
 
 BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
   RCLCPP_INFO(parent->get_logger(), "Adding handles...");
-
   node_state.resize(get_param<uint32_t>("MAX_NUMBER_NODES"), false);
   watchdog_timers.resize(get_param<uint32_t>("MAX_NUMBER_NODES"));
   
@@ -69,7 +68,7 @@ void BRoCoPublisher::timerPingCallback() {
 void BRoCoPublisher::nodeStateCallback() {
   auto msg = avionics_interfaces::msg::NodeStateArray();
   for (int i = 0; i < node_state.size(); ++i)
-    msg.node_state[i] = node_state[i];
+    msg.node_state.push_back(node_state[i]);
   node_state_pub->publish(msg);
 }
 
