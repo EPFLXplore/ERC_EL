@@ -108,4 +108,5 @@ void BRoCoManager::createPubSub() {
   this->bus = new CANBus(this->driver);
   this->pub = new BRoCoPublisher(this->bus, this);
   this->sub = new BRoCoSubscriber(this->bus, this);
+  this->driver->start_reception();
 }
