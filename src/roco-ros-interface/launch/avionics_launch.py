@@ -20,24 +20,33 @@ def generate_launch_description():
         'node_ids_params.yaml'
     )
 
+    can0_ns = 'can0'
+    can1_ns = 'can1'
+
     # Launch first node with 'can0' namespace and 'bus' parameter set to 'can0'
     node_can0 = Node(
         package='roco-ros-interface',
         executable='roco_interface',
-        namespace='can0',
+        namespace=can0_ns,
         parameters=[config],
-        arguments=['--ros-args', '--param', 'bus:=can0']
+        output='screen',  # Add output parameter for debugging
+        arguments=['--ros-args', 
+            '--param', 'bus:=' + can0_ns, 
+            '--param', 'namespace:=' + can0_ns],
     )
     ld.add_action(node_can0)
 
-    # # Launch second node with 'can1' namespace and 'bus' parameter set to 'can1'
-    # node_can1 = Node(
-    #     package='roco-ros-interface',
-    #     executable='roco_interface',
-    #     namespace='can1',
-    #     parameters=[config],
-    #     arguments=['--ros-args', '--param', 'bus:=can1']
-    # )
-    # ld.add_action(node_can1)
+    # Launch second node with 'can1' namespace and 'bus' parameter set to 'can1'
+    node_can1 = Node(
+        package='roco-ros-interface',
+        executable='roco_interface',
+        namespace=can1_ns,
+        parameters=[config],
+        output='screen',  # Add output parameter for debugging
+        arguments=['--ros-args', 
+            '--param', 'bus:=' + can1_ns, 
+            '--param', 'namespace:=' + can1_ns],
+    )
+    ld.add_action(node_can1)
 
     return ld

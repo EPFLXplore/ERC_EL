@@ -19,9 +19,9 @@ using namespace std::chrono_literals;
 BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
   RCLCPP_INFO(parent->get_logger(), "Adding handles...");
   node_state.resize(get_param<uint32_t>("MAX_NUMBER_NODES"), false);
-  watchdog_timers.resize(get_param<uint32_t>("MAX_NUMBER_NODES"));
+  watchdog_timers.resize(node_state.size());
   
-  for (size_t i = 0; i < get_param<uint32_t>("MAX_NUMBER_NODES"); ++i) {
+  for (size_t i = 0; i < watchdog_timers.size(); ++i) {
       watchdog_timers[i] = parent->create_wall_timer(
           std::chrono::milliseconds(get_param<uint32_t>("NODE_STATE_WATCHDOG_TIMEOUT")),
           [this, i]() {
@@ -31,20 +31,20 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
   }
 
   this->clk = parent->get_clock();
-  this->timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_PING_PERIOD")), std::bind(&BRoCoPublisher::timerPingCallback, this));
-  this->node_state_pub_timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_STATE_PUBLISH_PERIOD")), std::bind(&BRoCoPublisher::nodeStateCallback, this));
-  this->four_in_one_pub = parent->create_publisher<avionics_interfaces::msg::FourInOne>("/four_in_one", 10);
-  this->npk_pub = parent->create_publisher<avionics_interfaces::msg::NPK>("/npk", 10);
-  this->voltage_pub = parent->create_publisher<std_msgs::msg::Float32>("/voltage", 10);
-  this->drill_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>("/drill/mass", 10);
-  this->container_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>("/container/mass", 10);
-  this->imu_pub = parent->create_publisher<sensor_msgs::msg::Imu>("/imu", 10);
-  this->potentiometer_pub = parent->create_publisher<avionics_interfaces::msg::AngleArray>("/potentiometer", 10);
-  this->spectro_response_pub = parent->create_publisher<avionics_interfaces::msg::SpectroResponse>("/spectro_response", 10);
-  this->laser_response_pub = parent->create_publisher<avionics_interfaces::msg::LaserResponse>("/laser_response", 10);
-  this->servo_response_pub = parent->create_publisher<avionics_interfaces::msg::ServoResponse>("/servo_response", 10);
-  this->led_response_pub = parent->create_publisher<avionics_interfaces::msg::LEDResponse>("/led_response", 10);
-  this->node_state_pub = parent->create_publisher<avionics_interfaces::msg::NodeStateArray>("/node_state", 10);
+  this->timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_PING_INTERVAL")), std::bind(&BRoCoPublisher::timerPingCallback, this));
+  this->node_state_pub_timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_STATE_PUBLISH_INTERVAL")), std::bind(&BRoCoPublisher::nodeStateCallback, this));
+  this->four_in_one_pub = parent->create_publisher<avionics_interfaces::msg::FourInOne>(get_ns() + "/four_in_one", 10);
+  this->npk_pub = parent->create_publisher<avionics_interfaces::msg::NPK>(get_ns() + "/npk", 10);
+  this->voltage_pub = parent->create_publisher<std_msgs::msg::Float32>(get_ns() + "/voltage", 10);
+  this->drill_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_ns() + "/drill/mass", 10);
+  this->container_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_ns() + "/container/mass", 10);
+  this->imu_pub = parent->create_publisher<sensor_msgs::msg::Imu>(get_ns() + "/imu", 10);
+  this->potentiometer_pub = parent->create_publisher<avionics_interfaces::msg::AngleArray>(get_ns() + "/potentiometer", 10);
+  this->spectro_response_pub = parent->create_publisher<avionics_interfaces::msg::SpectroResponse>(get_ns() + "/spectro_response", 10);
+  this->laser_response_pub = parent->create_publisher<avionics_interfaces::msg::LaserResponse>(get_ns() + "/laser_response", 10);
+  this->servo_response_pub = parent->create_publisher<avionics_interfaces::msg::ServoResponse>(get_ns() + "/servo_response", 10);
+  this->led_response_pub = parent->create_publisher<avionics_interfaces::msg::LEDResponse>(get_ns() + "/led_response", 10);
+  this->node_state_pub = parent->create_publisher<avionics_interfaces::msg::NodeStateArray>(get_ns() + "/node_state", 10);
   bus->handle<FOURINONEPacket>(std::bind(&BRoCoPublisher::handleFourInOnePacket, this, std::placeholders::_1, std::placeholders::_2));
   bus->handle<NPKPacket>(std::bind(&BRoCoPublisher::handleNPKPacket, this, std::placeholders::_1, std::placeholders::_2));
   bus->handle<VoltmeterPacket>(std::bind(&BRoCoPublisher::handleVoltmeterPacket, this, std::placeholders::_1, std::placeholders::_2));
@@ -61,7 +61,6 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
 void BRoCoPublisher::timerPingCallback() {
     static PingPacket packet;
     MAKE_IDENTIFIABLE(packet);
-    RCLCPP_INFO(parent->get_logger(), "Sending ping...");
     set_destination_id("GENERAL_NODE_ID");
     bus->send(&packet);
 }
@@ -234,6 +233,14 @@ void BRoCoPublisher::set_destination_id(std::string node_name) {
 
 void BRoCoPublisher::set_destination_id(uint32_t id) {
     dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
+}
+
+std::string BRoCoPublisher::get_ns() {
+  return dynamic_cast<BRoCoManager*>(parent)->get_ns();
+}
+
+std::string BRoCoPublisher::get_bus() {
+  return dynamic_cast<BRoCoManager*>(parent)->get_bus();
 }
 
 template <typename T>

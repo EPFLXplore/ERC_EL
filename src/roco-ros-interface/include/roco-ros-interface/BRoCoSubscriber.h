@@ -33,6 +33,10 @@ public:
 private:
     void set_destination_id(uint32_t id);
     void set_destination_id(std::string node_name);
+
+    std::string get_ns();
+    std::string get_bus();
+
     template <typename T>
     void set_param(const std::string& parameter_name, const T& value);
     

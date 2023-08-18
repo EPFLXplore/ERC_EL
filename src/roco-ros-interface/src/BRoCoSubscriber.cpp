@@ -21,16 +21,17 @@ uint32_t seq = 0;
 BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
     this->clk = parent->get_clock();
     this->spectro_req_sub = parent->create_subscription<avionics_interfaces::msg::SpectroRequest>
-        ("/spectro_req", 10, std::bind(&BRoCoSubscriber::spectroReqCallback, this, _1));
+        (get_ns() + "/spectro_req", 10, std::bind(&BRoCoSubscriber::spectroReqCallback, this, _1));
     this->servo_req_sub = parent->create_subscription<avionics_interfaces::msg::ServoRequest>
-        ("/servo_req", 10, std::bind(&BRoCoSubscriber::servoReqCallback, this, _1));
+        (get_ns() + "/servo_req", 10, std::bind(&BRoCoSubscriber::servoReqCallback, this, _1));
     this->laser_req_sub = parent->create_subscription<avionics_interfaces::msg::LaserRequest>
-        ("/spectro_req", 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
+        (get_ns() + "/spectro_req", 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
     this->led_req_sub = parent->create_subscription<avionics_interfaces::msg::LEDRequest>
-        ("/spectro_req", 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
+        (get_ns() + "/spectro_req", 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
 }
 
 void BRoCoSubscriber::spectroReqCallback(const avionics_interfaces::msg::SpectroRequest::SharedPtr msg) {
+    RCLCPP_INFO(parent->get_logger(), "Sending spectro request...");
     static SpectroPacket packet;
     packet.measure = msg->measure;
     MAKE_IDENTIFIABLE(packet);
@@ -38,6 +39,7 @@ void BRoCoSubscriber::spectroReqCallback(const avionics_interfaces::msg::Spectro
     bus->send(&packet);
 }
 void BRoCoSubscriber::servoReqCallback(const avionics_interfaces::msg::ServoRequest::SharedPtr msg) {
+    RCLCPP_INFO(parent->get_logger(), "Sending servo request...");
     static ServoPacket packet;
     packet.channel = msg->channel;
     packet.angle = msg->angle;
@@ -47,6 +49,7 @@ void BRoCoSubscriber::servoReqCallback(const avionics_interfaces::msg::ServoRequ
 }
 
 void BRoCoSubscriber::laserReqCallback(const avionics_interfaces::msg::LaserRequest::SharedPtr msg) {
+    RCLCPP_INFO(parent->get_logger(), "Sending laser request...");
     static LaserPacket packet;
     packet.enable = msg->enable;
     MAKE_IDENTIFIABLE(packet);
@@ -55,6 +58,7 @@ void BRoCoSubscriber::laserReqCallback(const avionics_interfaces::msg::LaserRequ
 }
 
 void BRoCoSubscriber::ledReqCallback(const avionics_interfaces::msg::LEDRequest::SharedPtr msg) {
+    RCLCPP_INFO(parent->get_logger(), "Sending LED request...");
     static LEDPacket packet;
     packet.state = msg->state;
     MAKE_IDENTIFIABLE(packet);
@@ -69,6 +73,14 @@ void BRoCoSubscriber::set_destination_id(std::string node_name) {
 
 void BRoCoSubscriber::set_destination_id(uint32_t id) {
     dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
+}
+
+std::string BRoCoSubscriber::get_ns() {
+  return dynamic_cast<BRoCoManager*>(parent)->get_ns();
+}
+
+std::string BRoCoSubscriber::get_bus() {
+  return dynamic_cast<BRoCoManager*>(parent)->get_bus();
 }
 
 template <typename T>
