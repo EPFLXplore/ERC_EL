@@ -16,7 +16,7 @@
   <depend>sensor_msgs</depend>
   <depend>BRoCo</depend>
 
-  <depend>my_robot_interfaces</depend>
+  <depend>avionics_interfaces</depend>
 
   <exec_depend>ros2launch</exec_depend>
 
