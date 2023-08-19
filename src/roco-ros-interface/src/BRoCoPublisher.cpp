@@ -17,32 +17,9 @@
 using namespace std::chrono_literals;
 
 BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
-  RCLCPP_INFO(parent->get_logger(), "Adding handles...");
-  bus->handle<FOURINONEPacket>(std::bind(&BRoCoPublisher::handleFourInOnePacket, this, std::placeholders::_1, std::placeholders::_2));
-  bus->handle<NPKPacket>(std::bind(&BRoCoPublisher::handleNPKPacket, this, std::placeholders::_1, std::placeholders::_2));
-  bus->handle<VoltmeterPacket>(std::bind(&BRoCoPublisher::handleVoltmeterPacket, this, std::placeholders::_1, std::placeholders::_2));
-  bus->handle<MassPacket>(std::bind(&BRoCoPublisher::handleMassPacket, this, std::placeholders::_1, std::placeholders::_2));
-  bus->handle<IMUPacket>(std::bind(&BRoCoPublisher::handleIMUPacket, this, std::placeholders::_1, std::placeholders::_2));
-  bus->handle<PotentiometerPacket>(std::bind(&BRoCoPublisher::handlePotentiometerPacket, this, std::placeholders::_1, std::placeholders::_2));
-  bus->handle<SpectroResponsePacket>(std::bind(&BRoCoPublisher::handleSpectroPacket, this, std::placeholders::_1, std::placeholders::_2));
-  bus->handle<LaserResponsePacket>(std::bind(&BRoCoPublisher::handleLaserPacket, this, std::placeholders::_1, std::placeholders::_2));
-  bus->handle<ServoResponsePacket>(std::bind(&BRoCoPublisher::handleServoPacket, this, std::placeholders::_1, std::placeholders::_2));
-  bus->handle<LEDResponsePacket>(std::bind(&BRoCoPublisher::handleLEDPacket, this, std::placeholders::_1, std::placeholders::_2));
-  bus->handle<PingPacket>(std::bind(&BRoCoPublisher::handlePingPacket, this, std::placeholders::_1, std::placeholders::_2));
-
-  node_state.resize(get_param<uint32_t>("MAX_NUMBER_NODES"), false);
-  watchdog_timers.resize(node_state.size());
-  
-  for (size_t i = 0; i < watchdog_timers.size(); ++i) {
-      watchdog_timers[i] = parent->create_wall_timer(
-          std::chrono::milliseconds(get_param<uint32_t>("NODE_STATE_WATCHDOG_TIMEOUT")),
-          [this, i]() {
-              this->watchdogCallback(i);
-          }
-      );
-  }
 
   this->clk = parent->get_clock();
+  RCLCPP_INFO(parent->get_logger(), "Creating publishers");
   this->timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_PING_INTERVAL")), std::bind(&BRoCoPublisher::timerPingCallback, this));
   this->node_state_pub_timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_STATE_PUBLISH_INTERVAL")), std::bind(&BRoCoPublisher::nodeStateCallback, this));
   this->four_in_one_pub = parent->create_publisher<avionics_interfaces::msg::FourInOne>(get_ns() + "/four_in_one", 10);
@@ -57,6 +34,34 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
   this->servo_response_pub = parent->create_publisher<avionics_interfaces::msg::ServoResponse>(get_ns() + "/servo_response", 10);
   this->led_response_pub = parent->create_publisher<avionics_interfaces::msg::LEDResponse>(get_ns() + "/led_response", 10);
   this->node_state_pub = parent->create_publisher<avionics_interfaces::msg::NodeStateArray>(get_ns() + "/node_state", 10);
+  RCLCPP_INFO(parent->get_logger(), "Publishers created");
+
+  RCLCPP_INFO(parent->get_logger(), "Adding handles...");
+  bus->handle<FOURINONEPacket>(std::bind(&BRoCoPublisher::handleFourInOnePacket, this, std::placeholders::_1, std::placeholders::_2));
+  bus->handle<NPKPacket>(std::bind(&BRoCoPublisher::handleNPKPacket, this, std::placeholders::_1, std::placeholders::_2));
+  bus->handle<VoltmeterPacket>(std::bind(&BRoCoPublisher::handleVoltmeterPacket, this, std::placeholders::_1, std::placeholders::_2));
+  bus->handle<MassPacket>(std::bind(&BRoCoPublisher::handleMassPacket, this, std::placeholders::_1, std::placeholders::_2));
+  bus->handle<IMUPacket>(std::bind(&BRoCoPublisher::handleIMUPacket, this, std::placeholders::_1, std::placeholders::_2));
+  bus->handle<PotentiometerPacket>(std::bind(&BRoCoPublisher::handlePotentiometerPacket, this, std::placeholders::_1, std::placeholders::_2));
+  bus->handle<SpectroResponsePacket>(std::bind(&BRoCoPublisher::handleSpectroPacket, this, std::placeholders::_1, std::placeholders::_2));
+  bus->handle<LaserResponsePacket>(std::bind(&BRoCoPublisher::handleLaserPacket, this, std::placeholders::_1, std::placeholders::_2));
+  bus->handle<ServoResponsePacket>(std::bind(&BRoCoPublisher::handleServoPacket, this, std::placeholders::_1, std::placeholders::_2));
+  bus->handle<LEDResponsePacket>(std::bind(&BRoCoPublisher::handleLEDPacket, this, std::placeholders::_1, std::placeholders::_2));
+  bus->handle<PingPacket>(std::bind(&BRoCoPublisher::handlePingPacket, this, std::placeholders::_1, std::placeholders::_2));
+
+  RCLCPP_INFO(parent->get_logger(), "Handles created");
+
+  node_state.resize(get_param<uint32_t>("MAX_NUMBER_NODES"), false);
+  watchdog_timers.resize(node_state.size());
+  
+  for (size_t i = 0; i < watchdog_timers.size(); ++i) {
+      watchdog_timers[i] = parent->create_wall_timer(
+          std::chrono::milliseconds(get_param<uint32_t>("NODE_STATE_WATCHDOG_TIMEOUT")),
+          [this, i]() {
+              this->watchdogCallback(i);
+          }
+      );
+  }
 }
 
 void BRoCoPublisher::timerPingCallback() {
@@ -81,10 +86,11 @@ void BRoCoPublisher::watchdogCallback(size_t nodeID) {
 void BRoCoPublisher::handlePingPacket(uint8_t senderID, PingPacket* packet) {
   uint32_t id = packet->id;
   if (id < watchdog_timers.size()) {
-      watchdog_timers[id]->reset();
+    watchdog_timers[id]->reset();
   }
   // Update the node state for senderID to true
-  node_state[id] = true;
+  if (id < node_state.size())
+    node_state[id] = true;
 }
 
 void BRoCoPublisher::handleFourInOnePacket(uint8_t senderID, FOURINONEPacket* packet) {

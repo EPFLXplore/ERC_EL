@@ -28,7 +28,8 @@ def generate_launch_description():
         package='roco-ros-interface',
         executable='roco_interface',
         namespace=can0_ns,
-        parameters=[config],
+        parameters=[config,
+                    {'log_level': 'DEBUG'}],
         output='screen',  # Add output parameter for debugging
         arguments=['--ros-args', 
             '--param', 'bus:=' + can0_ns, 
@@ -41,7 +42,8 @@ def generate_launch_description():
         package='roco-ros-interface',
         executable='roco_interface',
         namespace=can1_ns,
-        parameters=[config],
+        parameters=[config,
+                    {'log_level': 'DEBUG'}],
         output='screen',  # Add output parameter for debugging
         arguments=['--ros-args', 
             '--param', 'bus:=' + can1_ns, 

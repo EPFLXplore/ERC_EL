@@ -20,14 +20,17 @@ uint32_t seq = 0;
 
 BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
     this->clk = parent->get_clock();
+    RCLCPP_INFO(parent->get_logger(), "Creating subscribers");
     this->spectro_req_sub = parent->create_subscription<avionics_interfaces::msg::SpectroRequest>
         (get_ns() + "/spectro_req", 10, std::bind(&BRoCoSubscriber::spectroReqCallback, this, _1));
     this->servo_req_sub = parent->create_subscription<avionics_interfaces::msg::ServoRequest>
         (get_ns() + "/servo_req", 10, std::bind(&BRoCoSubscriber::servoReqCallback, this, _1));
     this->laser_req_sub = parent->create_subscription<avionics_interfaces::msg::LaserRequest>
-        (get_ns() + "/spectro_req", 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
+        (get_ns() + "/laser_req", 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
     this->led_req_sub = parent->create_subscription<avionics_interfaces::msg::LEDRequest>
-        (get_ns() + "/spectro_req", 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
+        (get_ns() + "/led_req", 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
+
+    RCLCPP_INFO(parent->get_logger(), "Subscribers created");
 }
 
 void BRoCoSubscriber::spectroReqCallback(const avionics_interfaces::msg::SpectroRequest::SharedPtr msg) {

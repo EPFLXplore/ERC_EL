@@ -43,35 +43,25 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
 
   
   // Create a timer to periodically attempt connection
-  retry_timer = this->create_wall_timer(
-      std::chrono::milliseconds(get_param<uint32_t>("CONNECTION_RETRY_INTERVAL")),
-      std::bind(&BRoCoManager::retryConnection, this)
-  );
+  // retry_timer = this->create_wall_timer(
+  //     std::chrono::milliseconds(get_param<uint32_t>("CONNECTION_RETRY_INTERVAL")),
+  //     std::bind(&BRoCoManager::retryConnection, this)
+  // );
 
-  RCLCPP_INFO(this->get_logger(), "JETSON_NODE_ID: " + std::to_string(get_param<uint32_t>("JETSON_NODE_ID")));
-  RCLCPP_INFO(this->get_logger(), "SC_CONTAINER_NODE_ID: " + std::to_string(get_param<uint32_t>("SC_CONTAINER_NODE_ID")));
-  RCLCPP_INFO(this->get_logger(), "SC_DRILL_NODE_ID: " + std::to_string(get_param<uint32_t>("SC_DRILL_NODE_ID")));
-  RCLCPP_INFO(this->get_logger(), "NAV_NODE_ID: " + std::to_string(get_param<uint32_t>("NAV_NODE_ID")));
-  RCLCPP_INFO(this->get_logger(), "HD_NODE_ID: " + std::to_string(get_param<uint32_t>("HD_NODE_ID")));
-  RCLCPP_INFO(this->get_logger(), "GENERAL_NODE_ID: " + std::to_string(get_param<uint32_t>("GENERAL_NODE_ID")));
-  RCLCPP_INFO(this->get_logger(), "MAX_NUMBER_NODES: " + std::to_string(get_param<uint32_t>("MAX_NUMBER_NODES")));
-  RCLCPP_INFO(this->get_logger(), "NODE_PING_INTERVAL: " + std::to_string(get_param<uint32_t>("NODE_PING_INTERVAL")));
-  RCLCPP_INFO(this->get_logger(), "NODE_STATE_WATCHDOG_TIMEOUT: " + std::to_string(get_param<uint32_t>("NODE_STATE_WATCHDOG_TIMEOUT")));
-  RCLCPP_INFO(this->get_logger(), "NODE_STATE_PUBLISH_INTERVAL: " + std::to_string(get_param<uint32_t>("NODE_STATE_PUBLISH_INTERVAL")));
-  RCLCPP_INFO(this->get_logger(), "CONNECTION_RETRY_NUM: " + std::to_string(get_param<uint32_t>("CONNECTION_RETRY_NUM")));
-  RCLCPP_INFO(this->get_logger(), "CONNECTION_RETRY_INTERVAL: " + std::to_string(get_param<uint32_t>("CONNECTION_RETRY_INTERVAL")));
-}
+  // RCLCPP_INFO(this->get_logger(), "JETSON_NODE_ID: " + std::to_string(get_param<uint32_t>("JETSON_NODE_ID")));
+  // RCLCPP_INFO(this->get_logger(), "SC_CONTAINER_NODE_ID: " + std::to_string(get_param<uint32_t>("SC_CONTAINER_NODE_ID")));
+  // RCLCPP_INFO(this->get_logger(), "SC_DRILL_NODE_ID: " + std::to_string(get_param<uint32_t>("SC_DRILL_NODE_ID")));
+  // RCLCPP_INFO(this->get_logger(), "NAV_NODE_ID: " + std::to_string(get_param<uint32_t>("NAV_NODE_ID")));
+  // RCLCPP_INFO(this->get_logger(), "HD_NODE_ID: " + std::to_string(get_param<uint32_t>("HD_NODE_ID")));
+  // RCLCPP_INFO(this->get_logger(), "GENERAL_NODE_ID: " + std::to_string(get_param<uint32_t>("GENERAL_NODE_ID")));
+  // RCLCPP_INFO(this->get_logger(), "MAX_NUMBER_NODES: " + std::to_string(get_param<uint32_t>("MAX_NUMBER_NODES")));
+  // RCLCPP_INFO(this->get_logger(), "NODE_PING_INTERVAL: " + std::to_string(get_param<uint32_t>("NODE_PING_INTERVAL")));
+  // RCLCPP_INFO(this->get_logger(), "NODE_STATE_WATCHDOG_TIMEOUT: " + std::to_string(get_param<uint32_t>("NODE_STATE_WATCHDOG_TIMEOUT")));
+  // RCLCPP_INFO(this->get_logger(), "NODE_STATE_PUBLISH_INTERVAL: " + std::to_string(get_param<uint32_t>("NODE_STATE_PUBLISH_INTERVAL")));
+  // RCLCPP_INFO(this->get_logger(), "CONNECTION_RETRY_NUM: " + std::to_string(get_param<uint32_t>("CONNECTION_RETRY_NUM")));
+  // RCLCPP_INFO(this->get_logger(), "CONNECTION_RETRY_INTERVAL: " + std::to_string(get_param<uint32_t>("CONNECTION_RETRY_INTERVAL")));
 
-BRoCoManager::~BRoCoManager() {
-  delete this->sub;
-  delete this->pub;
-  delete this->bus;
-  delete this->driver;
-}
-
-void BRoCoManager::retryConnection() {
-
-  // Check if maximum retry attempts have been reached
+    // Check if maximum retry attempts have been reached
   if (retry_count >= get_param<uint32_t>("CONNECTION_RETRY_NUM")) {
       RCLCPP_ERROR(this->get_logger(), "Maximum retry attempts reached. Giving up.");
       retry_timer->cancel();  // Stop the retry attempts
@@ -82,18 +72,44 @@ void BRoCoManager::retryConnection() {
   // Create CanSocketDriver instance
   this->driver = new CanSocketDriver(bus_name.c_str());
 
-  // Check if the driver is connected
-  if (driver->isConnected()) {
+
       RCLCPP_INFO(this->get_logger(), "CAN driver connected.");
-      retry_timer->cancel();  // Stop the retry attempts
       createPubSub();
-  } else {
-      ++retry_count;
-      RCLCPP_WARN(this->get_logger(), "CAN driver not connected, retrying... (Attempt %d/%d)", retry_count, get_param<uint32_t>("CONNECTION_RETRY_NUM"));
-      delete driver;  // Clean up the previous instance
-      driver = nullptr;
-  }
 }
+
+BRoCoManager::~BRoCoManager() {
+  RCLCPP_INFO(this->get_logger(), "Deleting sub and pub");
+  delete this->sub;
+  delete this->pub;
+  delete this->bus;
+  delete this->driver;
+}
+
+// void BRoCoManager::retryConnection() {
+
+//   // Check if maximum retry attempts have been reached
+//   if (retry_count >= get_param<uint32_t>("CONNECTION_RETRY_NUM")) {
+//       RCLCPP_ERROR(this->get_logger(), "Maximum retry attempts reached. Giving up.");
+//       retry_timer->cancel();  // Stop the retry attempts
+//       rclcpp::shutdown();
+//       return;
+//   }
+
+//   // Create CanSocketDriver instance
+//   this->driver = new CanSocketDriver(bus_name.c_str());
+
+//   // Check if the driver is connected
+//   // if (driver->isConnected()) {
+//       RCLCPP_INFO(this->get_logger(), "CAN driver connected.");
+//       retry_timer->cancel();  // Stop the retry attempts
+//       createPubSub();
+//   // } else {
+//   //     ++retry_count;
+//   //     RCLCPP_WARN(this->get_logger(), "CAN driver not connected, retrying... (Attempt %d/%d)", retry_count, get_param<uint32_t>("CONNECTION_RETRY_NUM"));
+//   //     delete driver;  // Clean up the previous instance
+//   //     driver = nullptr;
+//   // }
+// }
 
 std::string BRoCoManager::get_ns() {
   return ns;
@@ -104,7 +120,6 @@ std::string BRoCoManager::get_bus() {
 }
 
 void BRoCoManager::createPubSub() {
-  RCLCPP_INFO(this->get_logger(), "Creating publishers and subscribers...");
   this->bus = new CANBus(this->driver);
   this->pub = new BRoCoPublisher(this->bus, this);
   this->sub = new BRoCoSubscriber(this->bus, this);
