@@ -10,7 +10,7 @@ def generate_launch_description():
 
     # CAN bus names
     bus0_name = 'can0'
-    bus1_name = 'can1
+    bus1_name = 'can1'
     
     # Namespace
     ns = 'avionics'

@@ -1,0 +1,8 @@
+# RotateServo.srv
+uint8 channel   # 1 to 4
+float32 angle   # in degree
+---
+uint32 id       # node ID
+uint8 channel   # reponse from channel
+float32 angle   # current angle
+bool success    # True if servo was set to the correct angle

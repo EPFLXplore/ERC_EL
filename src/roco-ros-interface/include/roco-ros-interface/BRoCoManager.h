@@ -58,7 +58,7 @@ public:
         auto result = this->set_parameter(parameter);
 
         if (result.successful) {
-            std::string yaml_file_path = "src/roco-ros-interface/config/calibration_params.yaml";
+            std::string yaml_file_path = "src/avionics_main/config/calibration_params.yaml";
             update_yaml_file(yaml_file_path, parameter_name, value);
             return true;
         } else {

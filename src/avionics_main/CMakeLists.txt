@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(roco-ros-interface)
+project(avionics_main)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -18,18 +18,6 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(sensor_msgs REQUIRED)
-find_package(geometry_msgs REQUIRED)
-find_package(BRoCo REQUIRED)
-find_package(avionics_interfaces REQUIRED)
-find_package(yaml-cpp REQUIRED)
-
-include_directories(
-  ${BRoCo_INCLUDE_DIRS} 
-  ${CMAKE_CURRENT_SOURCE_DIR}/../BRoCo/include
-  ${YAML_CPP_INCLUDE_DIRS}
-  include/roco-ros-interface
-)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -42,18 +30,14 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-add_executable(roco_interface
-  src/roco_interface.cpp
-  src/BRoCoManager.cpp
-  src/BRoCoPublisher.cpp
-  src/BRoCoSubscriber.cpp
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
 )
 
-ament_target_dependencies(roco_interface rclcpp sensor_msgs BRoCo avionics_interfaces yaml-cpp)
-target_link_libraries(roco_interface ${YAML_CPP_LIBRARIES})
-
-install(TARGETS
-  roco_interface
-  DESTINATION lib/${PROJECT_NAME})
+install(DIRECTORY
+  config
+  DESTINATION share/${PROJECT_NAME}
+)
 
 ament_package()

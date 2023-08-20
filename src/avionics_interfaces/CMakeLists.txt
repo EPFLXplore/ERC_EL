@@ -41,6 +41,9 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 
   "msg/NodeStateArray.msg"
 
+
+  "srv/RotateServo.srv"
+
   DEPENDENCIES sensor_msgs
  )
 ament_export_dependencies(rosidl_default_runtime)
