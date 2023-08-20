@@ -8,9 +8,11 @@ from launch_ros.actions import Node
 def generate_launch_description():
     ld = LaunchDescription()
 
-    # Define the namespaces. These are also used as can bus names for SocketCAN
+    # CAN bus names
     bus0_name = 'can0'
-    bus1_name = 'can1'
+    bus1_name = 'can1
+    
+    # Namespace
     ns = 'avionics'
 
     ld.add_action(DeclareLaunchArgument(
