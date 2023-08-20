@@ -15,7 +15,7 @@
     NODE_STATE_TOPIC:     "/node_state"
 
     # Subscribers
-    SPECTRO_REQ_TOPIC:        "/spectro_req"
-    SERVO_REQ_TOPIC:          "/servo_req"
-    LASER_REQ_TOPIC:          "/laser_req"
-    LED_REQ_TOPIC:            "/led_req"
+    SPECTRO_REQ_TOPIC:    "/spectro_req"
+    SERVO_REQ_TOPIC:      "/servo_req"
+    LASER_REQ_TOPIC:      "/laser_req"
+    LED_REQ_TOPIC:        "/led_req"

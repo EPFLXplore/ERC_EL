@@ -43,6 +43,7 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
 
   this->declare_parameter("CONNECTION_RETRY_NUM");
   this->declare_parameter("CONNECTION_RETRY_INTERVAL");
+  this->declare_parameter("ATTEMPT_RETRY");
 
   // Topic names
   this->declare_parameter("FOUR_IN_ONE_TOPIC");
@@ -62,25 +63,19 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
   this->declare_parameter("SERVO_REQ_TOPIC");
   this->declare_parameter("LASER_REQ_TOPIC");
   this->declare_parameter("LED_REQ_TOPIC");
-  
-  // Create a timer to periodically attempt connection
-  // retry_timer = this->create_wall_timer(
-  //     std::chrono::milliseconds(get_param<uint32_t>("CONNECTION_RETRY_INTERVAL")),
-  //     std::bind(&BRoCoManager::retryConnection, this)
-  // );
 
-    // Check if maximum retry attempts have been reached
-  if (retry_count >= get_param<uint32_t>("CONNECTION_RETRY_NUM")) {
-      RCLCPP_ERROR(this->get_logger(), "Maximum retry attempts reached. Giving up.");
-      retry_timer->cancel();  // Stop the retry attempts
-      rclcpp::shutdown();
-      return;
+  if (get_param<bool>("ATTEMPT_RETRY") == true) {
+    // Create a timer to periodically attempt connection
+    retry_timer = this->create_wall_timer(
+        std::chrono::milliseconds(get_param<uint32_t>("CONNECTION_RETRY_INTERVAL")),
+        std::bind(&BRoCoManager::retryConnection, this)
+    );
+  } else {
+    // Create CanSocketDriver instance
+    this->driver = new CanSocketDriver(bus_name.c_str());
+    RCLCPP_INFO(this->get_logger(), "CAN driver connected on " + bus_name);
+    createPubSub();
   }
-
-  // Create CanSocketDriver instance
-  this->driver = new CanSocketDriver(bus_name.c_str());
-      RCLCPP_INFO(this->get_logger(), "CAN driver connected on " + bus_name);
-      createPubSub();
 }
 
 BRoCoManager::~BRoCoManager() {
@@ -91,31 +86,32 @@ BRoCoManager::~BRoCoManager() {
   delete this->driver;
 }
 
-// void BRoCoManager::retryConnection() {
+void BRoCoManager::retryConnection() {
 
-//   // Check if maximum retry attempts have been reached
-//   if (retry_count >= get_param<uint32_t>("CONNECTION_RETRY_NUM")) {
-//       RCLCPP_ERROR(this->get_logger(), "Maximum retry attempts reached. Giving up.");
-//       retry_timer->cancel();  // Stop the retry attempts
-//       rclcpp::shutdown();
-//       return;
-//   }
+  // Check if maximum retry attempts have been reached
+  if (retry_count >= get_param<uint32_t>("CONNECTION_RETRY_NUM")) {
+      RCLCPP_ERROR(this->get_logger(), "Maximum retry attempts reached. Giving up.");
+      retry_timer->cancel();  // Stop the retry attempts
+      rclcpp::shutdown();
+      return;
+  }
 
-//   // Create CanSocketDriver instance
-//   this->driver = new CanSocketDriver(bus_name.c_str());
+  // Create CanSocketDriver instance
+  this->driver = new CanSocketDriver(bus_name.c_str());
 
-//   // Check if the driver is connected
-//   // if (driver->isConnected()) {
-//       RCLCPP_INFO(this->get_logger(), "CAN driver connected.");
-//       retry_timer->cancel();  // Stop the retry attempts
-//       createPubSub();
-//   // } else {
-//   //     ++retry_count;
-//   //     RCLCPP_WARN(this->get_logger(), "CAN driver not connected, retrying... (Attempt %d/%d)", retry_count, get_param<uint32_t>("CONNECTION_RETRY_NUM"));
-//   //     delete driver;  // Clean up the previous instance
-//   //     driver = nullptr;
-//   // }
-// }
+  // Check if the driver is connected
+  if (driver->isConnected()) {
+      RCLCPP_INFO(this->get_logger(), "CAN driver connected on " + bus_name);
+      retry_timer->cancel();  // Stop the retry attempts
+      createPubSub();
+  } else {
+      ++retry_count;
+      RCLCPP_WARN(this->get_logger(), "CAN driver not connected on '" + bus_name + "', retrying... (Attempt %d/%d)", 
+        retry_count, get_param<uint32_t>("CONNECTION_RETRY_NUM"));
+      delete driver;  // Clean up the previous instance
+      driver = nullptr;
+  }
+}
 
 std::string BRoCoManager::get_ns() const {
   return ns;

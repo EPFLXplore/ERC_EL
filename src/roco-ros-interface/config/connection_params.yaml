@@ -1,0 +1,11 @@
+/**:
+  ros__parameters:
+    # Ping parameters
+    NODE_PING_INTERVAL: 100
+    NODE_STATE_WATCHDOG_TIMEOUT: 200
+    NODE_STATE_PUBLISH_INTERVAL: 100
+
+    # Connection parameters
+    ATTEMPT_RETRY: true
+    CONNECTION_RETRY_NUM: 1000
+    CONNECTION_RETRY_INTERVAL: 5000

@@ -1,6 +1,5 @@
 /**:
   ros__parameters:
-
     # Node IDs
     JETSON_NODE_ID: 5
     SC_CONTAINER_NODE_ID: 0x001
@@ -10,12 +9,3 @@
     GENERAL_NODE_ID: 0x7FF
 
     MAX_NUMBER_NODES: 16
-
-    # Ping parameters
-    NODE_PING_INTERVAL: 100
-    NODE_STATE_WATCHDOG_TIMEOUT: 200
-    NODE_STATE_PUBLISH_INTERVAL: 100
-
-    # Connection parameters
-    CONNECTION_RETRY_NUM: 1000
-    CONNECTION_RETRY_INTERVAL: 5000

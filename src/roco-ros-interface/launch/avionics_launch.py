@@ -35,6 +35,14 @@ def generate_launch_description():
         'node_ids_params.yaml'
     )
 
+    # Node IDs and ping parameters config file
+    connection_params_file = os.path.join(
+        get_package_share_directory(package_name),
+        'config',
+        'connection_params.yaml'
+    )
+
+
     # Calibration config file
     calibration_params_file = os.path.join(
         get_package_share_directory(package_name),
@@ -50,7 +58,7 @@ def generate_launch_description():
             package=package_name,
             executable=executable_name,
             namespace=ns,
-            parameters=[topic_names_params_file, id_params_file, calibration_params_file, 
+            parameters=[topic_names_params_file, id_params_file, calibration_params_file, connection_params_file,
                 {'log_level': 'DEBUG'}],
             output='screen',
             arguments=['--ros-args',
@@ -67,7 +75,7 @@ def generate_launch_description():
     node_mux = Node(
         package=mux_package_name,
         executable=mux_executable_name,
-        parameters=[topic_names_params_file, id_params_file, calibration_params_file, 
+        parameters=[topic_names_params_file, id_params_file, calibration_params_file, connection_params_file,
             {'log_level': 'DEBUG'}],
         output='screen',
         arguments=['--ros-args',
