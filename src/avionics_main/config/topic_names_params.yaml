@@ -1,4 +1,4 @@
-/**:
+avionics:
   ros__parameters:
     # Publishers
     FOUR_IN_ONE_TOPIC:    "/four_in_one"

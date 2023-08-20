@@ -1,4 +1,4 @@
-/**:
+avionics:
   ros__parameters:
     # Node IDs
     JETSON_NODE_ID: 5

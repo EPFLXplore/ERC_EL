@@ -1,4 +1,4 @@
-/**:
+avionics:
   ros__parameters:
     # Ping parameters
     NODE_PING_INTERVAL: 100
