@@ -65,15 +65,15 @@ public:
             return false;
         }
     }
-    std::string get_ns();
-    std::string get_bus();
+    std::string get_ns() const;
+    std::string get_bus() const;
 
 private:
 
     void retryConnection();
     void createPubSub();
 
-    int retry_count = 0;
+    uint32_t retry_count = 0;
     std::string bus_name = "";
     std::string ns = "";
 

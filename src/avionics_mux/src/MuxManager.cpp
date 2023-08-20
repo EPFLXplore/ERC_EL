@@ -13,6 +13,7 @@ MuxManager::MuxManager() : Node("mux_manager") {
     
     this->declare_parameter("bus0");
     this->declare_parameter("MAX_NUMBER_NODES");
+    this->declare_parameter("GENERAL_NODE_ID");
 
     // Topic names
     this->declare_parameter("FOUR_IN_ONE_TOPIC");
@@ -70,6 +71,11 @@ MuxManager::MuxManager() : Node("mux_manager") {
     laser_response_mux = new MuxPublisher<avionics_interfaces::msg::LaserResponse>(this, get_param<std::string>("LASER_TOPIC"));
     servo_response_mux = new MuxPublisher<avionics_interfaces::msg::ServoResponse>(this, get_param<std::string>("SERVO_TOPIC"));
     led_response_mux = new MuxPublisher<avionics_interfaces::msg::LEDResponse>(this, get_param<std::string>("LED_TOPIC"));
+
+    laser_req_mux = new MuxSubscriber<avionics_interfaces::msg::LaserRequest>(this, get_param<std::string>("LASER_REQ_TOPIC"));
+    led_req_mux = new MuxSubscriber<avionics_interfaces::msg::LEDRequest>(this, get_param<std::string>("LED_REQ_TOPIC"));
+    servo_req_mux = new MuxSubscriber<avionics_interfaces::msg::ServoRequest>(this, get_param<std::string>("SERVO_REQ_TOPIC"));
+    spectro_req_mux = new MuxSubscriber<avionics_interfaces::msg::SpectroRequest>(this, get_param<std::string>("SPECTRO_REQ_TOPIC"));
 }
 
 MuxManager::~MuxManager() {
@@ -85,6 +91,11 @@ MuxManager::~MuxManager() {
     delete this->laser_response_mux;
     delete this->servo_response_mux;
     delete this->led_response_mux;
+
+    delete this->laser_req_mux;
+    delete this->led_req_mux;
+    delete this->servo_req_mux;
+    delete this->spectro_req_mux;
 }
 
 void MuxManager::bus0StateCallback(const avionics_interfaces::msg::NodeStateArray::SharedPtr msg) {

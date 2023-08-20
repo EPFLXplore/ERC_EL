@@ -7,6 +7,8 @@
 #ifndef MUX_MANAGER_H
 #define MUX_MANAGER_H
 
+#define NOBUS (2)
+
 #include "avionics_interfaces/msg/four_in_one.hpp"
 #include "avionics_interfaces/msg/npk.hpp"
 #include "avionics_interfaces/msg/voltage.hpp"
@@ -19,7 +21,13 @@
 #include "avionics_interfaces/msg/led_response.hpp"
 #include "avionics_interfaces/msg/node_state_array.hpp"
 
+#include "avionics_interfaces/msg/laser_request.hpp"
+#include "avionics_interfaces/msg/led_request.hpp"
+#include "avionics_interfaces/msg/servo_request.hpp"
+#include "avionics_interfaces/msg/spectro_request.hpp"
+
 #include "MuxPublisher.h"
+#include "MuxSubscriber.h"
 
 class MuxManager : public rclcpp::Node {
 public:
@@ -67,6 +75,11 @@ private:
     MuxPublisher<avionics_interfaces::msg::LaserResponse>* laser_response_mux;
     MuxPublisher<avionics_interfaces::msg::ServoResponse>* servo_response_mux;
     MuxPublisher<avionics_interfaces::msg::LEDResponse>* led_response_mux;
+
+    MuxSubscriber<avionics_interfaces::msg::LaserRequest>* laser_req_mux;
+    MuxSubscriber<avionics_interfaces::msg::LEDRequest>* led_req_mux;
+    MuxSubscriber<avionics_interfaces::msg::ServoRequest>* servo_req_mux;
+    MuxSubscriber<avionics_interfaces::msg::SpectroRequest>* spectro_req_mux;
 };
 
 #endif /* MUX_MANAGER_H */

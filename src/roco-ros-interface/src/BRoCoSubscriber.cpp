@@ -34,38 +34,38 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
 }
 
 void BRoCoSubscriber::spectroReqCallback(const avionics_interfaces::msg::SpectroRequest::SharedPtr msg) {
-    RCLCPP_INFO(parent->get_logger(), "Sending spectro request...");
+    RCLCPP_INFO(parent->get_logger(), "Sending spectro request to node ID " + std::to_string(msg->destination_id) + "...");
     static SpectroPacket packet;
     packet.measure = msg->measure;
     MAKE_IDENTIFIABLE(packet);
-    set_destination_id("SC_DRILL_NODE_ID");
+    set_destination_id(msg->destination_id);
     bus->send(&packet);
 }
 void BRoCoSubscriber::servoReqCallback(const avionics_interfaces::msg::ServoRequest::SharedPtr msg) {
-    RCLCPP_INFO(parent->get_logger(), "Sending servo request...");
+    RCLCPP_INFO(parent->get_logger(), "Sending servo request to node ID " + std::to_string(msg->destination_id) + "...");
     static ServoPacket packet;
     packet.channel = msg->channel;
     packet.angle = msg->angle;
     MAKE_IDENTIFIABLE(packet);
-    set_destination_id("HD_NODE_ID");
+    set_destination_id(msg->destination_id);
     bus->send(&packet);
 }
 
 void BRoCoSubscriber::laserReqCallback(const avionics_interfaces::msg::LaserRequest::SharedPtr msg) {
-    RCLCPP_INFO(parent->get_logger(), "Sending laser request...");
+    RCLCPP_INFO(parent->get_logger(), "Sending laser request to node ID " + std::to_string(msg->destination_id) + "...");
     static LaserPacket packet;
     packet.enable = msg->enable;
     MAKE_IDENTIFIABLE(packet);
-    set_destination_id("HD_NODE_ID");
+    set_destination_id(msg->destination_id);
     bus->send(&packet);
 }
 
 void BRoCoSubscriber::ledReqCallback(const avionics_interfaces::msg::LEDRequest::SharedPtr msg) {
-    RCLCPP_INFO(parent->get_logger(), "Sending LED request...");
+    RCLCPP_INFO(parent->get_logger(), "Sending LED request to node ID " + std::to_string(msg->destination_id) + "...");
     static LEDPacket packet;
     packet.state = msg->state;
     MAKE_IDENTIFIABLE(packet);
-    set_destination_id("NAV_NODE_ID");
+    set_destination_id(msg->destination_id);
     bus->send(&packet);
 }
 

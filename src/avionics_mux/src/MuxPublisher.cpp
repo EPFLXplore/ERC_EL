@@ -25,13 +25,13 @@ MuxPublisher<MessageT>::MuxPublisher(
 template<typename MessageT>
 void MuxPublisher<MessageT>::initCallbacks() {
     sub0 = parent->create_subscription<MessageT>(
-        bus0 + topic_name, 10,
+        "/" + bus0 + topic_name, 10,
         [this](const typename MessageT::SharedPtr msg) {
             callback0(msg);
         });
 
     sub1 = parent->create_subscription<MessageT>(
-        bus1 + topic_name, 10,
+        "/" + bus1 + topic_name, 10,
         [this](const typename MessageT::SharedPtr msg) {
             callback1(msg);
         });

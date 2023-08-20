@@ -10,8 +10,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include <string>
 
-#define NOBUS (2)
-
 template<typename MessageT>
 class MuxPublisher {
 public:

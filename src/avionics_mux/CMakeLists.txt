@@ -41,6 +41,7 @@ add_executable(avionics_mux
   src/avionics_mux.cpp
   src/MuxManager.cpp
   src/MuxPublisher.cpp
+  src/MuxSubscriber.cpp
 )
 
 ament_target_dependencies(avionics_mux rclcpp sensor_msgs avionics_interfaces)

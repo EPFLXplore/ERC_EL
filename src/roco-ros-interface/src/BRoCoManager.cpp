@@ -117,11 +117,11 @@ BRoCoManager::~BRoCoManager() {
 //   // }
 // }
 
-std::string BRoCoManager::get_ns() {
+std::string BRoCoManager::get_ns() const {
   return ns;
 }
 
-std::string BRoCoManager::get_bus() {
+std::string BRoCoManager::get_bus() const {
   return bus_name;
 }
 
