@@ -97,7 +97,7 @@ def generate_launch_description():
 
     services_package_name = 'avionics_services'
     services_executable_name = 'avionics_services'
-    # Launch the mux node with parameters
+    # Launch the services node with parameters
     node_services = Node(
         package=services_package_name,
         executable=services_executable_name,
