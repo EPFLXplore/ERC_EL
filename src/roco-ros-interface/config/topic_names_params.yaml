@@ -1,0 +1,21 @@
+/**:
+  ros__parameters:
+    # Publishers
+    FOUR_IN_ONE_TOPIC:    "/four_in_one"
+    NPK_TOPIC:            "/npk"
+    VOLTAGE_TOPIC:        "/voltage"
+    DRILL_MASS_TOPIC:     "/drill/mass"
+    CONTAINER_MASS_TOPIC: "/container/mass"
+    IMU_TOPIC:            "/imu"
+    POTENTIOMETER_TOPIC:  "/potentiometer"
+    SPECTRO_TOPIC:        "/spectro_response"
+    LASER_TOPIC:          "/laser_response"
+    SERVO_TOPIC:          "/servo_response"
+    LED_TOPIC:            "/led_response"
+    NODE_STATE_TOPIC:     "/node_state"
+
+    # Subscribers
+    SPECTRO_REQ_TOPIC:        "/spectro_req"
+    SERVO_REQ_TOPIC:          "/servo_req"
+    LASER_REQ_TOPIC:          "/laser_req"
+    LED_REQ_TOPIC:            "/led_req"

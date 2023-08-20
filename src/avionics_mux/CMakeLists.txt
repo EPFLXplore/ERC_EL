@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(avionics_interfaces)
+project(avionics_mux)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -17,33 +17,14 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-
-find_package(rosidl_default_generators REQUIRED)
-
+find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(avionics_interfaces REQUIRED)
 
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/AngleArray.msg"
-  "msg/FourInOne.msg"
-  "msg/Imu.msg"
-  "msg/LaserResponse.msg"
-  "msg/LEDResponse.msg"
-  "msg/MassArray.msg"
-  "msg/NPK.msg"
-  "msg/ServoResponse.msg"
-  "msg/SpectroResponse.msg"
-  "msg/Voltage.msg"
-
-  "msg/LaserRequest.msg"
-  "msg/LEDRequest.msg"
-  "msg/ServoRequest.msg"
-  "msg/SpectroRequest.msg"
-
-  "msg/NodeStateArray.msg"
-
-  DEPENDENCIES sensor_msgs
- )
-ament_export_dependencies(rosidl_default_runtime)
+include_directories(
+  include/avionics_mux
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -55,5 +36,27 @@ if(BUILD_TESTING)
   #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+add_executable(avionics_mux
+  src/avionics_mux.cpp
+  src/MuxManager.cpp
+  src/MuxPublisher.cpp
+)
+
+ament_target_dependencies(avionics_mux rclcpp sensor_msgs avionics_interfaces)
+
+install(TARGETS
+  avionics_mux
+  DESTINATION lib/${PROJECT_NAME})
+
+#install(DIRECTORY
+#  launch
+#  DESTINATION share/${PROJECT_NAME}/
+#)
+
+#install(DIRECTORY
+#  config
+#  DESTINATION share/${PROJECT_NAME}
+#)
 
 ament_package()

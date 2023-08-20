@@ -22,13 +22,13 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
     this->clk = parent->get_clock();
     RCLCPP_INFO(parent->get_logger(), "Creating subscribers");
     this->spectro_req_sub = parent->create_subscription<avionics_interfaces::msg::SpectroRequest>
-        (get_ns() + "/spectro_req", 10, std::bind(&BRoCoSubscriber::spectroReqCallback, this, _1));
+        (get_ns() + get_param<std::string>("SPECTRO_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::spectroReqCallback, this, _1));
     this->servo_req_sub = parent->create_subscription<avionics_interfaces::msg::ServoRequest>
-        (get_ns() + "/servo_req", 10, std::bind(&BRoCoSubscriber::servoReqCallback, this, _1));
+        (get_ns() + get_param<std::string>("SERVO_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::servoReqCallback, this, _1));
     this->laser_req_sub = parent->create_subscription<avionics_interfaces::msg::LaserRequest>
-        (get_ns() + "/laser_req", 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
+        (get_ns() + get_param<std::string>("LASER_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
     this->led_req_sub = parent->create_subscription<avionics_interfaces::msg::LEDRequest>
-        (get_ns() + "/led_req", 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
+        (get_ns() + get_param<std::string>("LED_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
 
     RCLCPP_INFO(parent->get_logger(), "Subscribers created");
 }
@@ -87,6 +87,11 @@ std::string BRoCoSubscriber::get_bus() {
 }
 
 template <typename T>
-void BRoCoSubscriber::set_param(const std::string& parameter_name, const T& value) {
-    dynamic_cast<BRoCoManager*>(parent)->set_param(parameter_name, value);
+void BRoCoSubscriber::set_param_calib(const std::string& parameter_name, const T& value) {
+    dynamic_cast<BRoCoManager*>(parent)->set_param_calib(parameter_name, value);
+}
+
+template <typename T>
+T BRoCoSubscriber::get_param(const std::string& parameter_name) {
+  return dynamic_cast<BRoCoManager*>(parent)->get_param<T>(parameter_name);
 }

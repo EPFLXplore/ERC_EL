@@ -1,4 +1,5 @@
 # FourInOne.msg
+uint32 id
 float32 temperature     # [deg Celcius]
 float32 moisture        # [%]
 float32 conductivity    # [us/cm]

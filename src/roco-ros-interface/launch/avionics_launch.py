@@ -14,41 +14,66 @@ def generate_launch_description():
         description='CAN bus name'
     ))
 
-    config = os.path.join(
-        get_package_share_directory('roco-ros-interface'),
+    # Define the package and executable names
+    package_name = 'roco-ros-interface'
+    executable_name = 'roco_interface'
+
+    # Define the namespaces
+    can0_ns = 'can0'
+    can1_ns = 'can1'
+
+    topic_names_params_file = os.path.join(
+        get_package_share_directory(package_name),
+        'config',
+        'topic_names_params.yaml'
+    )
+
+    # Node IDs and ping parameters config file
+    id_params_file = os.path.join(
+        get_package_share_directory(package_name),
         'config',
         'node_ids_params.yaml'
     )
 
-    can0_ns = 'can0'
-    can1_ns = 'can1'
-
-    # Launch first node with 'can0' namespace and 'bus' parameter set to 'can0'
-    node_can0 = Node(
-        package='roco-ros-interface',
-        executable='roco_interface',
-        namespace=can0_ns,
-        parameters=[config,
-                    {'log_level': 'DEBUG'}],
-        output='screen',  # Add output parameter for debugging
-        arguments=['--ros-args', 
-            '--param', 'bus:=' + can0_ns, 
-            '--param', 'namespace:=' + can0_ns],
+    # Calibration config file
+    calibration_params_file = os.path.join(
+        get_package_share_directory(package_name),
+        'config',
+        'calibration_params.yaml'
     )
-    ld.add_action(node_can0)
 
-    # Launch second node with 'can1' namespace and 'bus' parameter set to 'can1'
-    node_can1 = Node(
-        package='roco-ros-interface',
-        executable='roco_interface',
-        namespace=can1_ns,
-        parameters=[config,
-                    {'log_level': 'DEBUG'}],
-        output='screen',  # Add output parameter for debugging
-        arguments=['--ros-args', 
-            '--param', 'bus:=' + can1_ns, 
-            '--param', 'namespace:=' + can1_ns],
+    # Iterate through the namespaces
+    for ns in [can0_ns, can1_ns]:
+
+        # Launch the node for the namespace with parameters
+        node = Node(
+            package=package_name,
+            executable=executable_name,
+            namespace=ns,
+            parameters=[topic_names_params_file, id_params_file, calibration_params_file, 
+                {'log_level': 'DEBUG'}],
+            output='screen',
+            arguments=['--ros-args',
+                '--param', 'bus:=' + ns,
+                '--param', 'namespace:=' + ns]
+        )
+        ld.add_action(node)
+
+    # Define the package and executable names for the mux node
+    mux_package_name = 'avionics_mux'
+    mux_executable_name = 'avionics_mux'
+
+    # Launch the mux node with parameters
+    node_mux = Node(
+        package=mux_package_name,
+        executable=mux_executable_name,
+        parameters=[topic_names_params_file, id_params_file, calibration_params_file, 
+            {'log_level': 'DEBUG'}],
+        output='screen',
+        arguments=['--ros-args',
+            '--param', 'bus0:=' + can0_ns,
+            '--param', 'bus1:=' + can1_ns]
     )
-    ld.add_action(node_can1)
+    ld.add_action(node_mux)
 
     return ld

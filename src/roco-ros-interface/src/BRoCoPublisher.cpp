@@ -22,18 +22,18 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
   RCLCPP_INFO(parent->get_logger(), "Creating publishers");
   this->timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_PING_INTERVAL")), std::bind(&BRoCoPublisher::timerPingCallback, this));
   this->node_state_pub_timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_STATE_PUBLISH_INTERVAL")), std::bind(&BRoCoPublisher::nodeStateCallback, this));
-  this->four_in_one_pub = parent->create_publisher<avionics_interfaces::msg::FourInOne>(get_ns() + "/four_in_one", 10);
-  this->npk_pub = parent->create_publisher<avionics_interfaces::msg::NPK>(get_ns() + "/npk", 10);
-  this->voltage_pub = parent->create_publisher<std_msgs::msg::Float32>(get_ns() + "/voltage", 10);
-  this->drill_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_ns() + "/drill/mass", 10);
-  this->container_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_ns() + "/container/mass", 10);
-  this->imu_pub = parent->create_publisher<sensor_msgs::msg::Imu>(get_ns() + "/imu", 10);
-  this->potentiometer_pub = parent->create_publisher<avionics_interfaces::msg::AngleArray>(get_ns() + "/potentiometer", 10);
-  this->spectro_response_pub = parent->create_publisher<avionics_interfaces::msg::SpectroResponse>(get_ns() + "/spectro_response", 10);
-  this->laser_response_pub = parent->create_publisher<avionics_interfaces::msg::LaserResponse>(get_ns() + "/laser_response", 10);
-  this->servo_response_pub = parent->create_publisher<avionics_interfaces::msg::ServoResponse>(get_ns() + "/servo_response", 10);
-  this->led_response_pub = parent->create_publisher<avionics_interfaces::msg::LEDResponse>(get_ns() + "/led_response", 10);
-  this->node_state_pub = parent->create_publisher<avionics_interfaces::msg::NodeStateArray>(get_ns() + "/node_state", 10);
+  this->four_in_one_pub = parent->create_publisher<avionics_interfaces::msg::FourInOne>(get_ns() + get_param<std::string>("FOUR_IN_ONE_TOPIC"), 10);
+  this->npk_pub = parent->create_publisher<avionics_interfaces::msg::NPK>(get_ns() + get_param<std::string>("NPK_TOPIC"), 10);
+  this->voltage_pub = parent->create_publisher<avionics_interfaces::msg::Voltage>(get_ns() + get_param<std::string>("VOLTAGE_TOPIC"), 10);
+  this->drill_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_ns() + get_param<std::string>("DRILL_MASS_TOPIC"), 10);
+  this->container_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_ns() + get_param<std::string>("CONTAINER_MASS_TOPIC"), 10);
+  this->imu_pub = parent->create_publisher<avionics_interfaces::msg::Imu>(get_ns() + get_param<std::string>("IMU_TOPIC"), 10);
+  this->potentiometer_pub = parent->create_publisher<avionics_interfaces::msg::AngleArray>(get_ns() + get_param<std::string>("POTENTIOMETER_TOPIC"), 10);
+  this->spectro_response_pub = parent->create_publisher<avionics_interfaces::msg::SpectroResponse>(get_ns() + get_param<std::string>("SPECTRO_TOPIC"), 10);
+  this->laser_response_pub = parent->create_publisher<avionics_interfaces::msg::LaserResponse>(get_ns() + get_param<std::string>("LASER_TOPIC"), 10);
+  this->servo_response_pub = parent->create_publisher<avionics_interfaces::msg::ServoResponse>(get_ns() + get_param<std::string>("SERVO_TOPIC"), 10);
+  this->led_response_pub = parent->create_publisher<avionics_interfaces::msg::LEDResponse>(get_ns() + get_param<std::string>("LED_TOPIC"), 10);
+  this->node_state_pub = parent->create_publisher<avionics_interfaces::msg::NodeStateArray>(get_ns() + get_param<std::string>("NODE_STATE_TOPIC"), 10);
   RCLCPP_INFO(parent->get_logger(), "Publishers created");
 
   RCLCPP_INFO(parent->get_logger(), "Adding handles...");
@@ -48,7 +48,6 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
   bus->handle<ServoResponsePacket>(std::bind(&BRoCoPublisher::handleServoPacket, this, std::placeholders::_1, std::placeholders::_2));
   bus->handle<LEDResponsePacket>(std::bind(&BRoCoPublisher::handleLEDPacket, this, std::placeholders::_1, std::placeholders::_2));
   bus->handle<PingPacket>(std::bind(&BRoCoPublisher::handlePingPacket, this, std::placeholders::_1, std::placeholders::_2));
-
   RCLCPP_INFO(parent->get_logger(), "Handles created");
 
   node_state.resize(get_param<uint32_t>("MAX_NUMBER_NODES"), false);
@@ -96,6 +95,8 @@ void BRoCoPublisher::handlePingPacket(uint8_t senderID, PingPacket* packet) {
 void BRoCoPublisher::handleFourInOnePacket(uint8_t senderID, FOURINONEPacket* packet) {
   auto msg = avionics_interfaces::msg::FourInOne();
 
+  msg.id = packet->id;
+
   msg.temperature = packet->temperature;
   msg.moisture = packet->moisture;
   msg.conductivity = packet->conductivity;
@@ -107,6 +108,8 @@ void BRoCoPublisher::handleFourInOnePacket(uint8_t senderID, FOURINONEPacket* pa
 void BRoCoPublisher::handleNPKPacket(uint8_t senderID, NPKPacket* packet) {
   auto msg = avionics_interfaces::msg::NPK();
 
+  msg.id = packet->id;
+
   msg.nitrogen = packet->nitrogen;
   msg.phosphorus = packet->phosphorus;
   msg.potassium = packet->potassium;
@@ -115,15 +118,19 @@ void BRoCoPublisher::handleNPKPacket(uint8_t senderID, NPKPacket* packet) {
 }
 
 void BRoCoPublisher::handleVoltmeterPacket(uint8_t senderID, VoltmeterPacket* packet) {
-  auto msg = std_msgs::msg::Float32();
+  auto msg = avionics_interfaces::msg::Voltage();
 
-  msg.data = packet->voltage;
+  msg.id = packet->id;
+
+  msg.voltage = packet->voltage;
 
   voltage_pub->publish(msg);
 }
 
 void BRoCoPublisher::handleMassPacket(uint8_t senderID, MassPacket* packet) {
   auto msg = avionics_interfaces::msg::MassArray();
+
+  msg.id = packet->id;
 
   for (uint8_t i = 0; i < 4; ++i)
     msg.mass[i] = packet->mass[i];
@@ -136,48 +143,50 @@ void BRoCoPublisher::handleMassPacket(uint8_t senderID, MassPacket* packet) {
 }
 
 void BRoCoPublisher::handleIMUPacket(uint8_t senderID, IMUPacket* packet) {
-  auto msg = sensor_msgs::msg::Imu();
+  auto msg = avionics_interfaces::msg::Imu();
 
-  msg.header.stamp = clk->now();
-  msg.header.frame_id = "imu";
+  msg.id = packet->id;
 
-  msg.angular_velocity.x = packet->angular[0];
-  msg.angular_velocity.y = packet->angular[1];
-  msg.angular_velocity.z = packet->angular[2];
-  msg.linear_acceleration.x = packet->acceleration[0];
-  msg.linear_acceleration.y = packet->acceleration[1];
-  msg.linear_acceleration.z = packet->acceleration[2];
+  msg.imu.header.stamp = clk->now();
+  msg.imu.header.frame_id = "imu";
 
-  msg.orientation.w = packet->orientation[0];
-  msg.orientation.x = packet->orientation[1];
-  msg.orientation.y = packet->orientation[2];
-  msg.orientation.z = packet->orientation[3];
+  msg.imu.angular_velocity.x = packet->angular[0];
+  msg.imu.angular_velocity.y = packet->angular[1];
+  msg.imu.angular_velocity.z = packet->angular[2];
+  msg.imu.linear_acceleration.x = packet->acceleration[0];
+  msg.imu.linear_acceleration.y = packet->acceleration[1];
+  msg.imu.linear_acceleration.z = packet->acceleration[2];
+
+  msg.imu.orientation.w = packet->orientation[0];
+  msg.imu.orientation.x = packet->orientation[1];
+  msg.imu.orientation.y = packet->orientation[2];
+  msg.imu.orientation.z = packet->orientation[3];
 
   // To change
 
-  msg.orientation_covariance[0] = 1e-4;
-  msg.orientation_covariance[3] = 1e-4;
-  msg.orientation_covariance[6] = 1e-4;
+  msg.imu.orientation_covariance[0] = 1e-4;
+  msg.imu.orientation_covariance[3] = 1e-4;
+  msg.imu.orientation_covariance[6] = 1e-4;
 
-  msg.linear_acceleration_covariance[0] = 1.4e-3;
-  msg.linear_acceleration_covariance[1] = 1.0e-4;
-  msg.linear_acceleration_covariance[2] = 4.5e-5;
-  msg.linear_acceleration_covariance[3] = 1.0e-4;
-  msg.linear_acceleration_covariance[4] = 2.1e-3;
-  msg.linear_acceleration_covariance[5] = 2.5e-4;
-  msg.linear_acceleration_covariance[6] = 4.5e-5;
-  msg.linear_acceleration_covariance[7] = 2.5e-4;
-  msg.linear_acceleration_covariance[8] = 2.0e-3;
+  msg.imu.linear_acceleration_covariance[0] = 1.4e-3;
+  msg.imu.linear_acceleration_covariance[1] = 1.0e-4;
+  msg.imu.linear_acceleration_covariance[2] = 4.5e-5;
+  msg.imu.linear_acceleration_covariance[3] = 1.0e-4;
+  msg.imu.linear_acceleration_covariance[4] = 2.1e-3;
+  msg.imu.linear_acceleration_covariance[5] = 2.5e-4;
+  msg.imu.linear_acceleration_covariance[6] = 4.5e-5;
+  msg.imu.linear_acceleration_covariance[7] = 2.5e-4;
+  msg.imu.linear_acceleration_covariance[8] = 2.0e-3;
 
-  msg.angular_velocity_covariance[0] = 1.6e-2;
-  msg.angular_velocity_covariance[1] = -4.1e-5;
-  msg.angular_velocity_covariance[2] = 4.7e-3;
-  msg.angular_velocity_covariance[3] = -4.1e-5;
-  msg.angular_velocity_covariance[4] = 1.7e-2;
-  msg.angular_velocity_covariance[5] = 1.1e-4;
-  msg.angular_velocity_covariance[6] = 4.7e-3;
-  msg.angular_velocity_covariance[7] = 1.1e-4;
-  msg.angular_velocity_covariance[8] = 2.5e-2;
+  msg.imu.angular_velocity_covariance[0] = 1.6e-2;
+  msg.imu.angular_velocity_covariance[1] = -4.1e-5;
+  msg.imu.angular_velocity_covariance[2] = 4.7e-3;
+  msg.imu.angular_velocity_covariance[3] = -4.1e-5;
+  msg.imu.angular_velocity_covariance[4] = 1.7e-2;
+  msg.imu.angular_velocity_covariance[5] = 1.1e-4;
+  msg.imu.angular_velocity_covariance[6] = 4.7e-3;
+  msg.imu.angular_velocity_covariance[7] = 1.1e-4;
+  msg.imu.angular_velocity_covariance[8] = 2.5e-2;
 
   imu_pub->publish(msg);
 }
@@ -185,13 +194,18 @@ void BRoCoPublisher::handleIMUPacket(uint8_t senderID, IMUPacket* packet) {
 void BRoCoPublisher::handlePotentiometerPacket(uint8_t senderID, PotentiometerPacket* packet) {
   auto msg = avionics_interfaces::msg::AngleArray();
 
+  msg.id = packet->id;
+
   for (uint8_t i = 0; i < 4; ++i)
     msg.angles[i] = packet->angles[i];
 
   potentiometer_pub->publish(msg);
 }
+
 void BRoCoPublisher::handleSpectroPacket(uint8_t senderID, SpectroResponsePacket* packet) {
   auto msg = avionics_interfaces::msg::SpectroResponse();
+
+  msg.id = packet->id;
 
   for (uint8_t i = 0; i < 18; ++i)
    msg.data[i] = packet->data[i];
@@ -204,6 +218,8 @@ void BRoCoPublisher::handleSpectroPacket(uint8_t senderID, SpectroResponsePacket
 void BRoCoPublisher::handleLaserPacket(uint8_t senderID, LaserResponsePacket* packet) {
   auto msg = avionics_interfaces::msg::LaserResponse();
 
+  msg.id = packet->id;
+
   msg.success = packet->success;
 
   laser_response_pub->publish(msg);
@@ -211,6 +227,8 @@ void BRoCoPublisher::handleLaserPacket(uint8_t senderID, LaserResponsePacket* pa
 
 void BRoCoPublisher::handleServoPacket(uint8_t senderID, ServoResponsePacket* packet) {
   auto msg = avionics_interfaces::msg::ServoResponse();
+
+  msg.id = packet->id;
 
   msg.channel = packet->channel;
   msg.angle = packet->angle;
@@ -221,6 +239,8 @@ void BRoCoPublisher::handleServoPacket(uint8_t senderID, ServoResponsePacket* pa
 
 void BRoCoPublisher::handleLEDPacket(uint8_t senderID, LEDResponsePacket* packet) {
   auto msg = avionics_interfaces::msg::LEDResponse();
+
+  msg.id = packet->id;
 
   msg.state = packet->state;
   msg.success = packet->success;
@@ -252,5 +272,5 @@ std::string BRoCoPublisher::get_bus() {
 
 template <typename T>
 T BRoCoPublisher::get_param(const std::string& parameter_name) {
-  dynamic_cast<BRoCoManager*>(parent)->get_param<T>(parameter_name);
+  return dynamic_cast<BRoCoManager*>(parent)->get_param<T>(parameter_name);
 }

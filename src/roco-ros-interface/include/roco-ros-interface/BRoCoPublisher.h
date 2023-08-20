@@ -11,12 +11,12 @@
 #include <memory>
 
 #include "rclcpp/rclcpp.hpp"
-#include "sensor_msgs/msg/imu.hpp"
-#include "std_msgs/msg/float32.hpp"
 
 #include "avionics_interfaces/msg/four_in_one.hpp"
 #include "avionics_interfaces/msg/npk.hpp"
+#include "avionics_interfaces/msg/voltage.hpp"
 #include "avionics_interfaces/msg/mass_array.hpp"
+#include "avionics_interfaces/msg/imu.hpp"
 #include "avionics_interfaces/msg/angle_array.hpp"
 #include "avionics_interfaces/msg/spectro_response.hpp"
 #include "avionics_interfaces/msg/laser_response.hpp"
@@ -42,10 +42,10 @@ private:
     // Publishers
     rclcpp::Publisher<avionics_interfaces::msg::FourInOne>::SharedPtr four_in_one_pub;
     rclcpp::Publisher<avionics_interfaces::msg::NPK>::SharedPtr npk_pub;
-    rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr voltage_pub;
+    rclcpp::Publisher<avionics_interfaces::msg::Voltage>::SharedPtr voltage_pub;
     rclcpp::Publisher<avionics_interfaces::msg::MassArray>::SharedPtr drill_mass_pub;
     rclcpp::Publisher<avionics_interfaces::msg::MassArray>::SharedPtr container_mass_pub;
-    rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub;
+    rclcpp::Publisher<avionics_interfaces::msg::Imu>::SharedPtr imu_pub;
     rclcpp::Publisher<avionics_interfaces::msg::AngleArray>::SharedPtr potentiometer_pub;
     rclcpp::Publisher<avionics_interfaces::msg::SpectroResponse>::SharedPtr spectro_response_pub;
     rclcpp::Publisher<avionics_interfaces::msg::LaserResponse>::SharedPtr laser_response_pub;

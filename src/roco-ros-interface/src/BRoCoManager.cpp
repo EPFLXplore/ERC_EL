@@ -26,7 +26,8 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
   ns = "/" + ns;
   RCLCPP_INFO(this->get_logger(), "Namespace: %s", ns.c_str());
 
-  // Load parameters from the specified YAML file
+  // Load parameters
+  // Node IDs
   this->declare_parameter("JETSON_NODE_ID");
   this->declare_parameter("SC_CONTAINER_NODE_ID");
   this->declare_parameter("SC_DRILL_NODE_ID");
@@ -34,6 +35,8 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
   this->declare_parameter("HD_NODE_ID");
   this->declare_parameter("GENERAL_NODE_ID");
   this->declare_parameter("MAX_NUMBER_NODES");
+
+  // Ping and retry parameters
   this->declare_parameter("NODE_PING_INTERVAL");
   this->declare_parameter("NODE_STATE_WATCHDOG_TIMEOUT");
   this->declare_parameter("NODE_STATE_PUBLISH_INTERVAL");
@@ -41,25 +44,30 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
   this->declare_parameter("CONNECTION_RETRY_NUM");
   this->declare_parameter("CONNECTION_RETRY_INTERVAL");
 
+  // Topic names
+  this->declare_parameter("FOUR_IN_ONE_TOPIC");
+  this->declare_parameter("NPK_TOPIC");
+  this->declare_parameter("VOLTAGE_TOPIC");
+  this->declare_parameter("DRILL_MASS_TOPIC");
+  this->declare_parameter("CONTAINER_MASS_TOPIC");
+  this->declare_parameter("IMU_TOPIC");
+  this->declare_parameter("POTENTIOMETER_TOPIC");
+  this->declare_parameter("SPECTRO_TOPIC");
+  this->declare_parameter("LASER_TOPIC");
+  this->declare_parameter("SERVO_TOPIC");
+  this->declare_parameter("LED_TOPIC");
+  this->declare_parameter("NODE_STATE_TOPIC");
+
+  this->declare_parameter("SPECTRO_REQ_TOPIC");
+  this->declare_parameter("SERVO_REQ_TOPIC");
+  this->declare_parameter("LASER_REQ_TOPIC");
+  this->declare_parameter("LED_REQ_TOPIC");
   
   // Create a timer to periodically attempt connection
   // retry_timer = this->create_wall_timer(
   //     std::chrono::milliseconds(get_param<uint32_t>("CONNECTION_RETRY_INTERVAL")),
   //     std::bind(&BRoCoManager::retryConnection, this)
   // );
-
-  // RCLCPP_INFO(this->get_logger(), "JETSON_NODE_ID: " + std::to_string(get_param<uint32_t>("JETSON_NODE_ID")));
-  // RCLCPP_INFO(this->get_logger(), "SC_CONTAINER_NODE_ID: " + std::to_string(get_param<uint32_t>("SC_CONTAINER_NODE_ID")));
-  // RCLCPP_INFO(this->get_logger(), "SC_DRILL_NODE_ID: " + std::to_string(get_param<uint32_t>("SC_DRILL_NODE_ID")));
-  // RCLCPP_INFO(this->get_logger(), "NAV_NODE_ID: " + std::to_string(get_param<uint32_t>("NAV_NODE_ID")));
-  // RCLCPP_INFO(this->get_logger(), "HD_NODE_ID: " + std::to_string(get_param<uint32_t>("HD_NODE_ID")));
-  // RCLCPP_INFO(this->get_logger(), "GENERAL_NODE_ID: " + std::to_string(get_param<uint32_t>("GENERAL_NODE_ID")));
-  // RCLCPP_INFO(this->get_logger(), "MAX_NUMBER_NODES: " + std::to_string(get_param<uint32_t>("MAX_NUMBER_NODES")));
-  // RCLCPP_INFO(this->get_logger(), "NODE_PING_INTERVAL: " + std::to_string(get_param<uint32_t>("NODE_PING_INTERVAL")));
-  // RCLCPP_INFO(this->get_logger(), "NODE_STATE_WATCHDOG_TIMEOUT: " + std::to_string(get_param<uint32_t>("NODE_STATE_WATCHDOG_TIMEOUT")));
-  // RCLCPP_INFO(this->get_logger(), "NODE_STATE_PUBLISH_INTERVAL: " + std::to_string(get_param<uint32_t>("NODE_STATE_PUBLISH_INTERVAL")));
-  // RCLCPP_INFO(this->get_logger(), "CONNECTION_RETRY_NUM: " + std::to_string(get_param<uint32_t>("CONNECTION_RETRY_NUM")));
-  // RCLCPP_INFO(this->get_logger(), "CONNECTION_RETRY_INTERVAL: " + std::to_string(get_param<uint32_t>("CONNECTION_RETRY_INTERVAL")));
 
     // Check if maximum retry attempts have been reached
   if (retry_count >= get_param<uint32_t>("CONNECTION_RETRY_NUM")) {
@@ -71,9 +79,7 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
 
   // Create CanSocketDriver instance
   this->driver = new CanSocketDriver(bus_name.c_str());
-
-
-      RCLCPP_INFO(this->get_logger(), "CAN driver connected.");
+      RCLCPP_INFO(this->get_logger(), "CAN driver connected on " + bus_name);
       createPubSub();
 }
 

@@ -1,0 +1,15 @@
+/**:
+  ros__parameters:
+
+    # Mass sensor
+
+    # IMU ---------
+
+    # Accel
+
+    # Gyro
+
+    # Magnetometer
+    ACCEL_OFFSET: 1
+
+

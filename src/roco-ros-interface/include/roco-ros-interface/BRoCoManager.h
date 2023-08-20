@@ -4,8 +4,8 @@
  *      Author: Vincent Nguyen
  */
 
-#ifndef BROCO_MANAGER
-#define BROCO_MANAGER
+#ifndef BROCO_MANAGER_H
+#define BROCO_MANAGER_H
 
 #include "BRoCoPublisher.h"
 #include "BRoCoSubscriber.h"
@@ -52,13 +52,13 @@ public:
     }
 
     template <typename T>
-    bool set_param(const std::string& parameter_name, const T& value)
+    bool set_param_calib(const std::string& parameter_name, const T& value)
     {
         rclcpp::Parameter parameter(parameter_name, value);
         auto result = this->set_parameter(parameter);
 
         if (result.successful) {
-            std::string yaml_file_path = "src/roco-ros-interface/config/node_ids_params.yaml";
+            std::string yaml_file_path = "src/roco-ros-interface/config/calibration_params.yaml";
             update_yaml_file(yaml_file_path, parameter_name, value);
             return true;
         } else {
@@ -85,4 +85,4 @@ private:
     
 };
 
-#endif /* BROCO_MANAGER */
+#endif /* BROCO_MANAGER_H */

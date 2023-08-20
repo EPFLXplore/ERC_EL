@@ -38,7 +38,10 @@ private:
     std::string get_bus();
 
     template <typename T>
-    void set_param(const std::string& parameter_name, const T& value);
+    void set_param_calib(const std::string& parameter_name, const T& value);
+
+    template <typename T>
+    T get_param(const std::string& parameter_name);
     
     rclcpp::Subscription<avionics_interfaces::msg::SpectroRequest>::SharedPtr spectro_req_sub;
     rclcpp::Subscription<avionics_interfaces::msg::ServoRequest>::SharedPtr servo_req_sub;
