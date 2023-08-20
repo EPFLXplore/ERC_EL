@@ -22,18 +22,18 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
   RCLCPP_INFO(parent->get_logger(), "Creating publishers");
   this->timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_PING_INTERVAL")), std::bind(&BRoCoPublisher::timerPingCallback, this));
   this->node_state_pub_timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_STATE_PUBLISH_INTERVAL")), std::bind(&BRoCoPublisher::nodeStateCallback, this));
-  this->four_in_one_pub = parent->create_publisher<avionics_interfaces::msg::FourInOne>(get_ns() + get_param<std::string>("FOUR_IN_ONE_TOPIC"), 10);
-  this->npk_pub = parent->create_publisher<avionics_interfaces::msg::NPK>(get_ns() + get_param<std::string>("NPK_TOPIC"), 10);
-  this->voltage_pub = parent->create_publisher<avionics_interfaces::msg::Voltage>(get_ns() + get_param<std::string>("VOLTAGE_TOPIC"), 10);
-  this->drill_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_ns() + get_param<std::string>("DRILL_MASS_TOPIC"), 10);
-  this->container_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_ns() + get_param<std::string>("CONTAINER_MASS_TOPIC"), 10);
-  this->imu_pub = parent->create_publisher<avionics_interfaces::msg::Imu>(get_ns() + get_param<std::string>("IMU_TOPIC"), 10);
-  this->potentiometer_pub = parent->create_publisher<avionics_interfaces::msg::AngleArray>(get_ns() + get_param<std::string>("POTENTIOMETER_TOPIC"), 10);
-  this->spectro_response_pub = parent->create_publisher<avionics_interfaces::msg::SpectroResponse>(get_ns() + get_param<std::string>("SPECTRO_TOPIC"), 10);
-  this->laser_response_pub = parent->create_publisher<avionics_interfaces::msg::LaserResponse>(get_ns() + get_param<std::string>("LASER_TOPIC"), 10);
-  this->servo_response_pub = parent->create_publisher<avionics_interfaces::msg::ServoResponse>(get_ns() + get_param<std::string>("SERVO_TOPIC"), 10);
-  this->led_response_pub = parent->create_publisher<avionics_interfaces::msg::LEDResponse>(get_ns() + get_param<std::string>("LED_TOPIC"), 10);
-  this->node_state_pub = parent->create_publisher<avionics_interfaces::msg::NodeStateArray>(get_ns() + get_param<std::string>("NODE_STATE_TOPIC"), 10);
+  this->four_in_one_pub = parent->create_publisher<avionics_interfaces::msg::FourInOne>(get_prefix() + get_param<std::string>("FOUR_IN_ONE_TOPIC"), 10);
+  this->npk_pub = parent->create_publisher<avionics_interfaces::msg::NPK>(get_prefix() + get_param<std::string>("NPK_TOPIC"), 10);
+  this->voltage_pub = parent->create_publisher<avionics_interfaces::msg::Voltage>(get_prefix() + get_param<std::string>("VOLTAGE_TOPIC"), 10);
+  this->drill_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_prefix() + get_param<std::string>("DRILL_MASS_TOPIC"), 10);
+  this->container_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_prefix() + get_param<std::string>("CONTAINER_MASS_TOPIC"), 10);
+  this->imu_pub = parent->create_publisher<avionics_interfaces::msg::Imu>(get_prefix() + get_param<std::string>("IMU_TOPIC"), 10);
+  this->potentiometer_pub = parent->create_publisher<avionics_interfaces::msg::AngleArray>(get_prefix() + get_param<std::string>("POTENTIOMETER_TOPIC"), 10);
+  this->spectro_response_pub = parent->create_publisher<avionics_interfaces::msg::SpectroResponse>(get_prefix() + get_param<std::string>("SPECTRO_TOPIC"), 10);
+  this->laser_response_pub = parent->create_publisher<avionics_interfaces::msg::LaserResponse>(get_prefix() + get_param<std::string>("LASER_TOPIC"), 10);
+  this->servo_response_pub = parent->create_publisher<avionics_interfaces::msg::ServoResponse>(get_prefix() + get_param<std::string>("SERVO_TOPIC"), 10);
+  this->led_response_pub = parent->create_publisher<avionics_interfaces::msg::LEDResponse>(get_prefix() + get_param<std::string>("LED_TOPIC"), 10);
+  this->node_state_pub = parent->create_publisher<avionics_interfaces::msg::NodeStateArray>(get_prefix() + get_param<std::string>("NODE_STATE_TOPIC"), 10);
   RCLCPP_INFO(parent->get_logger(), "Publishers created");
 
   RCLCPP_INFO(parent->get_logger(), "Adding handles...");
@@ -262,8 +262,8 @@ void BRoCoPublisher::set_destination_id(uint32_t id) {
     dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
 }
 
-std::string BRoCoPublisher::get_ns() {
-  return dynamic_cast<BRoCoManager*>(parent)->get_ns();
+std::string BRoCoPublisher::get_prefix() {
+  return dynamic_cast<BRoCoManager*>(parent)->get_prefix();
 }
 
 std::string BRoCoPublisher::get_bus() {

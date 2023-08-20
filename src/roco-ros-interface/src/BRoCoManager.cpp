@@ -19,12 +19,12 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
   }
   RCLCPP_INFO(this->get_logger(), "Selected CAN bus: %s", bus_name.c_str());
 
-  this->declare_parameter("namespace");
-  if (!this->get_parameter("namespace", ns)) {
+  this->declare_parameter("topic_prefix");
+  if (!this->get_parameter("topic_prefix", prefix)) {
       RCLCPP_ERROR(this->get_logger(), "Failed to get the 'namespace' parameter");
   }
-  ns = "/" + ns;
-  RCLCPP_INFO(this->get_logger(), "Namespace: %s", ns.c_str());
+  prefix = "/" + prefix;
+  RCLCPP_INFO(this->get_logger(), "Namespace: %s", prefix.c_str());
 
   // Load parameters
   // Node IDs
@@ -113,8 +113,8 @@ void BRoCoManager::retryConnection() {
   }
 }
 
-std::string BRoCoManager::get_ns() const {
-  return ns;
+std::string BRoCoManager::get_prefix() const {
+  return prefix;
 }
 
 std::string BRoCoManager::get_bus() const {

@@ -22,13 +22,13 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
     this->clk = parent->get_clock();
     RCLCPP_INFO(parent->get_logger(), "Creating subscribers");
     this->spectro_req_sub = parent->create_subscription<avionics_interfaces::msg::SpectroRequest>
-        (get_ns() + get_param<std::string>("SPECTRO_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::spectroReqCallback, this, _1));
+        (get_prefix() + get_param<std::string>("SPECTRO_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::spectroReqCallback, this, _1));
     this->servo_req_sub = parent->create_subscription<avionics_interfaces::msg::ServoRequest>
-        (get_ns() + get_param<std::string>("SERVO_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::servoReqCallback, this, _1));
+        (get_prefix() + get_param<std::string>("SERVO_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::servoReqCallback, this, _1));
     this->laser_req_sub = parent->create_subscription<avionics_interfaces::msg::LaserRequest>
-        (get_ns() + get_param<std::string>("LASER_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
+        (get_prefix() + get_param<std::string>("LASER_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
     this->led_req_sub = parent->create_subscription<avionics_interfaces::msg::LEDRequest>
-        (get_ns() + get_param<std::string>("LED_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
+        (get_prefix() + get_param<std::string>("LED_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
 
     RCLCPP_INFO(parent->get_logger(), "Subscribers created");
 }
@@ -78,8 +78,8 @@ void BRoCoSubscriber::set_destination_id(uint32_t id) {
     dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
 }
 
-std::string BRoCoSubscriber::get_ns() {
-  return dynamic_cast<BRoCoManager*>(parent)->get_ns();
+std::string BRoCoSubscriber::get_prefix() {
+  return dynamic_cast<BRoCoManager*>(parent)->get_prefix();
 }
 
 std::string BRoCoSubscriber::get_bus() {

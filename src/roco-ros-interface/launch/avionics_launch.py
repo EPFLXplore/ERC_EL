@@ -8,6 +8,11 @@ from launch_ros.actions import Node
 def generate_launch_description():
     ld = LaunchDescription()
 
+    # Define the namespaces. These are also used as can bus names for SocketCAN
+    bus0_name = 'can0'
+    bus1_name = 'can1'
+    ns = 'avionics'
+
     ld.add_action(DeclareLaunchArgument(
         'bus',
         default_value='can0',
@@ -17,10 +22,6 @@ def generate_launch_description():
     # Define the package and executable names
     package_name = 'roco-ros-interface'
     executable_name = 'roco_interface'
-
-    # Define the namespaces
-    can0_ns = 'can0'
-    can1_ns = 'can1'
 
     topic_names_params_file = os.path.join(
         get_package_share_directory(package_name),
@@ -51,7 +52,7 @@ def generate_launch_description():
     )
 
     # Iterate through the namespaces
-    for ns in [can0_ns, can1_ns]:
+    for bus in [bus0_name, bus1_name]:
 
         # Launch the node for the namespace with parameters
         node = Node(
@@ -62,8 +63,8 @@ def generate_launch_description():
                 {'log_level': 'DEBUG'}],
             output='screen',
             arguments=['--ros-args',
-                '--param', 'bus:=' + ns,
-                '--param', 'namespace:=' + ns]
+                '--param', 'bus:=' + bus,
+                '--param', 'topic_prefix:=' + bus]
         )
         ld.add_action(node)
 
@@ -75,12 +76,13 @@ def generate_launch_description():
     node_mux = Node(
         package=mux_package_name,
         executable=mux_executable_name,
+        namespace=ns,
         parameters=[topic_names_params_file, id_params_file, calibration_params_file, connection_params_file,
             {'log_level': 'DEBUG'}],
         output='screen',
         arguments=['--ros-args',
-            '--param', 'bus0:=' + can0_ns,
-            '--param', 'bus1:=' + can1_ns]
+            '--param', 'bus0:=' + bus0_name,
+            '--param', 'bus1:=' + bus1_name]
     )
     ld.add_action(node_mux)
 

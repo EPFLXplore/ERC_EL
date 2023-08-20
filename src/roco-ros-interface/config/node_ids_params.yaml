@@ -8,4 +8,4 @@
     NAV_NODE_ID: 0x008
     GENERAL_NODE_ID: 0x7FF
 
-    MAX_NUMBER_NODES: 16
+    MAX_NUMBER_NODES: 16 # DIP switch has 4 programmable bits -> 0...15

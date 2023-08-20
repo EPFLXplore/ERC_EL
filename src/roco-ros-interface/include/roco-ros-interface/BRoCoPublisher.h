@@ -65,7 +65,7 @@ private:
     void set_destination_id(uint32_t id);
     void set_destination_id(std::string node_name);
 
-    std::string get_ns();
+    std::string get_prefix();
     std::string get_bus();
 
     // Ping callback

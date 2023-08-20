@@ -65,7 +65,7 @@ public:
             return false;
         }
     }
-    std::string get_ns() const;
+    std::string get_prefix() const;
     std::string get_bus() const;
 
 private:
@@ -75,7 +75,7 @@ private:
 
     uint32_t retry_count = 0;
     std::string bus_name = "";
-    std::string ns = "";
+    std::string prefix = "";
 
     CanSocketDriver* driver;
     CANBus* bus;
