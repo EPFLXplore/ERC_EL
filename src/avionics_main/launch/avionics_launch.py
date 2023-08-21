@@ -29,25 +29,24 @@ def generate_launch_description():
     ))
 
     # Define the package and executable names
-    package_name = 'roco-ros-interface'
-    executable_name = 'roco_interface'
+    launch_package_name = 'avionics_main'
 
     topic_names_params_file = os.path.join(
-        get_package_share_directory(package_name),
+        get_package_share_directory(launch_package_name),
         'config',
         'topic_names_params.yaml'
     )
 
     # Node IDs and ping parameters config file
     id_params_file = os.path.join(
-        get_package_share_directory(package_name),
+        get_package_share_directory(launch_package_name),
         'config',
         'node_ids_params.yaml'
     )
 
     # Node IDs and ping parameters config file
     connection_params_file = os.path.join(
-        get_package_share_directory(package_name),
+        get_package_share_directory(launch_package_name),
         'config',
         'connection_params.yaml'
     )
@@ -55,10 +54,13 @@ def generate_launch_description():
 
     # Calibration config file
     calibration_params_file = os.path.join(
-        get_package_share_directory(package_name),
+        get_package_share_directory(launch_package_name),
         'config',
         'calibration_params.yaml'
     )
+
+    package_name = 'roco-ros-interface'
+    executable_name = 'roco_interface'
 
     # Iterate through the namespaces
     for bus in [bus0_name, bus1_name]:
@@ -67,7 +69,7 @@ def generate_launch_description():
         node = Node(
             package=package_name,
             executable=executable_name,
-            namespace=ns,
+            namespace=ns + "/" + bus,
             parameters=[topic_names_params_file, id_params_file, calibration_params_file, connection_params_file],
             output='screen',
             arguments=['--ros-args',
@@ -108,5 +110,19 @@ def generate_launch_description():
             '--log-level', logger]
     )
     ld.add_action(node_services)
+    
+    actions_package_name = 'avionics_action_server'
+    actions_executable_name = 'avionics_action_server_exe'
+    # Launch the actions node with parameters
+    node_actions = Node(
+        package=actions_package_name,
+        executable=actions_executable_name,
+        namespace=ns,
+        parameters=[topic_names_params_file, id_params_file, calibration_params_file, connection_params_file],
+        output='screen',
+        arguments=['--ros-args',
+            '--log-level', logger]
+    )
+    ld.add_action(node_actions)
 
     return ld

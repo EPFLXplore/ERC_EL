@@ -28,5 +28,5 @@ ServiceManager::ServiceManager() : Node("service_manager") {
 }
 
 ServiceManager::~ServiceManager() {
-    RCLCPP_INFO(this->get_logger(), "Deleting Sesrvice Manager");
+    RCLCPP_INFO(this->get_logger(), "Deleting Service Manager");
 }

@@ -1,4 +1,4 @@
-avionics:
+/**:
   ros__parameters:
 
     # Mass sensor
