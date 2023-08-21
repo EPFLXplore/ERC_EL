@@ -22,7 +22,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 find_package(sensor_msgs REQUIRED)
 
-rosidl_generate_interfaces(${PROJECT_NAME}
+set(message_files
   "msg/AngleArray.msg"
   "msg/FourInOne.msg"
   "msg/Imu.msg"
@@ -40,11 +40,11 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/SpectroRequest.msg"
 
   "msg/NodeStateArray.msg"
+)
 
-
-  "srv/RotateServo.srv"
-
-  DEPENDENCIES sensor_msgs
+rosidl_generate_interfaces(${PROJECT_NAME}
+  ${message_files}
+  DEPENDENCIES sensor_msgs std_msgs
  )
 ament_export_dependencies(rosidl_default_runtime)
 

@@ -29,9 +29,9 @@ public:
         YAML::Node yaml_node = YAML::LoadFile(yaml_file_path);
 
         // Find and update the parameter value
-        if (yaml_node["avionics"]["ros__parameters"][parameter_name]) {
+        if (yaml_node["/**"]["ros__parameters"][parameter_name]) {
         RCLCPP_INFO(this->get_logger(), "Parameter [%s] set to: %d", parameter_name.c_str(), value);
-        yaml_node["avionics"]["ros__parameters"][parameter_name] = value;
+        yaml_node["/**"]["ros__parameters"][parameter_name] = value;
         }
 
         // Write the updated content back to the file

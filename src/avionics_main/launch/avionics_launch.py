@@ -28,26 +28,24 @@ def generate_launch_description():
         description="Logging level",
     ))
 
-    # Define the package and executable names
-    package_name = 'roco-ros-interface'
-    executable_name = 'roco_interface'
+    main_package_name = "avionics_main"
 
     topic_names_params_file = os.path.join(
-        get_package_share_directory(package_name),
+        get_package_share_directory(main_package_name),
         'config',
         'topic_names_params.yaml'
     )
 
     # Node IDs and ping parameters config file
     id_params_file = os.path.join(
-        get_package_share_directory(package_name),
+        get_package_share_directory(main_package_name),
         'config',
         'node_ids_params.yaml'
     )
 
     # Node IDs and ping parameters config file
     connection_params_file = os.path.join(
-        get_package_share_directory(package_name),
+        get_package_share_directory(main_package_name),
         'config',
         'connection_params.yaml'
     )
@@ -55,10 +53,14 @@ def generate_launch_description():
 
     # Calibration config file
     calibration_params_file = os.path.join(
-        get_package_share_directory(package_name),
+        get_package_share_directory(main_package_name),
         'config',
         'calibration_params.yaml'
     )
+
+    # Define the package and executable names
+    package_name = 'roco-ros-interface'
+    executable_name = 'roco_interface'
 
     # Iterate through the namespaces
     for bus in [bus0_name, bus1_name]:
@@ -67,7 +69,7 @@ def generate_launch_description():
         node = Node(
             package=package_name,
             executable=executable_name,
-            namespace=ns,
+            namespace=ns + "/" + bus,
             parameters=[topic_names_params_file, id_params_file, calibration_params_file, connection_params_file],
             output='screen',
             arguments=['--ros-args',
@@ -94,19 +96,5 @@ def generate_launch_description():
             '--param', 'bus1:=' + bus1_name]
     )
     ld.add_action(node_mux)
-
-    services_package_name = 'avionics_services'
-    services_executable_name = 'avionics_services'
-    # Launch the services node with parameters
-    node_services = Node(
-        package=services_package_name,
-        executable=services_executable_name,
-        namespace=ns,
-        parameters=[topic_names_params_file, id_params_file, calibration_params_file, connection_params_file],
-        output='screen',
-        arguments=['--ros-args',
-            '--log-level', logger]
-    )
-    ld.add_action(node_services)
 
     return ld
