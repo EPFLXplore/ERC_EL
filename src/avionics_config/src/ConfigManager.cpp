@@ -116,17 +116,15 @@ void ConfigManager::massConfigResponseCallback(const avionics_interfaces::msg::M
             scale_vector.push_back(static_cast<double>(msg->scale[i]));
             enabled_channels_vector.push_back(msg->enabled_channels[i]);
         }
-        set_param_calib(sensor, "alpha", msg->alpha);
-        set_param_calib(sensor, "offset", offset_vector);
-        set_param_calib(sensor, "scale", scale_vector);
-        set_param_calib(sensor, "enabled_channels", enabled_channels_vector);
 
-        // Config
-
-        std::vector<double> offsets = get_param<std::vector<double>>(sensor + ".offset");
-        std::string offsetStr = "offset: ";
-        for (const float& offsetelement : offsets) {
-            offsetStr += std::to_string(offsetelement) + " ";
-        }
+        // Set parameters into YAML file
+        if (msg->set_alpha)
+            set_param_calib(sensor, "alpha", msg->alpha);
+        if (msg->set_offset)
+            set_param_calib(sensor, "offset", offset_vector);
+        if (msg->set_scale)
+            set_param_calib(sensor, "scale", scale_vector);
+        if (msg->set_channels_status)
+            set_param_calib(sensor, "enabled_channels", enabled_channels_vector);
     }
 }
