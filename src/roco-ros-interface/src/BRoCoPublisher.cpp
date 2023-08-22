@@ -339,17 +339,29 @@ void BRoCoPublisher::handleMassConfigPacket(uint8_t senderID, MassConfigResponse
         sensor = "mass_container";
         valid_id = true;
     } else {
-        RCLCPP_INFO(parent->get_logger(), "Mass config packet received but ID is not valid. Not saving parameters to parameter server.");
+        RCLCPP_INFO(parent->get_logger(), "Mass config packet received but ID is not valid. " 
+            "Not saving parameters to parameter server.");
         valid_id = false;
     }
     if (valid_id) {
-        std::vector<double> offset_vector(packet->offset, packet->offset + sizeof(packet->offset) / sizeof(packet->offset[0]));
-        std::vector<double> scale_vector(packet->scale, packet->scale + sizeof(packet->scale) / sizeof(packet->scale[0]));
-        std::vector<bool> enabled_channels_vector(packet->enabled_channels, packet->enabled_channels + sizeof(packet->enabled_channels) / sizeof(packet->enabled_channels[0]));
-        set_param_calib(sensor, "offset", offset_vector);
-        set_param_calib(sensor, "scale", scale_vector);
-        set_param_calib(sensor, "alpha", packet->alpha);
-        set_param_calib(sensor, "enabled_channels", enabled_channels_vector);
+        if (packet->set_offset) {
+            std::vector<double> offset_vector(packet->offset, packet->offset 
+                + sizeof(packet->offset) / sizeof(packet->offset[0]));
+            set_param_calib(sensor, "offset", offset_vector);
+        }
+        if (packet->set_scale) {
+            std::vector<double> scale_vector(packet->scale, packet->scale 
+                + sizeof(packet->scale) / sizeof(packet->scale[0]));
+            set_param_calib(sensor, "scale", scale_vector);
+        }
+        if (packet->set_channels_status) {
+            std::vector<bool> enabled_channels_vector(packet->enabled_channels, packet->enabled_channels 
+                + sizeof(packet->enabled_channels) / sizeof(packet->enabled_channels[0]));
+            set_param_calib(sensor, "enabled_channels", enabled_channels_vector);
+
+        }
+        if (packet->set_alpha)
+            set_param_calib(sensor, "alpha", packet->alpha);
     }
 
     mass_config_response_pub->publish(msg);
