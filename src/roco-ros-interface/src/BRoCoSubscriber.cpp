@@ -103,13 +103,16 @@ void BRoCoSubscriber::massConfigReqCallback(const avionics_interfaces::msg::Mass
     static MassConfigPacket packet;
     packet.remote_command = msg->remote_command;
     packet.set_offset = msg->set_offset;
-    packet.set_scale = msg->set_scale;
     packet.set_alpha = msg->set_alpha;
     packet.set_channels_status = msg->set_channels_status;
 
     for (uint8_t i = 0; i < 4; ++i) {
         packet.offset[i] = msg->offset[i];
         packet.scale[i] = msg->scale[i];
+        if (msg->scale[i] = 0) {
+            RCLCPP_INFO(parent->get_logger(), "Scale for channel %d is zero, not sending scale configuration", i+1);
+            packet.set_scale = false;
+        }
         packet.enabled_channels[i] = msg->enabled_channels[i];
     }
 

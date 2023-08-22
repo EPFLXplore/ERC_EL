@@ -1,15 +1,24 @@
 /**:
   ros__parameters:
-    # Mass sensor
     mass_drill:
-      offset: [200000.0, 200000.0, 200000.0, 200000.0]
-      scale: [450.0, 450.0, 450.0, 450.0]
-      alpha: 0.8
-      enabled_channels: [false, true, false, false]
-
+      offset:
+        - 100000.1015625
+        - 200000.203125
+        - 300000.3125
+        - 400000.40625
+      scale:
+        - 452.0499877929688
+        - 452.0499877929688
+        - 452.0499877929688
+        - 452.0499877929688
+      alpha: 0.5
+      enabled_channels:
+        - true
+        - false
+        - false
+        - false
     mass_container:
       offset: [200000.0, 200000.0, 200000.0, 200000.0]
       scale: [450.0, 450.0, 450.0, 450.0]
       alpha: 0.8
       enabled_channels: [false, true, false, false]
-

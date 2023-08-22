@@ -28,7 +28,6 @@ public:
 
         // Find and update the parameter value
         if (yaml_node["/**"]["ros__parameters"][sensor][parameter_name]) {
-        RCLCPP_INFO(this->get_logger(), "Parameter [%s] set to: %d", parameter_name.c_str(), value);
         yaml_node["/**"]["ros__parameters"][sensor][parameter_name] = value;
         }
 

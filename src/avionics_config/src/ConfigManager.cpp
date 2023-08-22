@@ -28,6 +28,17 @@ ConfigManager::ConfigManager() : Node("config_manager") {
     // Subscribers
     this->declare_parameter("MASS_CONFIG_REQ_JETSON_TOPIC");
 
+    // Calibration parameters ======================
+    this->declare_parameter("mass_drill.offset");
+    this->declare_parameter("mass_drill.scale");
+    this->declare_parameter("mass_drill.alpha");
+    this->declare_parameter("mass_drill.enabled_channels");
+
+    this->declare_parameter("mass_container.offset");
+    this->declare_parameter("mass_container.scale");
+    this->declare_parameter("mass_container.alpha");
+    this->declare_parameter("mass_container.enabled_channels");
+
     this->mass_config_req_pub = this->create_publisher<avionics_interfaces::msg::MassConfigRequestJetson>(get_param<std::string>("MASS_CONFIG_REQ_JETSON_TOPIC"), 10);
     this->mass_config_response_sub = this->create_subscription<avionics_interfaces::msg::MassConfigResponse>
         (get_param<std::string>("MASS_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::massConfigResponseCallback, this, _1));
@@ -105,7 +116,6 @@ void ConfigManager::massConfigResponseCallback(const avionics_interfaces::msg::M
             scale_vector.push_back(static_cast<double>(msg->scale[i]));
             enabled_channels_vector.push_back(msg->enabled_channels[i]);
         }
-
         set_param_calib(sensor, "alpha", msg->alpha);
         set_param_calib(sensor, "offset", offset_vector);
         set_param_calib(sensor, "scale", scale_vector);
@@ -118,8 +128,5 @@ void ConfigManager::massConfigResponseCallback(const avionics_interfaces::msg::M
         for (const float& offsetelement : offsets) {
             offsetStr += std::to_string(offsetelement) + " ";
         }
-
-        RCLCPP_INFO(this->get_logger(), "alpha" + std::to_string(get_param<float>("mass_drill.alpha")));
-        RCLCPP_INFO(this->get_logger(), "offset" + offsetStr);
     }
 }

@@ -17,7 +17,6 @@
 using namespace std::chrono_literals;
 
 BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
-
     this->clk = parent->get_clock();
     RCLCPP_INFO(parent->get_logger(), "Creating publishers");
     this->timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_PING_INTERVAL")), std::bind(&BRoCoPublisher::timerPingCallback, this));
@@ -334,10 +333,10 @@ void BRoCoPublisher::handleMassConfigPacket(uint8_t senderID, MassConfigResponse
     std::string sensor;
     bool valid_id = false;
     if (packet->id == get_node_id("SC_DRILL_NODE_ID")) {
-        sensor == "mass_drill";
+        sensor = "mass_drill";
         valid_id = true;
     } else if (packet->id == get_node_id("SC_CONTAINER_ID")) {
-        sensor == "mass_container";
+        sensor = "mass_container";
         valid_id = true;
     } else {
         RCLCPP_INFO(parent->get_logger(), "Mass config packet received but ID is not valid. Not saving parameters to parameter server.");
