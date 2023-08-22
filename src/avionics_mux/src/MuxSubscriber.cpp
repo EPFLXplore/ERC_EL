@@ -75,3 +75,5 @@ template class MuxSubscriber<avionics_interfaces::msg::LaserRequest>;
 template class MuxSubscriber<avionics_interfaces::msg::LEDRequest>;
 template class MuxSubscriber<avionics_interfaces::msg::ServoRequest>;
 template class MuxSubscriber<avionics_interfaces::msg::SpectroRequest>;
+
+template class MuxSubscriber<avionics_interfaces::msg::MassConfigRequestJetson>;

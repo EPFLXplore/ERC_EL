@@ -22,6 +22,8 @@
 #include "avionics_interfaces/msg/laser_request.hpp"
 #include "avionics_interfaces/msg/led_request.hpp"
 
+#include "avionics_interfaces/msg/mass_config_request_jetson.hpp"
+
 #define MAKE_IDENTIFIABLE(PACKET) (PACKET).id = 0x000;
 
 class BRoCoSubscriber {
@@ -39,7 +41,7 @@ private:
     std::string get_bus();
 
     template <typename T>
-    void set_param_calib(const std::string& parameter_name, const T& value);
+    void set_param_calib(const std::string& sensor, const std::string& parameter_name, const T& value);
 
     template <typename T>
     T get_param(const std::string& parameter_name);
@@ -49,11 +51,14 @@ private:
     rclcpp::Subscription<avionics_interfaces::msg::LaserRequest>::SharedPtr laser_req_sub;
     rclcpp::Subscription<avionics_interfaces::msg::LEDRequest>::SharedPtr led_req_sub;
 
+    rclcpp::Subscription<avionics_interfaces::msg::MassConfigRequestJetson>::SharedPtr mass_config_req_sub;
+
     void spectroReqCallback(const avionics_interfaces::msg::SpectroRequest::SharedPtr msg);
     void servoReqCallback(const avionics_interfaces::msg::ServoRequest::SharedPtr msg);
     void laserReqCallback(const avionics_interfaces::msg::LaserRequest::SharedPtr msg);
     void ledReqCallback(const avionics_interfaces::msg::LEDRequest::SharedPtr msg);
     
+    void massConfigReqCallback(const avionics_interfaces::msg::MassConfigRequestJetson::SharedPtr msg);
 
     rclcpp::Clock::SharedPtr clk;
     rclcpp::TimerBase::SharedPtr timer;

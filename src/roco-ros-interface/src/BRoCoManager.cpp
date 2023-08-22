@@ -45,24 +45,45 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
     this->declare_parameter("CONNECTION_RETRY_INTERVAL");
     this->declare_parameter("ATTEMPT_RETRY");
 
-    // Topic names
+    // Topic names =================================
+    // Publishers
     this->declare_parameter("FOUR_IN_ONE_TOPIC");
     this->declare_parameter("NPK_TOPIC");
     this->declare_parameter("VOLTAGE_TOPIC");
     this->declare_parameter("DRILL_MASS_TOPIC");
     this->declare_parameter("CONTAINER_MASS_TOPIC");
     this->declare_parameter("IMU_TOPIC");
+    this->declare_parameter("MAG_TOPIC");
     this->declare_parameter("POTENTIOMETER_TOPIC");
     this->declare_parameter("SPECTRO_TOPIC");
     this->declare_parameter("LASER_TOPIC");
     this->declare_parameter("SERVO_TOPIC");
     this->declare_parameter("LED_TOPIC");
+
+    this->declare_parameter("MASS_CONFIG_REQ_MCU_TOPIC");
+    this->declare_parameter("MASS_CONFIG_TOPIC");
+
     this->declare_parameter("NODE_STATE_TOPIC");
 
+    // Subscribers
     this->declare_parameter("SPECTRO_REQ_TOPIC");
     this->declare_parameter("SERVO_REQ_TOPIC");
     this->declare_parameter("LASER_REQ_TOPIC");
     this->declare_parameter("LED_REQ_TOPIC");
+
+    this->declare_parameter("MASS_CONFIG_REQ_JETSON_TOPIC");
+
+    // Calibration parameters =========================
+    // Mass sensor
+    this->declare_parameter("mass_drill.offset");
+    this->declare_parameter("mass_drill.scale");
+    this->declare_parameter("mass_drill.alpha");
+    this->declare_parameter("mass_drill.enabled_channels");
+
+    this->declare_parameter("mass_container.offset");
+    this->declare_parameter("mass_container.scale");
+    this->declare_parameter("mass_container.alpha");
+    this->declare_parameter("mass_container.enabled_channels");
 
     if (get_param<bool>("ATTEMPT_RETRY") == true) {
         // Create a timer to periodically attempt connection

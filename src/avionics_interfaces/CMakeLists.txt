@@ -28,22 +28,33 @@ set(message_files
   "msg/Imu.msg"
   "msg/LaserResponse.msg"
   "msg/LEDResponse.msg"
+  "msg/Mag.msg"
   "msg/MassArray.msg"
   "msg/NPK.msg"
   "msg/ServoResponse.msg"
   "msg/SpectroResponse.msg"
   "msg/Voltage.msg"
 
+  "msg/NodeStateArray.msg"
+)
+
+set(message_request_files
   "msg/LaserRequest.msg"
   "msg/LEDRequest.msg"
   "msg/ServoRequest.msg"
   "msg/SpectroRequest.msg"
+)
 
-  "msg/NodeStateArray.msg"
+set(message_config_files
+  "msg/MassConfigRequestJetson.msg"
+  "msg/MassConfigRequestMCU.msg"
+  "msg/MassConfigResponse.msg"
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   ${message_files}
+  ${message_request_files}
+  ${message_config_files}
   DEPENDENCIES sensor_msgs std_msgs
  )
 ament_export_dependencies(rosidl_default_runtime)

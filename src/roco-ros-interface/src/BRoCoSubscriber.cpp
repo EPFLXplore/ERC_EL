@@ -30,6 +30,8 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
     this->led_req_sub = parent->create_subscription<avionics_interfaces::msg::LEDRequest>
         (get_prefix() + get_param<std::string>("LED_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
 
+    this->mass_config_req_sub = parent->create_subscription<avionics_interfaces::msg::MassConfigRequestJetson>
+        (get_prefix() + get_param<std::string>("MASS_CONFIG_REQ_JETSON_TOPIC"), 10, std::bind(&BRoCoSubscriber::massConfigReqCallback, this, _1));
     RCLCPP_INFO(parent->get_logger(), "Subscribers created");
 }
 
@@ -90,6 +92,34 @@ void BRoCoSubscriber::ledReqCallback(const avionics_interfaces::msg::LEDRequest:
     bus->send(&packet);
 }
 
+void BRoCoSubscriber::massConfigReqCallback(const avionics_interfaces::msg::MassConfigRequestJetson::SharedPtr msg) {
+    uint32_t id = 0;
+    if (msg->destination_id != 0)
+        id = msg->destination_id;
+    else
+        id = get_node_id("MASS_DRILL_NODE_ID");
+
+    RCLCPP_INFO(parent->get_logger(), "Sending Mass config to node ID " + std::to_string(id) + "...");
+    static MassConfigPacket packet;
+    packet.remote_command = msg->remote_command;
+    packet.set_offset = msg->set_offset;
+    packet.set_scale = msg->set_scale;
+    packet.set_alpha = msg->set_alpha;
+    packet.set_channels_status = msg->set_channels_status;
+
+    for (uint8_t i = 0; i < 4; ++i) {
+        packet.offset[i] = msg->offset[i];
+        packet.scale[i] = msg->scale[i];
+        packet.enabled_channels[i] = msg->enabled_channels[i];
+    }
+
+    packet.alpha = msg->alpha;
+
+    MAKE_IDENTIFIABLE(packet);
+    set_destination_id(id);
+    bus->send(&packet);
+}
+
 uint32_t BRoCoSubscriber::get_node_id(std::string node_name) {
     return dynamic_cast<BRoCoManager*>(parent)->get_param<uint32_t>(node_name);
 }
@@ -112,8 +142,8 @@ std::string BRoCoSubscriber::get_bus() {
 }
 
 template <typename T>
-void BRoCoSubscriber::set_param_calib(const std::string& parameter_name, const T& value) {
-    dynamic_cast<BRoCoManager*>(parent)->set_param_calib(parameter_name, value);
+void BRoCoSubscriber::set_param_calib(const std::string& sensor, const std::string& parameter_name, const T& value) {
+    dynamic_cast<BRoCoManager*>(parent)->set_param_calib(sensor, parameter_name, value);
 }
 
 template <typename T>

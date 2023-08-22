@@ -88,8 +88,12 @@ template class MuxPublisher<avionics_interfaces::msg::NPK>;
 template class MuxPublisher<avionics_interfaces::msg::Voltage>;
 template class MuxPublisher<avionics_interfaces::msg::MassArray>;
 template class MuxPublisher<avionics_interfaces::msg::Imu>;
+template class MuxPublisher<avionics_interfaces::msg::Mag>;
 template class MuxPublisher<avionics_interfaces::msg::AngleArray>;
 template class MuxPublisher<avionics_interfaces::msg::SpectroResponse>;
 template class MuxPublisher<avionics_interfaces::msg::LaserResponse>;
 template class MuxPublisher<avionics_interfaces::msg::ServoResponse>;
 template class MuxPublisher<avionics_interfaces::msg::LEDResponse>;
+
+template class MuxPublisher<avionics_interfaces::msg::MassConfigRequestMCU>;
+template class MuxPublisher<avionics_interfaces::msg::MassConfigResponse>;

@@ -1,12 +1,13 @@
 /**:
   ros__parameters:
-    # Publishers
+    # Publishers ============================
     FOUR_IN_ONE_TOPIC:    "/four_in_one"
     NPK_TOPIC:            "/npk"
     VOLTAGE_TOPIC:        "/voltage"
     DRILL_MASS_TOPIC:     "/drill/mass"
     CONTAINER_MASS_TOPIC: "/container/mass"
     IMU_TOPIC:            "/imu"
+    MAG_TOPIC:            "/mag"
     POTENTIOMETER_TOPIC:  "/potentiometer"
     SPECTRO_TOPIC:        "/spectro_response"
     LASER_TOPIC:          "/laser_response"
@@ -14,8 +15,16 @@
     LED_TOPIC:            "/led_response"
     NODE_STATE_TOPIC:     "/node_state"
 
-    # Subscribers
+    # Config
+    MASS_CONFIG_REQ_MCU_TOPIC:  "/mass_config_mcu_req"
+    MASS_CONFIG_TOPIC:          "/mass_config_response"
+
+    # Subscribers ===========================
     SPECTRO_REQ_TOPIC:    "/spectro_req"
     SERVO_REQ_TOPIC:      "/servo_req"
     LASER_REQ_TOPIC:      "/laser_req"
     LED_REQ_TOPIC:        "/led_req"
+
+    # Config
+    MASS_CONFIG_REQ_JETSON_TOPIC: "/mass_config_req"
+

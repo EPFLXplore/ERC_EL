@@ -28,24 +28,25 @@ def generate_launch_description():
         description="Logging level",
     ))
 
-    main_package_name = "avionics_main"
+    config_package_name = "avionics_config"
+    config_executable_name = "avionics_config"
 
     topic_names_params_file = os.path.join(
-        get_package_share_directory(main_package_name),
+        get_package_share_directory(config_package_name),
         'config',
         'topic_names_params.yaml'
     )
 
     # Node IDs and ping parameters config file
     id_params_file = os.path.join(
-        get_package_share_directory(main_package_name),
+        get_package_share_directory(config_package_name),
         'config',
         'node_ids_params.yaml'
     )
 
     # Node IDs and ping parameters config file
     connection_params_file = os.path.join(
-        get_package_share_directory(main_package_name),
+        get_package_share_directory(config_package_name),
         'config',
         'connection_params.yaml'
     )
@@ -53,10 +54,22 @@ def generate_launch_description():
 
     # Calibration config file
     calibration_params_file = os.path.join(
-        get_package_share_directory(main_package_name),
+        get_package_share_directory(config_package_name),
         'config',
         'calibration_params.yaml'
     )
+
+    # Launch the mux node with parameters
+    node_config = Node(
+        package=config_package_name,
+        executable=config_executable_name,
+        namespace=ns,
+        parameters=[topic_names_params_file, id_params_file, calibration_params_file, connection_params_file],
+        output='screen',
+        arguments=['--ros-args',
+            '--log-level', logger]
+    )
+    ld.add_action(node_config)
 
     # Define the package and executable names
     package_name = 'roco-ros-interface'

@@ -14,6 +14,7 @@
 #include "avionics_interfaces/msg/voltage.hpp"
 #include "avionics_interfaces/msg/mass_array.hpp"
 #include "avionics_interfaces/msg/imu.hpp"
+#include "avionics_interfaces/msg/mag.hpp"
 #include "avionics_interfaces/msg/angle_array.hpp"
 #include "avionics_interfaces/msg/spectro_response.hpp"
 #include "avionics_interfaces/msg/laser_response.hpp"
@@ -25,6 +26,11 @@
 #include "avionics_interfaces/msg/led_request.hpp"
 #include "avionics_interfaces/msg/servo_request.hpp"
 #include "avionics_interfaces/msg/spectro_request.hpp"
+
+#include "avionics_interfaces/msg/mass_config_request_mcu.hpp"
+#include "avionics_interfaces/msg/mass_config_response.hpp"
+
+#include "avionics_interfaces/msg/mass_config_request_jetson.hpp"
 
 #include "MuxPublisher.h"
 #include "MuxSubscriber.h"
@@ -70,16 +76,22 @@ private:
     MuxPublisher<avionics_interfaces::msg::MassArray>* drill_mass_mux;
     MuxPublisher<avionics_interfaces::msg::MassArray>* container_mass_mux;
     MuxPublisher<avionics_interfaces::msg::Imu>* imu_mux;
+    MuxPublisher<avionics_interfaces::msg::Mag>* mag_mux;
     MuxPublisher<avionics_interfaces::msg::AngleArray>* potentiometer_mux;
     MuxPublisher<avionics_interfaces::msg::SpectroResponse>* spectro_response_mux;
     MuxPublisher<avionics_interfaces::msg::LaserResponse>* laser_response_mux;
     MuxPublisher<avionics_interfaces::msg::ServoResponse>* servo_response_mux;
     MuxPublisher<avionics_interfaces::msg::LEDResponse>* led_response_mux;
 
+    MuxPublisher<avionics_interfaces::msg::MassConfigRequestMCU>* mass_config_req_mcu_mux;
+    MuxPublisher<avionics_interfaces::msg::MassConfigResponse>* mass_config_response_mux;
+
     MuxSubscriber<avionics_interfaces::msg::LaserRequest>* laser_req_mux;
     MuxSubscriber<avionics_interfaces::msg::LEDRequest>* led_req_mux;
     MuxSubscriber<avionics_interfaces::msg::ServoRequest>* servo_req_mux;
     MuxSubscriber<avionics_interfaces::msg::SpectroRequest>* spectro_req_mux;
+
+    MuxSubscriber<avionics_interfaces::msg::MassConfigRequestJetson>* mass_config_req_jetson_mux;
 };
 
 #endif /* MUX_MANAGER_H */
