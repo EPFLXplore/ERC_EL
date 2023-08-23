@@ -22,3 +22,27 @@
         - true
         - false
         - true
+
+    potentiometer:
+      min_voltages: [0.0, 0.0, 0.0, 0.0]
+      max_voltages: [3.0, 3.0, 3.0, 3.0]
+      min_angles: [0.0, 0.0, 0.0, 0.0]
+      max_angles: [180.0, 180.0, 180.0, 180.0]
+      enabled_channels: [true, true, false, false]
+
+    servo:
+      min_duty: [5.0, 5.0, 5.0, 5.0]
+      max_duty: [10.0, 10.0, 10.0, 10.0]
+      min_angles: [0.0, 0.0, 0.0, 0.0]
+      max_angles: [180.0, 180.0, 180.0, 180.0]
+
+    accel:
+      bias: [0.0, 0.0, 0.0]
+      transform: [1.0, 0.0, 0.0, 0,0, 1.0, 0.0, 0.0, 0.0, 1.0]
+
+    gyro:
+      bias: [0.0, 0.0, 0.0]
+
+    mag:
+      hard_iron: [0.0, 0.0, 0.0]
+      soft_iron: [1.0, 0.0, 0.0, 0,0, 1.0, 0.0, 0.0, 0.0, 1.0]

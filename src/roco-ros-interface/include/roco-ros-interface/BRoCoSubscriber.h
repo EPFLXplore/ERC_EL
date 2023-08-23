@@ -23,6 +23,11 @@
 #include "avionics_interfaces/msg/led_request.hpp"
 
 #include "avionics_interfaces/msg/mass_config_request_jetson.hpp"
+#include "avionics_interfaces/msg/pot_config_request_jetson.hpp"
+#include "avionics_interfaces/msg/servo_config_request_jetson.hpp"
+#include "avionics_interfaces/msg/accel_config_request_jetson.hpp"
+#include "avionics_interfaces/msg/gyro_config_request_jetson.hpp"
+#include "avionics_interfaces/msg/mag_config_request_jetson.hpp"
 
 #define MAKE_IDENTIFIABLE(PACKET) (PACKET).id = 0x000;
 
@@ -52,6 +57,11 @@ private:
     rclcpp::Subscription<avionics_interfaces::msg::LEDRequest>::SharedPtr led_req_sub;
 
     rclcpp::Subscription<avionics_interfaces::msg::MassConfigRequestJetson>::SharedPtr mass_config_req_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::PotConfigRequestJetson>::SharedPtr pot_config_req_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::ServoConfigRequestJetson>::SharedPtr servo_config_req_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::AccelConfigRequestJetson>::SharedPtr accel_config_req_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::GyroConfigRequestJetson>::SharedPtr gyro_config_req_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::MagConfigRequestJetson>::SharedPtr mag_config_req_sub;
 
     void spectroReqCallback(const avionics_interfaces::msg::SpectroRequest::SharedPtr msg);
     void servoReqCallback(const avionics_interfaces::msg::ServoRequest::SharedPtr msg);
@@ -59,6 +69,12 @@ private:
     void ledReqCallback(const avionics_interfaces::msg::LEDRequest::SharedPtr msg);
     
     void massConfigReqCallback(const avionics_interfaces::msg::MassConfigRequestJetson::SharedPtr msg);
+    void potConfigReqCallback(const avionics_interfaces::msg::PotConfigRequestJetson::SharedPtr msg);
+    void servoConfigReqCallback(const avionics_interfaces::msg::ServoConfigRequestJetson::SharedPtr msg);
+    void accelConfigReqCallback(const avionics_interfaces::msg::AccelConfigRequestJetson::SharedPtr msg);
+    void gyroConfigReqCallback(const avionics_interfaces::msg::GyroConfigRequestJetson::SharedPtr msg);
+    void magConfigReqCallback(const avionics_interfaces::msg::MagConfigRequestJetson::SharedPtr msg);
+
 
     rclcpp::Clock::SharedPtr clk;
     rclcpp::TimerBase::SharedPtr timer;

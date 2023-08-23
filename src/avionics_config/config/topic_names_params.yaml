@@ -19,6 +19,21 @@
     MASS_CONFIG_REQ_MCU_TOPIC:  "/mass_config_mcu_req"
     MASS_CONFIG_TOPIC:          "/mass_config_response"
 
+    POT_CONFIG_REQ_MCU_TOPIC:  "/pot_config_mcu_req"
+    POT_CONFIG_TOPIC:          "/pot_config_response"
+
+    SERVO_CONFIG_REQ_MCU_TOPIC:  "/servo_config_mcu_req"
+    SERVO_CONFIG_TOPIC:          "/servo_config_response"
+
+    ACCEL_CONFIG_REQ_MCU_TOPIC:  "/accel_config_mcu_req"
+    ACCEL_CONFIG_TOPIC:          "/accel_config_response"
+
+    GYRO_CONFIG_REQ_MCU_TOPIC:  "/gyro_config_mcu_req"
+    GYRO_CONFIG_TOPIC:          "/gyro_config_response"
+
+    MAG_CONFIG_REQ_MCU_TOPIC:  "/mag_config_mcu_req"
+    MAG_CONFIG_TOPIC:          "/mag_config_response"
+
     # Subscribers ===========================
     SPECTRO_REQ_TOPIC:    "/spectro_req"
     SERVO_REQ_TOPIC:      "/servo_req"

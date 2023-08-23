@@ -37,6 +37,22 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
 
     this->mass_config_req_pub = parent->create_publisher<avionics_interfaces::msg::MassConfigRequestMCU>(get_prefix() + get_param<std::string>("MASS_CONFIG_REQ_MCU_TOPIC"), 10);
     this->mass_config_response_pub = parent->create_publisher<avionics_interfaces::msg::MassConfigResponse>(get_prefix() + get_param<std::string>("MASS_CONFIG_TOPIC"), 10);
+
+    this->pot_config_req_pub = parent->create_publisher<avionics_interfaces::msg::PotConfigRequestMCU>(get_prefix() + get_param<std::string>("POT_CONFIG_REQ_MCU_TOPIC"), 10);
+    this->pot_config_response_pub = parent->create_publisher<avionics_interfaces::msg::PotConfigResponse>(get_prefix() + get_param<std::string>("POT_CONFIG_TOPIC"), 10);
+
+    this->servo_config_req_pub = parent->create_publisher<avionics_interfaces::msg::ServoConfigRequestMCU>(get_prefix() + get_param<std::string>("SERVO_CONFIG_REQ_MCU_TOPIC"), 10);
+    this->servo_config_response_pub = parent->create_publisher<avionics_interfaces::msg::ServoConfigResponse>(get_prefix() + get_param<std::string>("SERVO_CONFIG_TOPIC"), 10);
+
+    this->accel_config_req_pub = parent->create_publisher<avionics_interfaces::msg::AccelConfigRequestMCU>(get_prefix() + get_param<std::string>("ACCEL_CONFIG_REQ_MCU_TOPIC"), 10);
+    this->accel_config_response_pub = parent->create_publisher<avionics_interfaces::msg::AccelConfigResponse>(get_prefix() + get_param<std::string>("ACCEL_CONFIG_TOPIC"), 10);
+
+    this->gyro_config_req_pub = parent->create_publisher<avionics_interfaces::msg::GyroConfigRequestMCU>(get_prefix() + get_param<std::string>("GYRO_CONFIG_REQ_MCU_TOPIC"), 10);
+    this->gyro_config_response_pub = parent->create_publisher<avionics_interfaces::msg::GyroConfigResponse>(get_prefix() + get_param<std::string>("GYRO_CONFIG_TOPIC"), 10);
+
+    this->mag_config_req_pub = parent->create_publisher<avionics_interfaces::msg::MagConfigRequestMCU>(get_prefix() + get_param<std::string>("MAG_CONFIG_REQ_MCU_TOPIC"), 10);
+    this->mag_config_response_pub = parent->create_publisher<avionics_interfaces::msg::MagConfigResponse>(get_prefix() + get_param<std::string>("MAG_CONFIG_TOPIC"), 10);
+
     RCLCPP_INFO(parent->get_logger(), "Publishers created");
 
     RCLCPP_INFO(parent->get_logger(), "Adding handles...");
@@ -55,6 +71,22 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
     
     bus->handle<MassConfigRequestPacket>(std::bind(&BRoCoPublisher::handleMassConfigReqPacket, this, std::placeholders::_1, std::placeholders::_2));
     bus->handle<MassConfigResponsePacket>(std::bind(&BRoCoPublisher::handleMassConfigPacket, this, std::placeholders::_1, std::placeholders::_2));
+
+    bus->handle<PotentiometerConfigRequestPacket>(std::bind(&BRoCoPublisher::handlePotConfigReqPacket, this, std::placeholders::_1, std::placeholders::_2));
+    bus->handle<PotentiometerConfigResponsePacket>(std::bind(&BRoCoPublisher::handlePotConfigPacket, this, std::placeholders::_1, std::placeholders::_2));
+
+    bus->handle<ServoConfigRequestPacket>(std::bind(&BRoCoPublisher::handleServoConfigReqPacket, this, std::placeholders::_1, std::placeholders::_2));
+    bus->handle<ServoConfigResponsePacket>(std::bind(&BRoCoPublisher::handleServoConfigPacket, this, std::placeholders::_1, std::placeholders::_2));
+
+    bus->handle<AccelConfigRequestPacket>(std::bind(&BRoCoPublisher::handleAccelConfigReqPacket, this, std::placeholders::_1, std::placeholders::_2));
+    bus->handle<AccelConfigResponsePacket>(std::bind(&BRoCoPublisher::handleAccelConfigPacket, this, std::placeholders::_1, std::placeholders::_2));
+
+    bus->handle<GyroConfigRequestPacket>(std::bind(&BRoCoPublisher::handleGyroConfigReqPacket, this, std::placeholders::_1, std::placeholders::_2));
+    bus->handle<GyroConfigResponsePacket>(std::bind(&BRoCoPublisher::handleGyroConfigPacket, this, std::placeholders::_1, std::placeholders::_2));
+
+    bus->handle<MagConfigRequestPacket>(std::bind(&BRoCoPublisher::handleMagConfigReqPacket, this, std::placeholders::_1, std::placeholders::_2));
+    bus->handle<MagConfigResponsePacket>(std::bind(&BRoCoPublisher::handleMagConfigPacket, this, std::placeholders::_1, std::placeholders::_2));
+
     RCLCPP_INFO(parent->get_logger(), "Handles created");
 
     node_state.resize(get_param<uint32_t>("MAX_NUMBER_NODES"), false);
@@ -366,6 +398,256 @@ void BRoCoPublisher::handleMassConfigPacket(uint8_t senderID, MassConfigResponse
 
     mass_config_response_pub->publish(msg);
 }
+
+void BRoCoPublisher::handlePotConfigReqPacket(uint8_t senderID, PotentiometerConfigRequestPacket* packet) {
+    auto msg = avionics_interfaces::msg::PotConfigRequestMCU();
+
+    msg.id = packet->id;
+
+    msg.req_min_voltages = packet->req_min_voltages;
+    msg.req_max_voltages = packet->req_max_voltages;
+    msg.req_min_angles = packet->req_min_angles;
+    msg.req_max_angles = packet->req_max_angles;
+    msg.req_channels_status = packet->req_channels_status;
+
+    pot_config_req_pub->publish(msg);
+}
+
+void BRoCoPublisher::handlePotConfigPacket(uint8_t senderID, PotentiometerConfigResponsePacket* packet) {
+    auto msg = avionics_interfaces::msg::PotConfigResponse();
+
+    msg.id = packet->id;
+
+    msg.remote_command = packet->remote_command;
+    msg.set_min_voltages = packet->set_min_voltages;
+    msg.set_max_voltages = packet->set_max_voltages;
+    msg.set_min_angles = packet->set_min_angles;
+    msg.set_max_angles = packet->set_max_angles;
+    msg.set_channels_status = packet->set_channels_status;
+    msg.success = packet->success;
+
+    for (uint8_t i = 0; i < 4; ++i) {
+        msg.min_voltages[i] = packet->min_voltages[i];
+        msg.max_voltages[i] = packet->max_voltages[i];
+        msg.min_angles[i] = packet->min_angles[i];
+        msg.max_angles[i] = packet->max_angles[i];
+        msg.enabled_channels[i] = packet->enabled_channels[i];
+    }
+
+    std::string sensor = "potentiometer";
+
+    if (packet->set_min_voltages) {
+        std::vector<double> min_voltages_vector(packet->min_voltages, packet->min_voltages 
+            + sizeof(packet->min_voltages) / sizeof(packet->min_voltages[0]));
+        set_param_calib(sensor, "min_voltages", min_voltages_vector);
+    }
+    if (packet->set_max_voltages) {
+        std::vector<double> max_voltages_vector(packet->max_voltages, packet->max_voltages 
+            + sizeof(packet->max_voltages) / sizeof(packet->max_voltages[0]));
+        set_param_calib(sensor, "max_voltages", max_voltages_vector);
+    }
+    if (packet->set_min_angles) {
+        std::vector<double> min_angles_vector(packet->min_angles, packet->min_angles 
+            + sizeof(packet->min_angles) / sizeof(packet->min_angles[0]));
+        set_param_calib(sensor, "min_angles", min_angles_vector);
+    }
+    if (packet->set_max_angles) {
+        std::vector<double> max_angles_vector(packet->max_angles, packet->max_angles 
+            + sizeof(packet->max_angles) / sizeof(packet->max_angles[0]));
+        set_param_calib(sensor, "max_angles", max_angles_vector);
+    }
+    if (packet->set_channels_status) {
+        std::vector<bool> enabled_channels_vector(packet->enabled_channels, packet->enabled_channels 
+            + sizeof(packet->enabled_channels) / sizeof(packet->enabled_channels[0]));
+        set_param_calib(sensor, "enabled_channels", enabled_channels_vector);
+    }
+
+    pot_config_response_pub->publish(msg);
+}
+
+void BRoCoPublisher::handleServoConfigReqPacket(uint8_t senderID, ServoConfigRequestPacket* packet) {
+    auto msg = avionics_interfaces::msg::ServoConfigRequestMCU();
+
+    msg.id = packet->id;
+
+    msg.req_min_duty = packet->req_min_duty;
+    msg.req_max_duty = packet->req_max_duty;
+    msg.req_min_angles = packet->req_min_angles;
+    msg.req_max_angles = packet->req_max_angles;
+
+    servo_config_req_pub->publish(msg);
+}
+
+void BRoCoPublisher::handleServoConfigPacket(uint8_t senderID, ServoConfigResponsePacket* packet) {
+    auto msg = avionics_interfaces::msg::ServoConfigResponse();
+
+    msg.id = packet->id;
+
+    msg.remote_command = packet->remote_command;
+    msg.set_min_duty = packet->set_min_duty;
+    msg.set_max_duty = packet->set_max_duty;
+    msg.set_min_angles = packet->set_min_angles;
+    msg.set_max_angles = packet->set_max_angles;
+    msg.success = packet->success;
+
+    for (uint8_t i = 0; i < 4; ++i) {
+        msg.min_duty[i] = packet->min_duty[i];
+        msg.max_duty[i] = packet->max_duty[i];
+        msg.min_angles[i] = packet->min_angles[i];
+        msg.max_angles[i] = packet->max_angles[i];
+    }
+
+    std::string sensor = "servo";
+
+    if (packet->set_min_duty) {
+        std::vector<double> min_duty_vector(packet->min_duty, packet->min_duty 
+            + sizeof(packet->min_duty) / sizeof(packet->min_duty[0]));
+        set_param_calib(sensor, "min_duty", min_duty_vector);
+    }
+    if (packet->set_max_duty) {
+        std::vector<double> max_duty_vector(packet->max_duty, packet->max_duty 
+            + sizeof(packet->max_duty) / sizeof(packet->max_duty[0]));
+        set_param_calib(sensor, "max_duty", max_duty_vector);
+    }
+    if (packet->set_min_angles) {
+        std::vector<double> min_angles_vector(packet->min_angles, packet->min_angles 
+            + sizeof(packet->min_angles) / sizeof(packet->min_angles[0]));
+        set_param_calib(sensor, "min_angles", min_angles_vector);
+    }
+    if (packet->set_max_angles) {
+        std::vector<double> max_angles_vector(packet->max_angles, packet->max_angles 
+            + sizeof(packet->max_angles) / sizeof(packet->max_angles[0]));
+        set_param_calib(sensor, "max_angles", max_angles_vector);
+    }
+
+    servo_config_response_pub->publish(msg);
+}
+
+void BRoCoPublisher::handleAccelConfigReqPacket(uint8_t senderID, AccelConfigRequestPacket* packet) {
+    auto msg = avionics_interfaces::msg::AccelConfigRequestMCU();
+
+    msg.id = packet->id;
+
+    msg.req_bias = packet->req_bias;
+    msg.req_transform = packet->req_transform;
+
+    accel_config_req_pub->publish(msg);
+}
+
+void BRoCoPublisher::handleAccelConfigPacket(uint8_t senderID, AccelConfigResponsePacket* packet) {
+    auto msg = avionics_interfaces::msg::AccelConfigResponse();
+
+    msg.id = packet->id;
+
+    msg.remote_command = packet->remote_command;
+    msg.set_bias = packet->set_bias;
+    msg.set_transform = packet->set_transform;
+    msg.success = packet->success;
+
+    for (uint8_t i = 0; i < 4; ++i) {
+        msg.bias[i] = packet->bias[i];
+    }
+
+    for (uint8_t i = 0; i < 9; ++i) {
+        msg.transform[i] = packet->transform[i];
+    }
+
+    std::string sensor = "accel";
+
+    if (packet->set_bias) {
+        std::vector<double> bias_vector(packet->bias, packet->bias 
+            + sizeof(packet->bias) / sizeof(packet->bias[0]));
+        set_param_calib(sensor, "bias", bias_vector);
+    }
+    if (packet->set_transform) {
+        std::vector<double> transform_vector(packet->transform, packet->transform 
+            + sizeof(packet->transform) / sizeof(packet->transform[0]));
+        set_param_calib(sensor, "transform", transform_vector);
+    }
+
+    accel_config_response_pub->publish(msg);
+}
+
+void BRoCoPublisher::handleGyroConfigReqPacket(uint8_t senderID, GyroConfigRequestPacket* packet) {
+    auto msg = avionics_interfaces::msg::GyroConfigRequestMCU();
+
+    msg.id = packet->id;
+
+    msg.req_bias = packet->req_bias;
+
+    gyro_config_req_pub->publish(msg);
+}
+
+void BRoCoPublisher::handleGyroConfigPacket(uint8_t senderID, GyroConfigResponsePacket* packet) {
+    auto msg = avionics_interfaces::msg::GyroConfigResponse();
+
+    msg.id = packet->id;
+
+    msg.remote_command = packet->remote_command;
+    msg.set_bias = packet->set_bias;
+    msg.success = packet->success;
+
+    for (uint8_t i = 0; i < 4; ++i) {
+        msg.bias[i] = packet->bias[i];
+    }
+
+    std::string sensor = "gyro";
+
+    if (packet->set_bias) {
+        std::vector<double> bias_vector(packet->bias, packet->bias 
+            + sizeof(packet->bias) / sizeof(packet->bias[0]));
+        set_param_calib(sensor, "bias", bias_vector);
+    }
+
+    gyro_config_response_pub->publish(msg);
+}
+
+void BRoCoPublisher::handleMagConfigReqPacket(uint8_t senderID, MagConfigRequestPacket* packet) {
+    auto msg = avionics_interfaces::msg::MagConfigRequestMCU();
+
+    msg.id = packet->id;
+
+    msg.req_hard_iron = packet->req_hard_iron;
+    msg.req_soft_iron = packet->req_soft_iron;
+
+    mag_config_req_pub->publish(msg);
+}
+
+void BRoCoPublisher::handleMagConfigPacket(uint8_t senderID, MagConfigResponsePacket* packet) {
+    auto msg = avionics_interfaces::msg::MagConfigResponse();
+
+    msg.id = packet->id;
+
+    msg.remote_command = packet->remote_command;
+    msg.set_hard_iron = packet->set_hard_iron;
+    msg.set_soft_iron = packet->set_soft_iron;
+    msg.success = packet->success;
+
+    for (uint8_t i = 0; i < 4; ++i) {
+        msg.hard_iron[i] = packet->hard_iron[i];
+    }
+
+    for (uint8_t i = 0; i < 9; ++i) {
+        msg.soft_iron[i] = packet->soft_iron[i];
+    }
+
+    std::string sensor = "mag";
+
+    if (packet->set_hard_iron) {
+        std::vector<double> hard_iron_vector(packet->hard_iron, packet->hard_iron 
+            + sizeof(packet->hard_iron) / sizeof(packet->hard_iron[0]));
+        set_param_calib(sensor, "hard_iron", hard_iron_vector);
+    }
+    if (packet->set_soft_iron) {
+        std::vector<double> soft_iron_vector(packet->soft_iron, packet->soft_iron 
+            + sizeof(packet->soft_iron) / sizeof(packet->soft_iron[0]));
+        set_param_calib(sensor, "soft_iron", soft_iron_vector);
+    }
+
+    mag_config_response_pub->publish(msg);
+}
+
+
 
 uint32_t BRoCoPublisher::get_node_id(std::string node_name) {
     return dynamic_cast<BRoCoManager*>(parent)->get_param<uint32_t>(node_name);

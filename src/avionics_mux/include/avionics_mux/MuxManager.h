@@ -30,7 +30,27 @@
 #include "avionics_interfaces/msg/mass_config_request_mcu.hpp"
 #include "avionics_interfaces/msg/mass_config_response.hpp"
 
+#include "avionics_interfaces/msg/pot_config_request_mcu.hpp"
+#include "avionics_interfaces/msg/pot_config_response.hpp"
+
+#include "avionics_interfaces/msg/servo_config_request_mcu.hpp"
+#include "avionics_interfaces/msg/servo_config_response.hpp"
+
+#include "avionics_interfaces/msg/accel_config_request_mcu.hpp"
+#include "avionics_interfaces/msg/accel_config_response.hpp"
+
+#include "avionics_interfaces/msg/gyro_config_request_mcu.hpp"
+#include "avionics_interfaces/msg/gyro_config_response.hpp"
+
+#include "avionics_interfaces/msg/mag_config_request_mcu.hpp"
+#include "avionics_interfaces/msg/mag_config_response.hpp"
+
 #include "avionics_interfaces/msg/mass_config_request_jetson.hpp"
+#include "avionics_interfaces/msg/pot_config_request_jetson.hpp"
+#include "avionics_interfaces/msg/servo_config_request_jetson.hpp"
+#include "avionics_interfaces/msg/accel_config_request_jetson.hpp"
+#include "avionics_interfaces/msg/gyro_config_request_jetson.hpp"
+#include "avionics_interfaces/msg/mag_config_request_jetson.hpp"
 
 #include "MuxPublisher.h"
 #include "MuxSubscriber.h"
@@ -86,12 +106,32 @@ private:
     MuxPublisher<avionics_interfaces::msg::MassConfigRequestMCU>* mass_config_req_mcu_mux;
     MuxPublisher<avionics_interfaces::msg::MassConfigResponse>* mass_config_response_mux;
 
+    MuxPublisher<avionics_interfaces::msg::PotConfigRequestMCU>* pot_config_req_mcu_mux;
+    MuxPublisher<avionics_interfaces::msg::PotConfigResponse>* pot_config_response_mux;
+
+    MuxPublisher<avionics_interfaces::msg::ServoConfigRequestMCU>* servo_config_req_mcu_mux;
+    MuxPublisher<avionics_interfaces::msg::ServoConfigResponse>* servo_config_response_mux;
+
+    MuxPublisher<avionics_interfaces::msg::AccelConfigRequestMCU>* accel_config_req_mcu_mux;
+    MuxPublisher<avionics_interfaces::msg::AccelConfigResponse>* accel_config_response_mux;
+
+    MuxPublisher<avionics_interfaces::msg::GyroConfigRequestMCU>* gyro_config_req_mcu_mux;
+    MuxPublisher<avionics_interfaces::msg::GyroConfigResponse>* gyro_config_response_mux;
+
+    MuxPublisher<avionics_interfaces::msg::MagConfigRequestMCU>* mag_config_req_mcu_mux;
+    MuxPublisher<avionics_interfaces::msg::MagConfigResponse>* mag_config_response_mux;
+
     MuxSubscriber<avionics_interfaces::msg::LaserRequest>* laser_req_mux;
     MuxSubscriber<avionics_interfaces::msg::LEDRequest>* led_req_mux;
     MuxSubscriber<avionics_interfaces::msg::ServoRequest>* servo_req_mux;
     MuxSubscriber<avionics_interfaces::msg::SpectroRequest>* spectro_req_mux;
 
     MuxSubscriber<avionics_interfaces::msg::MassConfigRequestJetson>* mass_config_req_jetson_mux;
+    MuxSubscriber<avionics_interfaces::msg::PotConfigRequestJetson>* pot_config_req_jetson_mux;
+    MuxSubscriber<avionics_interfaces::msg::ServoConfigRequestJetson>* servo_config_req_jetson_mux;
+    MuxSubscriber<avionics_interfaces::msg::AccelConfigRequestJetson>* accel_config_req_jetson_mux;
+    MuxSubscriber<avionics_interfaces::msg::GyroConfigRequestJetson>* gyro_config_req_jetson_mux;
+    MuxSubscriber<avionics_interfaces::msg::MagConfigRequestJetson>* mag_config_req_jetson_mux;
 };
 
 #endif /* MUX_MANAGER_H */

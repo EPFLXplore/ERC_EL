@@ -97,3 +97,18 @@ template class MuxPublisher<avionics_interfaces::msg::LEDResponse>;
 
 template class MuxPublisher<avionics_interfaces::msg::MassConfigRequestMCU>;
 template class MuxPublisher<avionics_interfaces::msg::MassConfigResponse>;
+
+template class MuxPublisher<avionics_interfaces::msg::PotConfigRequestMCU>;
+template class MuxPublisher<avionics_interfaces::msg::PotConfigResponse>;
+
+template class MuxPublisher<avionics_interfaces::msg::ServoConfigRequestMCU>;
+template class MuxPublisher<avionics_interfaces::msg::ServoConfigResponse>;
+
+template class MuxPublisher<avionics_interfaces::msg::AccelConfigRequestMCU>;
+template class MuxPublisher<avionics_interfaces::msg::AccelConfigResponse>;
+
+template class MuxPublisher<avionics_interfaces::msg::GyroConfigRequestMCU>;
+template class MuxPublisher<avionics_interfaces::msg::GyroConfigResponse>;
+
+template class MuxPublisher<avionics_interfaces::msg::MagConfigRequestMCU>;
+template class MuxPublisher<avionics_interfaces::msg::MagConfigResponse>;

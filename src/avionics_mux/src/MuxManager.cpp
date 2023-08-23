@@ -32,6 +32,16 @@ MuxManager::MuxManager() : Node("mux_manager") {
 
     this->declare_parameter("MASS_CONFIG_REQ_MCU_TOPIC");
     this->declare_parameter("MASS_CONFIG_TOPIC");
+    this->declare_parameter("POT_CONFIG_REQ_MCU_TOPIC");
+    this->declare_parameter("POT_CONFIG_TOPIC");
+    this->declare_parameter("SERVO_CONFIG_REQ_MCU_TOPIC");
+    this->declare_parameter("SERVO_CONFIG_TOPIC");
+    this->declare_parameter("ACCEL_CONFIG_REQ_MCU_TOPIC");
+    this->declare_parameter("ACCEL_CONFIG_TOPIC");
+    this->declare_parameter("GYRO_CONFIG_REQ_MCU_TOPIC");
+    this->declare_parameter("GYRO_CONFIG_TOPIC");
+    this->declare_parameter("MAG_CONFIG_REQ_MCU_TOPIC");
+    this->declare_parameter("MAG_CONFIG_TOPIC");
 
     this->declare_parameter("NODE_STATE_TOPIC");
 
@@ -42,6 +52,11 @@ MuxManager::MuxManager() : Node("mux_manager") {
     this->declare_parameter("LED_REQ_TOPIC");
 
     this->declare_parameter("MASS_CONFIG_REQ_JETSON_TOPIC");
+    this->declare_parameter("POT_CONFIG_REQ_JETSON_TOPIC");
+    this->declare_parameter("SERVO_CONFIG_REQ_JETSON_TOPIC");
+    this->declare_parameter("ACCEL_CONFIG_REQ_JETSON_TOPIC");
+    this->declare_parameter("GYRO_CONFIG_REQ_JETSON_TOPIC");
+    this->declare_parameter("MAG_CONFIG_REQ_JETSON_TOPIC");
 
     if (!this->get_parameter("bus0", bus0)) {
         RCLCPP_ERROR(this->get_logger(), "Failed to get the 'bus0' parameter");
@@ -85,12 +100,32 @@ MuxManager::MuxManager() : Node("mux_manager") {
     mass_config_req_mcu_mux = new MuxPublisher<avionics_interfaces::msg::MassConfigRequestMCU>(this, get_param<std::string>("MASS_CONFIG_REQ_MCU_TOPIC"));
     mass_config_response_mux = new MuxPublisher<avionics_interfaces::msg::MassConfigResponse>(this, get_param<std::string>("MASS_CONFIG_TOPIC"));
 
+    pot_config_req_mcu_mux = new MuxPublisher<avionics_interfaces::msg::PotConfigRequestMCU>(this, get_param<std::string>("POT_CONFIG_REQ_MCU_TOPIC"));
+    pot_config_response_mux = new MuxPublisher<avionics_interfaces::msg::PotConfigResponse>(this, get_param<std::string>("POT_CONFIG_TOPIC"));
+
+    servo_config_req_mcu_mux = new MuxPublisher<avionics_interfaces::msg::ServoConfigRequestMCU>(this, get_param<std::string>("SERVO_CONFIG_REQ_MCU_TOPIC"));
+    servo_config_response_mux = new MuxPublisher<avionics_interfaces::msg::ServoConfigResponse>(this, get_param<std::string>("SERVO_CONFIG_TOPIC"));
+
+    accel_config_req_mcu_mux = new MuxPublisher<avionics_interfaces::msg::AccelConfigRequestMCU>(this, get_param<std::string>("ACCEL_CONFIG_REQ_MCU_TOPIC"));
+    accel_config_response_mux = new MuxPublisher<avionics_interfaces::msg::AccelConfigResponse>(this, get_param<std::string>("ACCEL_CONFIG_TOPIC"));
+
+    gyro_config_req_mcu_mux = new MuxPublisher<avionics_interfaces::msg::GyroConfigRequestMCU>(this, get_param<std::string>("GYRO_CONFIG_REQ_MCU_TOPIC"));
+    gyro_config_response_mux = new MuxPublisher<avionics_interfaces::msg::GyroConfigResponse>(this, get_param<std::string>("GYRO_CONFIG_TOPIC"));
+
+    mag_config_req_mcu_mux = new MuxPublisher<avionics_interfaces::msg::MagConfigRequestMCU>(this, get_param<std::string>("MAG_CONFIG_REQ_MCU_TOPIC"));
+    mag_config_response_mux = new MuxPublisher<avionics_interfaces::msg::MagConfigResponse>(this, get_param<std::string>("MAG_CONFIG_TOPIC"));
+
     laser_req_mux = new MuxSubscriber<avionics_interfaces::msg::LaserRequest>(this, get_param<std::string>("LASER_REQ_TOPIC"));
     led_req_mux = new MuxSubscriber<avionics_interfaces::msg::LEDRequest>(this, get_param<std::string>("LED_REQ_TOPIC"));
     servo_req_mux = new MuxSubscriber<avionics_interfaces::msg::ServoRequest>(this, get_param<std::string>("SERVO_REQ_TOPIC"));
     spectro_req_mux = new MuxSubscriber<avionics_interfaces::msg::SpectroRequest>(this, get_param<std::string>("SPECTRO_REQ_TOPIC"));
 
     mass_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::MassConfigRequestJetson>(this, get_param<std::string>("MASS_CONFIG_REQ_JETSON_TOPIC"));
+    pot_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::PotConfigRequestJetson>(this, get_param<std::string>("POT_CONFIG_REQ_JETSON_TOPIC"));
+    servo_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::ServoConfigRequestJetson>(this, get_param<std::string>("SERVO_CONFIG_REQ_JETSON_TOPIC"));
+    accel_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::AccelConfigRequestJetson>(this, get_param<std::string>("ACCEL_CONFIG_REQ_JETSON_TOPIC"));
+    gyro_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::GyroConfigRequestJetson>(this, get_param<std::string>("GYRO_CONFIG_REQ_JETSON_TOPIC"));
+    mag_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::MagConfigRequestJetson>(this, get_param<std::string>("MAG_CONFIG_REQ_JETSON_TOPIC"));
 }
 
 MuxManager::~MuxManager() {
@@ -111,12 +146,32 @@ MuxManager::~MuxManager() {
     delete this->mass_config_req_mcu_mux;
     delete this->mass_config_response_mux;
 
+    delete this->pot_config_req_mcu_mux;
+    delete this->pot_config_response_mux;
+
+    delete this->servo_config_req_mcu_mux;
+    delete this->servo_config_response_mux;
+
+    delete this->accel_config_req_mcu_mux;
+    delete this->accel_config_response_mux;
+
+    delete this->gyro_config_req_mcu_mux;
+    delete this->gyro_config_response_mux;
+
+    delete this->mag_config_req_mcu_mux;
+    delete this->mag_config_response_mux;
+
     delete this->laser_req_mux;
     delete this->led_req_mux;
     delete this->servo_req_mux;
     delete this->spectro_req_mux;
 
     delete this->mass_config_req_jetson_mux;
+    delete this->pot_config_req_jetson_mux;
+    delete this->servo_config_req_jetson_mux;
+    delete this->accel_config_req_jetson_mux;
+    delete this->gyro_config_req_jetson_mux;
+    delete this->mag_config_req_jetson_mux;
     
 }
 

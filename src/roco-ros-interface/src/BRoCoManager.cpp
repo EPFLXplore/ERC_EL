@@ -62,6 +62,16 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
 
     this->declare_parameter("MASS_CONFIG_REQ_MCU_TOPIC");
     this->declare_parameter("MASS_CONFIG_TOPIC");
+    this->declare_parameter("POT_CONFIG_REQ_MCU_TOPIC");
+    this->declare_parameter("POT_CONFIG_TOPIC");
+    this->declare_parameter("SERVO_CONFIG_REQ_MCU_TOPIC");
+    this->declare_parameter("SERVO_CONFIG_TOPIC");
+    this->declare_parameter("ACCEL_CONFIG_REQ_MCU_TOPIC");
+    this->declare_parameter("ACCEL_CONFIG_TOPIC");
+    this->declare_parameter("GYRO_CONFIG_REQ_MCU_TOPIC");
+    this->declare_parameter("GYRO_CONFIG_TOPIC");
+    this->declare_parameter("MAG_CONFIG_REQ_MCU_TOPIC");
+    this->declare_parameter("MAG_CONFIG_TOPIC");
 
     this->declare_parameter("NODE_STATE_TOPIC");
 
@@ -72,6 +82,11 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
     this->declare_parameter("LED_REQ_TOPIC");
 
     this->declare_parameter("MASS_CONFIG_REQ_JETSON_TOPIC");
+    this->declare_parameter("POT_CONFIG_REQ_JETSON_TOPIC");
+    this->declare_parameter("SERVO_CONFIG_REQ_JETSON_TOPIC");
+    this->declare_parameter("ACCEL_CONFIG_REQ_JETSON_TOPIC");
+    this->declare_parameter("GYRO_CONFIG_REQ_JETSON_TOPIC");
+    this->declare_parameter("MAG_CONFIG_REQ_JETSON_TOPIC");
 
     // Calibration parameters =========================
     // Mass sensor
@@ -84,6 +99,30 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
     this->declare_parameter("mass_container.scale");
     this->declare_parameter("mass_container.alpha");
     this->declare_parameter("mass_container.enabled_channels");
+
+    // Potentiometer
+    this->declare_parameter("potentiometer.min_voltages");
+    this->declare_parameter("potentiometer.max_voltages");
+    this->declare_parameter("potentiometer.min_angles");
+    this->declare_parameter("potentiometer.max_angles");
+    this->declare_parameter("potentiometer.enabled_channels");
+
+    // Servo
+    this->declare_parameter("servo.min_duty");
+    this->declare_parameter("servo.max_duty");
+    this->declare_parameter("servo.min_angles");
+    this->declare_parameter("servo.max_angles");
+
+    // Accelerometer
+    this->declare_parameter("accel.bias");
+    this->declare_parameter("accel.transform");
+
+    // Gyroscope
+    this->declare_parameter("gyro.bias");
+
+    // Magnetometer
+    this->declare_parameter("mag.hard_iron");
+    this->declare_parameter("mag.soft_iron");
 
     if (get_param<bool>("ATTEMPT_RETRY") == true) {
         // Create a timer to periodically attempt connection

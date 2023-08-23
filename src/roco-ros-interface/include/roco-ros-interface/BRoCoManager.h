@@ -12,7 +12,6 @@
 
 #include "BRoCo/CanSocketDriver.h"
 
-
 #include <iostream>
 #include <fstream>
 

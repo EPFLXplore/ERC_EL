@@ -77,3 +77,8 @@ template class MuxSubscriber<avionics_interfaces::msg::ServoRequest>;
 template class MuxSubscriber<avionics_interfaces::msg::SpectroRequest>;
 
 template class MuxSubscriber<avionics_interfaces::msg::MassConfigRequestJetson>;
+template class MuxSubscriber<avionics_interfaces::msg::PotConfigRequestJetson>;
+template class MuxSubscriber<avionics_interfaces::msg::ServoConfigRequestJetson>;
+template class MuxSubscriber<avionics_interfaces::msg::AccelConfigRequestJetson>;
+template class MuxSubscriber<avionics_interfaces::msg::GyroConfigRequestJetson>;
+template class MuxSubscriber<avionics_interfaces::msg::MagConfigRequestJetson>;

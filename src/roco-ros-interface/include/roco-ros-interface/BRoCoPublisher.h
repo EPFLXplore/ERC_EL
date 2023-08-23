@@ -25,8 +25,24 @@
 #include "avionics_interfaces/msg/led_response.hpp"
 #include "avionics_interfaces/msg/node_state_array.hpp"
 
+// config messages
 #include "avionics_interfaces/msg/mass_config_request_mcu.hpp"
 #include "avionics_interfaces/msg/mass_config_response.hpp"
+
+#include "avionics_interfaces/msg/pot_config_request_mcu.hpp"
+#include "avionics_interfaces/msg/pot_config_response.hpp"
+
+#include "avionics_interfaces/msg/servo_config_request_mcu.hpp"
+#include "avionics_interfaces/msg/servo_config_response.hpp"
+
+#include "avionics_interfaces/msg/accel_config_request_mcu.hpp"
+#include "avionics_interfaces/msg/accel_config_response.hpp"
+
+#include "avionics_interfaces/msg/gyro_config_request_mcu.hpp"
+#include "avionics_interfaces/msg/gyro_config_response.hpp"
+
+#include "avionics_interfaces/msg/mag_config_request_mcu.hpp"
+#include "avionics_interfaces/msg/mag_config_response.hpp"
 
 #include "BRoCo/CANBus.h"
 #include "Protocol/Protocol.h"
@@ -61,6 +77,21 @@ private:
 
     rclcpp::Publisher<avionics_interfaces::msg::MassConfigRequestMCU>::SharedPtr mass_config_req_pub;
     rclcpp::Publisher<avionics_interfaces::msg::MassConfigResponse>::SharedPtr mass_config_response_pub;
+
+    rclcpp::Publisher<avionics_interfaces::msg::PotConfigRequestMCU>::SharedPtr pot_config_req_pub;
+    rclcpp::Publisher<avionics_interfaces::msg::PotConfigResponse>::SharedPtr pot_config_response_pub;
+
+    rclcpp::Publisher<avionics_interfaces::msg::ServoConfigRequestMCU>::SharedPtr servo_config_req_pub;
+    rclcpp::Publisher<avionics_interfaces::msg::ServoConfigResponse>::SharedPtr servo_config_response_pub;
+
+    rclcpp::Publisher<avionics_interfaces::msg::AccelConfigRequestMCU>::SharedPtr accel_config_req_pub;
+    rclcpp::Publisher<avionics_interfaces::msg::AccelConfigResponse>::SharedPtr accel_config_response_pub;
+
+    rclcpp::Publisher<avionics_interfaces::msg::GyroConfigRequestMCU>::SharedPtr gyro_config_req_pub;
+    rclcpp::Publisher<avionics_interfaces::msg::GyroConfigResponse>::SharedPtr gyro_config_response_pub;
+
+    rclcpp::Publisher<avionics_interfaces::msg::MagConfigRequestMCU>::SharedPtr mag_config_req_pub;
+    rclcpp::Publisher<avionics_interfaces::msg::MagConfigResponse>::SharedPtr mag_config_response_pub;
 
     rclcpp::TimerBase::SharedPtr timer;
     std::vector<rclcpp::TimerBase::SharedPtr> watchdog_timers;
@@ -100,6 +131,21 @@ private:
 
     void handleMassConfigReqPacket(uint8_t senderID, MassConfigRequestPacket* packet);
     void handleMassConfigPacket(uint8_t senderID, MassConfigResponsePacket* packet);
+
+    void handlePotConfigReqPacket(uint8_t senderID, PotentiometerConfigRequestPacket* packet);
+    void handlePotConfigPacket(uint8_t senderID, PotentiometerConfigResponsePacket* packet);
+
+    void handleServoConfigReqPacket(uint8_t senderID, ServoConfigRequestPacket* packet);
+    void handleServoConfigPacket(uint8_t senderID, ServoConfigResponsePacket* packet);
+
+    void handleAccelConfigReqPacket(uint8_t senderID, AccelConfigRequestPacket* packet);
+    void handleAccelConfigPacket(uint8_t senderID, AccelConfigResponsePacket* packet);
+
+    void handleGyroConfigReqPacket(uint8_t senderID, GyroConfigRequestPacket* packet);
+    void handleGyroConfigPacket(uint8_t senderID, GyroConfigResponsePacket* packet);
+
+    void handleMagConfigReqPacket(uint8_t senderID, MagConfigRequestPacket* packet);
+    void handleMagConfigPacket(uint8_t senderID, MagConfigResponsePacket* packet);
 };
 
 #endif /* BROCO_PUBLISHER_H */
