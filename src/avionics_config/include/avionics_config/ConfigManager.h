@@ -52,7 +52,7 @@ public:
         auto addSmallValueIfNeeded = [](auto& val) {
             using ValueType = std::decay_t<decltype(val)>;
             if (std::abs(val - std::round(val)) < static_cast<ValueType>(1e-9)) {
-                val += static_cast<ValueType>(1e-9);
+                val += static_cast<ValueType>(0.000000001);
             }
         };
 

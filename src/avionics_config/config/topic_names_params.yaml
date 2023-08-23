@@ -41,5 +41,10 @@
     LED_REQ_TOPIC:        "/led_req"
 
     # Config
-    MASS_CONFIG_REQ_JETSON_TOPIC: "/mass_config_req"
+    MASS_CONFIG_REQ_JETSON_TOPIC:   "/mass_config_req"
+    POT_CONFIG_REQ_JETSON_TOPIC:    "/pot_config_req"
+    SERVO_CONFIG_REQ_JETSON_TOPIC:  "/servo_config_req"
+    ACCEL_CONFIG_REQ_JETSON_TOPIC:  "/accel_config_req"
+    GYRO_CONFIG_REQ_JETSON_TOPIC:   "/gyro_config_req"
+    MAG_CONFIG_REQ_JETSON_TOPIC:    "/mag_config_req"
 

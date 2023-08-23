@@ -98,14 +98,24 @@ ConfigManager::ConfigManager() : Node("config_manager") {
         (get_param<std::string>("MASS_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::massConfigReqCallback, this, _1));
     this->pot_config_req_sub = this->create_subscription<avionics_interfaces::msg::PotConfigRequestMCU>
         (get_param<std::string>("POT_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::potConfigReqCallback, this, _1));
+    this->pot_config_response_sub = this->create_subscription<avionics_interfaces::msg::PotConfigResponse>
+        (get_param<std::string>("POT_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::potConfigResponseCallback, this, _1));
     this->servo_config_req_sub = this->create_subscription<avionics_interfaces::msg::ServoConfigRequestMCU>
         (get_param<std::string>("SERVO_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::servoConfigReqCallback, this, _1));
+    this->servo_config_response_sub = this->create_subscription<avionics_interfaces::msg::ServoConfigResponse>
+        (get_param<std::string>("SERVO_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::servoConfigResponseCallback, this, _1));
     this->accel_config_req_sub = this->create_subscription<avionics_interfaces::msg::AccelConfigRequestMCU>
         (get_param<std::string>("ACCEL_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::accelConfigReqCallback, this, _1));
+    this->accel_config_response_sub = this->create_subscription<avionics_interfaces::msg::AccelConfigResponse>
+        (get_param<std::string>("ACCEL_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::accelConfigResponseCallback, this, _1));
     this->gyro_config_req_sub = this->create_subscription<avionics_interfaces::msg::GyroConfigRequestMCU>
         (get_param<std::string>("GYRO_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::gyroConfigReqCallback, this, _1));
+    this->gyro_config_response_sub = this->create_subscription<avionics_interfaces::msg::GyroConfigResponse>
+        (get_param<std::string>("GYRO_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::gyroConfigResponseCallback, this, _1));
     this->mag_config_req_sub = this->create_subscription<avionics_interfaces::msg::MagConfigRequestMCU>
         (get_param<std::string>("MAG_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::magConfigReqCallback, this, _1));
+    this->mag_config_response_sub = this->create_subscription<avionics_interfaces::msg::MagConfigResponse>
+        (get_param<std::string>("MAG_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::magConfigResponseCallback, this, _1));
 
 }
 

@@ -222,7 +222,7 @@ void BRoCoSubscriber::gyroConfigReqCallback(const avionics_interfaces::msg::Gyro
         id = get_node_id("NAV_NODE_ID");
 
     RCLCPP_INFO(parent->get_logger(), "Sending Gyro config to node ID " + std::to_string(id) + "...");
-    static AccelConfigPacket packet;
+    static GyroConfigPacket packet;
     packet.remote_command = msg->remote_command;
     packet.set_bias = msg->set_bias;
 

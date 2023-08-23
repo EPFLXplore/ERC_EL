@@ -614,6 +614,7 @@ void BRoCoPublisher::handleMagConfigReqPacket(uint8_t senderID, MagConfigRequest
 }
 
 void BRoCoPublisher::handleMagConfigPacket(uint8_t senderID, MagConfigResponsePacket* packet) {
+    RCLCPP_INFO(parent->get_logger(), "Mag config response received from MCU");
     auto msg = avionics_interfaces::msg::MagConfigResponse();
 
     msg.id = packet->id;
