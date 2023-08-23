@@ -54,7 +54,7 @@ ConfigManager::~ConfigManager() {
 void ConfigManager::massConfigReqCallback(const avionics_interfaces::msg::MassConfigRequestMCU::SharedPtr msg) {
     auto msg_req = avionics_interfaces::msg::MassConfigRequestJetson();
     msg_req.destination_id = msg->id;
-    msg_req.remote_command = false;
+    msg_req.remote_command = false; // request from MCU (and not from Jetson) -> false
     msg_req.set_offset = msg->req_offset;
     msg_req.set_scale = msg->req_scale;
     msg_req.set_alpha = msg->req_alpha;
@@ -108,6 +108,8 @@ void ConfigManager::massConfigResponseCallback(const avionics_interfaces::msg::M
     }
 
     if (valid_id) {
+        // std::vector<double> offset_double = get_param<std::vector<double>>(sensor + ".offset");
+        RCLCPP_INFO(this->get_logger(), "Saving mass calibration parameters into YAML file...");
         std::vector<double> offset_vector;
         std::vector<double> scale_vector;
         std::vector<bool> enabled_channels_vector;

@@ -49,6 +49,26 @@ set(message_config_files
   "msg/MassConfigRequestJetson.msg"
   "msg/MassConfigRequestMCU.msg"
   "msg/MassConfigResponse.msg"
+
+  "msg/PotConfigRequestJetson.msg"
+  "msg/PotConfigRequestMCU.msg"
+  "msg/PotConfigResponse.msg"
+
+  "msg/ServoConfigRequestJetson.msg"
+  "msg/ServoConfigRequestMCU.msg"
+  "msg/ServoConfigResponse.msg"
+
+  "msg/AccelConfigRequestJetson.msg"
+  "msg/AccelConfigRequestMCU.msg"
+  "msg/AccelConfigResponse.msg"
+
+  "msg/GyroConfigRequestJetson.msg"
+  "msg/GyroConfigRequestMCU.msg"
+  "msg/GyroConfigResponse.msg"
+
+  "msg/MagConfigRequestJetson.msg"
+  "msg/MagConfigRequestMCU.msg"
+  "msg/MagConfigResponse.msg"
 )
 
 rosidl_generate_interfaces(${PROJECT_NAME}

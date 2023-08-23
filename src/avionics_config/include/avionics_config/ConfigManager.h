@@ -20,22 +20,52 @@ public:
     ConfigManager();
     ~ConfigManager();
 
-    // These functions have to be written in the header for the compiler
+    // For writing back to YAML file.
     template <typename T>
-    void update_yaml_file(const std::string& yaml_file_path, const std::string sensor, const std::string& parameter_name, const T& value) {
+    void update_yaml_file(const std::string& yaml_file_path, const std::string sensor, const std::string& parameter_name, T value) {
         // Load the YAML file
         YAML::Node yaml_node = YAML::LoadFile(yaml_file_path);
 
-        // Find and update the parameter value
-        if (yaml_node["/**"]["ros__parameters"][sensor][parameter_name]) {
-        yaml_node["/**"]["ros__parameters"][sensor][parameter_name] = value;
+        // Function to add a small value to a double if it's close to a whole number
+        // This is to avoid mixed types errors in YAML which crashes the node
+        auto addSmallValueIfNeeded = [](auto& val) {
+            using ValueType = std::decay_t<decltype(val)>;
+            if (std::abs(val - std::round(val)) < static_cast<ValueType>(1e-9)) {
+                val += static_cast<ValueType>(1e-9);
+            }
+        };
+
+        // Apply the small value adjustment if needed to each element in the value parameter
+        if constexpr (std::is_same<T, std::vector<std::vector<double>>>::value) {
+            for (std::vector<double>& vec: value)
+                for (double& val : vec)
+                    addSmallValueIfNeeded(val);
         }
+        else if constexpr (std::is_same<T, std::vector<double>>::value) {
+            for (double& val : value) {
+                addSmallValueIfNeeded(val);
+            }
+        } else if constexpr (std::is_same<T, double>::value) {
+            addSmallValueIfNeeded(value);
+        } else if constexpr (std::is_same<T, float>::value) {
+            addSmallValueIfNeeded(value);
+        }
+
+        // Set the modified value parameter in the YAML node
+        yaml_node["/**"]["ros__parameters"][sensor][parameter_name] = value;
 
         // Write the updated content back to the file
         std::ofstream yaml_file(yaml_file_path);
-        yaml_file << yaml_node;
-        yaml_file.close();
+        if (yaml_file) {
+            yaml_file << yaml_node;
+            yaml_file.close();
+        } else {
+            std::cerr << "Error opening YAML file for writing." << std::endl;
+            // Handle the error appropriately
+        }
     }
+
+
 
     template <typename T>
     T get_param(const std::string& parameter_name) {
@@ -52,7 +82,7 @@ public:
     bool set_param_calib(const std::string& sensor, const std::string& parameter_name, const T& value)
     {
         rclcpp::Parameter parameter(sensor + "." + parameter_name, value);
-        auto result = this->set_parameter(parameter);
+        auto result = this->set_parameter(parameter); // set parameter in parameter server
 
         if (result.successful) {
             std::string yaml_file_path = "src/avionics_config/config/calibration_params.yaml";
