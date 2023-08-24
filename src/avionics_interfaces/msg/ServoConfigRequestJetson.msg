@@ -1,5 +1,5 @@
 # ServoConfigRequestJetson.msg
-uint32 destination_id
+uint16 destination_id
 float32[4] min_duty
 float32[4] max_duty
 float32[4] min_angles

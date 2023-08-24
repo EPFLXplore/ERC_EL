@@ -1,5 +1,5 @@
 # MassConfigRequestJetson.msg
-uint32 destination_id
+uint16 destination_id
 float32[4] offset
 float32[4] scale
 float32 alpha

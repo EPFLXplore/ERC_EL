@@ -1,5 +1,5 @@
 # MagConfigResponse.msg
-uint32 id
+uint16 id
 float32[3] hard_iron
 float32[9] soft_iron
 bool remote_command

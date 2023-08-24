@@ -1,5 +1,5 @@
 # MagConfigRequestJetson.msg
-uint32 destination_id
+uint16 destination_id
 float32[3] hard_iron
 float32[9] soft_iron
 bool remote_command

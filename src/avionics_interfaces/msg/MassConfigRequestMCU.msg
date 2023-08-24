@@ -1,5 +1,5 @@
 # MassConfigRequestMCU.msg
-uint32 id
+uint16 id
 bool req_offset
 bool req_scale
 bool req_alpha

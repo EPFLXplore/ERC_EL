@@ -1,5 +1,5 @@
 # ServoConfigResponse.msg
-uint32 id
+uint16 id
 float32[4] min_duty
 float32[4] max_duty
 float32[4] min_angles

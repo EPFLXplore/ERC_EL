@@ -1,5 +1,5 @@
 # PotConfigResponse.msg
-uint32 id
+uint16 id
 float32[4] min_voltages
 float32[4] max_voltages
 float32[4] min_angles

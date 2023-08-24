@@ -1,5 +1,5 @@
 # PotConfigRequestJetson.msg
-uint32 destination_id
+uint16 destination_id
 float32[4] min_voltages
 float32[4] max_voltages
 float32[4] min_angles

@@ -8,6 +8,8 @@
 #include "BRoCoManager.h"
 #include "BRoCo/CanSocketDriver.h"
 
+#include "Utils.h"
+
 #include "rclcpp/rclcpp.hpp"
 
 #include <chrono>
@@ -150,11 +152,28 @@ void BRoCoSubscriber::potConfigReqCallback(const avionics_interfaces::msg::PotCo
     packet.set_max_angles = msg->set_max_angles;
     packet.set_channels_status = msg->set_channels_status;
 
+    float min_voltages[4];
+    float max_voltages[4];
+    float min_angles[4];
+    float max_angles[4];
+
     for (uint8_t i = 0; i < 4; ++i) {
-        packet.min_voltages[i] = msg->min_voltages[i];
-        packet.max_voltages[i] = msg->max_voltages[i];
-        packet.min_angles[i] = msg->min_angles[i];
-        packet.max_angles[i] = msg->max_angles[i];
+        min_voltages[i] = msg->min_voltages[i];
+        max_voltages[i] = msg->max_voltages[i];
+        min_angles[i] = msg->min_angles[i];
+        max_angles[i] = msg->max_angles[i];
+    }
+
+    packet.min_voltages_max_val = get_max_val(min_voltages, 4);
+    packet.max_voltages_max_val = get_max_val(max_voltages, 4);
+    packet.min_angles_max_val = get_max_val(min_angles, 4);
+    packet.max_angles_max_val = get_max_val(max_angles, 4);
+
+    for (uint8_t i = 0; i < 4; ++i) {
+        packet.min_voltages[i] = floatToScaledUInt16(min_voltages[i], packet.min_voltages_max_val);
+        packet.max_voltages[i] = floatToScaledUInt16(max_voltages[i], packet.max_voltages_max_val);
+        packet.min_angles[i] = floatToScaledUInt16(min_angles[i], packet.min_angles_max_val);
+        packet.max_angles[i] = floatToScaledUInt16(max_angles[i], packet.max_angles_max_val);
         packet.enabled_channels[i] = msg->enabled_channels[i];
     }
 
@@ -178,11 +197,28 @@ void BRoCoSubscriber::servoConfigReqCallback(const avionics_interfaces::msg::Ser
     packet.set_min_angles = msg->set_min_angles;
     packet.set_max_angles = msg->set_max_angles;
 
+    float min_duty[4];
+    float max_duty[4];
+    float min_angles[4];
+    float max_angles[4];
+
     for (uint8_t i = 0; i < 4; ++i) {
-        packet.min_duty[i] = msg->min_duty[i];
-        packet.max_duty[i] = msg->max_duty[i];
-        packet.min_angles[i] = msg->min_angles[i];
-        packet.max_angles[i] = msg->max_angles[i];
+        min_duty[i] = msg->min_duty[i];
+        max_duty[i] = msg->max_duty[i];
+        min_angles[i] = msg->min_angles[i];
+        max_angles[i] = msg->max_angles[i];
+    }
+
+    packet.min_duty_max_val = get_max_val(min_duty, 4);
+    packet.max_duty_max_val = get_max_val(max_duty, 4);
+    packet.min_angles_max_val = get_max_val(min_angles, 4);
+    packet.max_angles_max_val = get_max_val(max_angles, 4);
+
+    for (uint8_t i = 0; i < 4; ++i) {
+        packet.min_duty[i] = floatToScaledUInt16(min_duty[i], packet.min_duty_max_val);
+        packet.max_duty[i] = floatToScaledUInt16(max_duty[i], packet.max_duty_max_val);
+        packet.min_angles[i] = floatToScaledUInt16(min_angles[i], packet.min_angles_max_val);
+        packet.max_angles[i] = floatToScaledUInt16(max_angles[i], packet.max_angles_max_val);
     }
     
     MAKE_IDENTIFIABLE(packet);

@@ -1,5 +1,5 @@
 # MassConfigResponse.msg
-uint32 id
+uint16 id
 float32[4] offset
 float32[4] scale
 float32 alpha

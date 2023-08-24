@@ -1,3 +1,3 @@
 # GyroConfigRequestMCU.msg
-uint32 id
+uint16 id
 bool req_bias

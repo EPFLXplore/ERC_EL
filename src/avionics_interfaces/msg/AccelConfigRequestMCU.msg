@@ -1,4 +1,4 @@
 # AccelConfigRequestMCU.msg
-uint32 id
+uint16 id
 bool req_bias
 bool req_transform

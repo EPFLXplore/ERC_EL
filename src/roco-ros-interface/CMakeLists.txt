@@ -27,6 +27,7 @@ include_directories(
   ${BRoCo_INCLUDE_DIRS} 
   ${CMAKE_CURRENT_SOURCE_DIR}/../BRoCo/include
   include/roco-ros-interface
+  include/utils
 )
 
 if(BUILD_TESTING)
@@ -45,6 +46,8 @@ add_executable(roco_interface
   src/BRoCoManager.cpp
   src/BRoCoPublisher.cpp
   src/BRoCoSubscriber.cpp
+
+  src/Utils.cpp
 )
 
 ament_target_dependencies(roco_interface rclcpp sensor_msgs BRoCo avionics_interfaces)

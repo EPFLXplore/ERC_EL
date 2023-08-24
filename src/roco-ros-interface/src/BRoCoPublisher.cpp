@@ -7,6 +7,8 @@
 #include "BRoCoPublisher.h"
 #include "BRoCoManager.h"
 
+#include "Utils.h"
+
 #include "rclcpp/rclcpp.hpp"
 
 #include <chrono>
@@ -288,8 +290,9 @@ void BRoCoPublisher::handleSpectroPacket(uint8_t senderID, SpectroResponsePacket
 
     msg.id = packet->id;
 
+    // Convert from scaled uint16_to float
     for (uint8_t i = 0; i < msg.data.size(); ++i)
-        msg.data[i] = packet->data[i];
+        msg.data[i] = scaledUInt16ToFloat(packet->data[i], packet->max_val);
 
     msg.success = packet->success;
 
@@ -427,35 +430,38 @@ void BRoCoPublisher::handlePotConfigPacket(uint8_t senderID, PotentiometerConfig
     msg.success = packet->success;
 
     for (uint8_t i = 0; i < 4; ++i) {
-        msg.min_voltages[i] = packet->min_voltages[i];
-        msg.max_voltages[i] = packet->max_voltages[i];
-        msg.min_angles[i] = packet->min_angles[i];
-        msg.max_angles[i] = packet->max_angles[i];
+        msg.min_voltages[i] = scaledUInt16ToFloat(packet->min_voltages[i], packet->min_voltages_max_val);
+        msg.max_voltages[i] = scaledUInt16ToFloat(packet->max_voltages[i], packet->max_voltages_max_val);
+        msg.min_angles[i] = scaledUInt16ToFloat(packet->min_angles[i], packet->min_angles_max_val);
+        msg.max_angles[i] = scaledUInt16ToFloat(packet->max_angles[i], packet->max_angles_max_val);
         msg.enabled_channels[i] = packet->enabled_channels[i];
     }
 
     std::string sensor = "potentiometer";
 
-    if (packet->set_min_voltages) {
-        std::vector<double> min_voltages_vector(packet->min_voltages, packet->min_voltages 
-            + sizeof(packet->min_voltages) / sizeof(packet->min_voltages[0]));
+    std::vector<double> min_voltages_vector;
+    std::vector<double> max_voltages_vector;
+    std::vector<double> min_angles_vector;
+    std::vector<double> max_angles_vector;
+    for (int i = 0; i < 4; ++i) {
+        min_voltages_vector.push_back(static_cast<double>(msg.min_voltages[i]));
+        max_voltages_vector.push_back(static_cast<double>(msg.max_voltages[i]));
+        min_angles_vector.push_back(static_cast<double>(msg.min_angles[i]));
+        max_angles_vector.push_back(static_cast<double>(msg.max_angles[i]));
+    }
+
+    if (packet->set_min_voltages) 
         set_param_calib(sensor, "min_voltages", min_voltages_vector);
-    }
-    if (packet->set_max_voltages) {
-        std::vector<double> max_voltages_vector(packet->max_voltages, packet->max_voltages 
-            + sizeof(packet->max_voltages) / sizeof(packet->max_voltages[0]));
+    
+    if (packet->set_max_voltages) 
         set_param_calib(sensor, "max_voltages", max_voltages_vector);
-    }
-    if (packet->set_min_angles) {
-        std::vector<double> min_angles_vector(packet->min_angles, packet->min_angles 
-            + sizeof(packet->min_angles) / sizeof(packet->min_angles[0]));
+    
+    if (packet->set_min_angles) 
         set_param_calib(sensor, "min_angles", min_angles_vector);
-    }
-    if (packet->set_max_angles) {
-        std::vector<double> max_angles_vector(packet->max_angles, packet->max_angles 
-            + sizeof(packet->max_angles) / sizeof(packet->max_angles[0]));
+    
+    if (packet->set_max_angles) 
         set_param_calib(sensor, "max_angles", max_angles_vector);
-    }
+    
     if (packet->set_channels_status) {
         std::vector<bool> enabled_channels_vector(packet->enabled_channels, packet->enabled_channels 
             + sizeof(packet->enabled_channels) / sizeof(packet->enabled_channels[0]));
@@ -491,34 +497,37 @@ void BRoCoPublisher::handleServoConfigPacket(uint8_t senderID, ServoConfigRespon
     msg.success = packet->success;
 
     for (uint8_t i = 0; i < 4; ++i) {
-        msg.min_duty[i] = packet->min_duty[i];
-        msg.max_duty[i] = packet->max_duty[i];
-        msg.min_angles[i] = packet->min_angles[i];
-        msg.max_angles[i] = packet->max_angles[i];
+        msg.min_duty[i] = scaledUInt16ToFloat(packet->min_duty[i], packet->min_duty_max_val);
+        msg.max_duty[i] = scaledUInt16ToFloat(packet->max_duty[i], packet->max_duty_max_val);
+        msg.min_angles[i] = scaledUInt16ToFloat(packet->min_angles[i], packet->min_angles_max_val);
+        msg.max_angles[i] = scaledUInt16ToFloat(packet->max_angles[i], packet->max_angles_max_val);
     }
 
     std::string sensor = "servo";
 
-    if (packet->set_min_duty) {
-        std::vector<double> min_duty_vector(packet->min_duty, packet->min_duty 
-            + sizeof(packet->min_duty) / sizeof(packet->min_duty[0]));
+    std::vector<double> min_duty_vector;
+    std::vector<double> max_duty_vector;
+    std::vector<double> min_angles_vector;
+    std::vector<double> max_angles_vector;
+    for (int i = 0; i < 4; ++i) {
+        min_duty_vector.push_back(static_cast<double>(msg.min_duty[i]));
+        max_duty_vector.push_back(static_cast<double>(msg.max_duty[i]));
+        min_angles_vector.push_back(static_cast<double>(msg.min_angles[i]));
+        max_angles_vector.push_back(static_cast<double>(msg.max_angles[i]));
+    }
+
+    if (packet->set_min_duty) 
         set_param_calib(sensor, "min_duty", min_duty_vector);
-    }
-    if (packet->set_max_duty) {
-        std::vector<double> max_duty_vector(packet->max_duty, packet->max_duty 
-            + sizeof(packet->max_duty) / sizeof(packet->max_duty[0]));
+    
+    if (packet->set_max_duty) 
         set_param_calib(sensor, "max_duty", max_duty_vector);
-    }
-    if (packet->set_min_angles) {
-        std::vector<double> min_angles_vector(packet->min_angles, packet->min_angles 
-            + sizeof(packet->min_angles) / sizeof(packet->min_angles[0]));
+    
+    if (packet->set_min_angles) 
         set_param_calib(sensor, "min_angles", min_angles_vector);
-    }
-    if (packet->set_max_angles) {
-        std::vector<double> max_angles_vector(packet->max_angles, packet->max_angles 
-            + sizeof(packet->max_angles) / sizeof(packet->max_angles[0]));
+    
+    if (packet->set_max_angles) 
         set_param_calib(sensor, "max_angles", max_angles_vector);
-    }
+    
 
     servo_config_response_pub->publish(msg);
 }
