@@ -104,7 +104,7 @@ private:
     void set_param_calib(const std::string& sensor, const std::string& parameter_name, const T& value);
 
     uint32_t get_node_id(std::string node_name);
-    void set_destination_id(uint32_t id);
+    void set_destination_id(uint16_t id);
     void set_destination_id(std::string node_name);
 
     std::string get_prefix();

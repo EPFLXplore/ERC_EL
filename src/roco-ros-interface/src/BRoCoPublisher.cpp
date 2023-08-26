@@ -124,7 +124,7 @@ void BRoCoPublisher::watchdogCallback(size_t nodeID) {
 }
 
 void BRoCoPublisher::handlePingPacket(uint8_t senderID, PingPacket* packet) {
-    uint32_t id = packet->id;
+    uint16_t id = packet->id;
     if (id < watchdog_timers.size()) {
         watchdog_timers[id]->reset();
     }
@@ -665,12 +665,12 @@ uint32_t BRoCoPublisher::get_node_id(std::string node_name) {
 
 
 void BRoCoPublisher::set_destination_id(std::string node_name) {
-    uint32_t id = dynamic_cast<BRoCoManager*>(parent)->get_param<uint32_t>(node_name);
+    uint16_t id = dynamic_cast<BRoCoManager*>(parent)->get_param<uint32_t>(node_name);
     dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
 }
 
-void BRoCoPublisher::set_destination_id(uint32_t id) {
-    dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
+void BRoCoPublisher::set_destination_id(uint16_t id) {
+    dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig((uint32_t)id);
 }
 
 std::string BRoCoPublisher::get_prefix() {
