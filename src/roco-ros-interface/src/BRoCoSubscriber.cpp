@@ -44,6 +44,14 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
     this->mag_config_req_sub = parent->create_subscription<avionics_interfaces::msg::MagConfigRequestJetson>
         (get_prefix() + get_param<std::string>("MAG_CONFIG_REQ_JETSON_TOPIC"), 10, std::bind(&BRoCoSubscriber::magConfigReqCallback, this, _1));
     
+    this->mass_drill_calib_offset_sub = parent->create_subscription<avionics_interfaces::msg::MassCalibOffset>
+        (get_prefix() + get_param<std::string>("DRILL_MASS_CALIB_OFFSET_TOPIC"), 10, std::bind(&BRoCoSubscriber::massDrillCalibOffsetCallback, this, _1));
+    this->mass_container_calib_offset_sub = parent->create_subscription<avionics_interfaces::msg::MassCalibOffset>
+        (get_prefix() + get_param<std::string>("CONTAINER_MASS_CALIB_OFFSET_TOPIC"), 10, std::bind(&BRoCoSubscriber::massContainerCalibOffsetCallback, this, _1));
+    this->mass_drill_calib_scale_sub = parent->create_subscription<avionics_interfaces::msg::MassCalibScale>
+        (get_prefix() + get_param<std::string>("DRILL_MASS_CALIB_SCALE_TOPIC"), 10, std::bind(&BRoCoSubscriber::massDrillCalibScaleCallback, this, _1));
+    this->mass_container_calib_scale_sub = parent->create_subscription<avionics_interfaces::msg::MassCalibScale>
+        (get_prefix() + get_param<std::string>("CONTAINER_MASS_CALIB_SCALE_TOPIC"), 10, std::bind(&BRoCoSubscriber::massContainerCalibScaleCallback, this, _1));
 
     RCLCPP_INFO(parent->get_logger(), "Subscribers created");
 }
@@ -288,6 +296,100 @@ void BRoCoSubscriber::magConfigReqCallback(const avionics_interfaces::msg::MagCo
 
     for (uint8_t i = 0; i < 9; ++i)
         packet.soft_iron[i] = msg->soft_iron[i];
+
+    MAKE_IDENTIFIABLE(packet);
+    set_destination_id(id);
+    bus->send(&packet);
+}
+
+
+void BRoCoSubscriber::massDrillCalibOffsetCallback(const avionics_interfaces::msg::MassCalibOffset::SharedPtr msg) {
+    uint32_t id = 0;
+    if (msg->destination_id != 0)
+        id = msg->destination_id;
+    else
+        id = get_node_id("SC_DRILL_NODE_ID");
+
+    RCLCPP_INFO(parent->get_logger(), "Sending offset calibration request to node ID " + std::to_string(id) + "...");
+    static MassCalibPacket packet;
+    packet.calib_offset = true;
+    packet.calib_scale = false;
+    packet.channel = msg->channel;
+    packet.expected_weight = 1;
+
+    MAKE_IDENTIFIABLE(packet);
+    set_destination_id(id);
+    bus->send(&packet);
+}
+
+void BRoCoSubscriber::massContainerCalibOffsetCallback(const avionics_interfaces::msg::MassCalibOffset::SharedPtr msg) {
+    uint32_t id = 0;
+    if (msg->destination_id != 0)
+        id = msg->destination_id;
+    else
+        id = get_node_id("SC_CONTAINER_NODE_ID");
+
+    RCLCPP_INFO(parent->get_logger(), "Sending offset calibration request to node ID " + std::to_string(id) + "...");
+    static MassCalibPacket packet;
+    packet.calib_offset = true;
+    packet.calib_scale = false;
+    packet.channel = msg->channel;
+    packet.expected_weight = 1;
+
+    MAKE_IDENTIFIABLE(packet);
+    set_destination_id(id);
+    bus->send(&packet);
+}
+
+void BRoCoSubscriber::massDrillCalibScaleCallback(const avionics_interfaces::msg::MassCalibScale::SharedPtr msg) {
+    uint32_t id = 0;
+    if (msg->destination_id != 0)
+        id = msg->destination_id;
+    else
+        id = get_node_id("SC_DRILL_NODE_ID");
+
+    RCLCPP_INFO(parent->get_logger(), "Sending scale calibration request to node ID " + std::to_string(id) + "...");
+    static MassCalibPacket packet;
+    packet.calib_offset = false;
+    packet.calib_scale = true;
+    packet.channel = msg->channel;
+    packet.expected_weight = msg->expected_weight;
+
+    MAKE_IDENTIFIABLE(packet);
+    set_destination_id(id);
+    bus->send(&packet);
+}
+
+void BRoCoSubscriber::massContainerCalibScaleCallback(const avionics_interfaces::msg::MassCalibScale::SharedPtr msg) {
+    uint32_t id = 0;
+    if (msg->destination_id != 0)
+        id = msg->destination_id;
+    else
+        id = get_node_id("SC_CONTAINER_NODE_ID");
+
+    RCLCPP_INFO(parent->get_logger(), "Sending scale calibration request to node ID " + std::to_string(id) + "...");
+    static MassCalibPacket packet;
+    packet.calib_offset = false;
+    packet.calib_scale = true;
+    packet.channel = msg->channel;
+    packet.expected_weight = msg->expected_weight;
+
+    MAKE_IDENTIFIABLE(packet);
+    set_destination_id(id);
+    bus->send(&packet);
+}
+
+void BRoCoSubscriber::imuCalibCallback(const avionics_interfaces::msg::ImuCalib::SharedPtr msg) {
+    uint32_t id = 0;
+    if (msg->destination_id != 0)
+        id = msg->destination_id;
+    else
+        id = get_node_id("NAV_NODE_ID");
+
+    RCLCPP_INFO(parent->get_logger(), "Sending IMU calibration request to node ID " + std::to_string(id) + "...");
+    static ImuCalibPacket packet;
+    packet.calib_offset_accel = msg->calib_offset_accel;
+    packet.calib_offset_gyro = msg->calib_offset_gyro;
 
     MAKE_IDENTIFIABLE(packet);
     set_destination_id(id);

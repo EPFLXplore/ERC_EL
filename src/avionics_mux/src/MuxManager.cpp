@@ -58,6 +58,12 @@ MuxManager::MuxManager() : Node("mux_manager") {
     this->declare_parameter("GYRO_CONFIG_REQ_JETSON_TOPIC");
     this->declare_parameter("MAG_CONFIG_REQ_JETSON_TOPIC");
 
+    this->declare_parameter("CONTAINER_MASS_CALIB_OFFSET_TOPIC");
+    this->declare_parameter("DRILL_MASS_CALIB_OFFSET_TOPIC");
+    this->declare_parameter("CONTAINER_MASS_CALIB_SCALE_TOPIC");
+    this->declare_parameter("DRILL_MASS_CALIB_SCALE_TOPIC");
+    this->declare_parameter("IMU_CALIB_TOPIC");
+
     if (!this->get_parameter("bus0", bus0)) {
         RCLCPP_ERROR(this->get_logger(), "Failed to get the 'bus0' parameter");
     }
@@ -126,6 +132,12 @@ MuxManager::MuxManager() : Node("mux_manager") {
     accel_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::AccelConfigRequestJetson>(this, get_param<std::string>("ACCEL_CONFIG_REQ_JETSON_TOPIC"));
     gyro_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::GyroConfigRequestJetson>(this, get_param<std::string>("GYRO_CONFIG_REQ_JETSON_TOPIC"));
     mag_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::MagConfigRequestJetson>(this, get_param<std::string>("MAG_CONFIG_REQ_JETSON_TOPIC"));
+
+    mass_container_calib_offset_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>(this, get_param<std::string>("CONTAINER_MASS_CALIB_OFFSET_TOPIC"));
+    mass_drill_calib_offset_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>(this, get_param<std::string>("DRILL_MASS_CALIB_OFFSET_TOPIC"));
+    mass_container_calib_scale_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibScale>(this, get_param<std::string>("CONTAINER_MASS_CALIB_SCALE_TOPIC"));
+    mass_drill_calib_scale_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibScale>(this, get_param<std::string>("DRILL_MASS_CALIB_SCALE_TOPIC"));
+    imu_calib_mux = new MuxSubscriber<avionics_interfaces::msg::ImuCalib>(this, get_param<std::string>("IMU_CALIB_TOPIC"));
 }
 
 MuxManager::~MuxManager() {
@@ -172,6 +184,12 @@ MuxManager::~MuxManager() {
     delete this->accel_config_req_jetson_mux;
     delete this->gyro_config_req_jetson_mux;
     delete this->mag_config_req_jetson_mux;
+
+    delete this->mass_container_calib_offset_mux;
+    delete this->mass_drill_calib_offset_mux;
+    delete this->mass_container_calib_scale_mux;
+    delete this->mass_drill_calib_scale_mux;
+    delete this->imu_calib_mux;
     
 }
 

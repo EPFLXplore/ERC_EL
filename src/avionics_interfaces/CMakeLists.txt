@@ -71,10 +71,18 @@ set(message_config_files
   "msg/MagConfigResponse.msg"
 )
 
+set(message_calib_files
+  "msg/MassCalibOffset.msg"
+  "msg/MassCalibScale.msg"
+
+  "msg/ImuCalib.msg"
+)
+
 rosidl_generate_interfaces(${PROJECT_NAME}
   ${message_files}
   ${message_request_files}
   ${message_config_files}
+  ${message_calib_files}
   DEPENDENCIES sensor_msgs std_msgs
  )
 ament_export_dependencies(rosidl_default_runtime)

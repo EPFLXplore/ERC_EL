@@ -82,3 +82,7 @@ template class MuxSubscriber<avionics_interfaces::msg::ServoConfigRequestJetson>
 template class MuxSubscriber<avionics_interfaces::msg::AccelConfigRequestJetson>;
 template class MuxSubscriber<avionics_interfaces::msg::GyroConfigRequestJetson>;
 template class MuxSubscriber<avionics_interfaces::msg::MagConfigRequestJetson>;
+
+template class MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>;
+template class MuxSubscriber<avionics_interfaces::msg::MassCalibScale>;
+template class MuxSubscriber<avionics_interfaces::msg::ImuCalib>;

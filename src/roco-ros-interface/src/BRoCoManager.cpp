@@ -88,6 +88,12 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
     this->declare_parameter("GYRO_CONFIG_REQ_JETSON_TOPIC");
     this->declare_parameter("MAG_CONFIG_REQ_JETSON_TOPIC");
 
+    this->declare_parameter("CONTAINER_MASS_CALIB_OFFSET_TOPIC");
+    this->declare_parameter("DRILL_MASS_CALIB_OFFSET_TOPIC");
+    this->declare_parameter("CONTAINER_MASS_CALIB_SCALE_TOPIC");
+    this->declare_parameter("DRILL_MASS_CALIB_SCALE_TOPIC");
+    this->declare_parameter("IMU_CALIB_TOPIC");
+
     // Calibration parameters =========================
     // Mass sensor
     this->declare_parameter("mass_drill.offset");

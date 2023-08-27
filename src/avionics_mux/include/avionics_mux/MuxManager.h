@@ -52,6 +52,10 @@
 #include "avionics_interfaces/msg/gyro_config_request_jetson.hpp"
 #include "avionics_interfaces/msg/mag_config_request_jetson.hpp"
 
+#include "avionics_interfaces/msg/mass_calib_offset.hpp"
+#include "avionics_interfaces/msg/mass_calib_scale.hpp"
+#include "avionics_interfaces/msg/imu_calib.hpp"
+
 #include "MuxPublisher.h"
 #include "MuxSubscriber.h"
 
@@ -132,6 +136,12 @@ private:
     MuxSubscriber<avionics_interfaces::msg::AccelConfigRequestJetson>* accel_config_req_jetson_mux;
     MuxSubscriber<avionics_interfaces::msg::GyroConfigRequestJetson>* gyro_config_req_jetson_mux;
     MuxSubscriber<avionics_interfaces::msg::MagConfigRequestJetson>* mag_config_req_jetson_mux;
+
+    MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>* mass_container_calib_offset_mux;
+    MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>* mass_drill_calib_offset_mux;
+    MuxSubscriber<avionics_interfaces::msg::MassCalibScale>* mass_container_calib_scale_mux;
+    MuxSubscriber<avionics_interfaces::msg::MassCalibScale>* mass_drill_calib_scale_mux;
+    MuxSubscriber<avionics_interfaces::msg::ImuCalib>* imu_calib_mux;
 };
 
 #endif /* MUX_MANAGER_H */

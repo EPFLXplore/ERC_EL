@@ -48,3 +48,11 @@
     GYRO_CONFIG_REQ_JETSON_TOPIC:   "/gyro_config_req"
     MAG_CONFIG_REQ_JETSON_TOPIC:    "/mag_config_req"
 
+    # Calibration
+    CONTAINER_MASS_CALIB_OFFSET_TOPIC:  "/container/mass_calib_offset"
+    DRILL_MASS_CALIB_OFFSET_TOPIC:      "/drill/mass_calib_offset"
+
+    CONTAINER_MASS_CALIB_SCALE_TOPIC:   "/container/mass_calib_scale"
+    DRILL_MASS_CALIB_SCALE_TOPIC:       "/drill/mass_calib_offset"
+
+    IMU_CALIB_TOPIC:                    "/imu_calib"

@@ -29,6 +29,10 @@
 #include "avionics_interfaces/msg/gyro_config_request_jetson.hpp"
 #include "avionics_interfaces/msg/mag_config_request_jetson.hpp"
 
+#include "avionics_interfaces/msg/mass_calib_offset.hpp"
+#include "avionics_interfaces/msg/mass_calib_scale.hpp"
+#include "avionics_interfaces/msg/imu_calib.hpp"
+
 #define MAKE_IDENTIFIABLE(PACKET) (PACKET).id = 0x000;
 
 class BRoCoSubscriber {
@@ -63,6 +67,12 @@ private:
     rclcpp::Subscription<avionics_interfaces::msg::GyroConfigRequestJetson>::SharedPtr gyro_config_req_sub;
     rclcpp::Subscription<avionics_interfaces::msg::MagConfigRequestJetson>::SharedPtr mag_config_req_sub;
 
+    rclcpp::Subscription<avionics_interfaces::msg::MassCalibOffset>::SharedPtr mass_drill_calib_offset_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::MassCalibOffset>::SharedPtr mass_container_calib_offset_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::MassCalibScale>::SharedPtr mass_drill_calib_scale_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::MassCalibScale>::SharedPtr mass_container_calib_scale_sub;
+    rclcpp::Subscription<avionics_interfaces::msg::ImuCalib>::SharedPtr imu_calib_sub;
+
     void spectroReqCallback(const avionics_interfaces::msg::SpectroRequest::SharedPtr msg);
     void servoReqCallback(const avionics_interfaces::msg::ServoRequest::SharedPtr msg);
     void laserReqCallback(const avionics_interfaces::msg::LaserRequest::SharedPtr msg);
@@ -75,6 +85,11 @@ private:
     void gyroConfigReqCallback(const avionics_interfaces::msg::GyroConfigRequestJetson::SharedPtr msg);
     void magConfigReqCallback(const avionics_interfaces::msg::MagConfigRequestJetson::SharedPtr msg);
 
+    void massDrillCalibOffsetCallback(const avionics_interfaces::msg::MassCalibOffset::SharedPtr msg);
+    void massContainerCalibOffsetCallback(const avionics_interfaces::msg::MassCalibOffset::SharedPtr msg);
+    void massDrillCalibScaleCallback(const avionics_interfaces::msg::MassCalibScale::SharedPtr msg);
+    void massContainerCalibScaleCallback(const avionics_interfaces::msg::MassCalibScale::SharedPtr msg);
+    void imuCalibCallback(const avionics_interfaces::msg::ImuCalib::SharedPtr msg);
 
     rclcpp::Clock::SharedPtr clk;
     rclcpp::TimerBase::SharedPtr timer;
