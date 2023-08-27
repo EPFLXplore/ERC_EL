@@ -24,18 +24,38 @@
         - 0.2000000029802322
         - 0.300000011920929
         - 180654.000000001
-      alpha: 1
+      alpha: 0.8
       enabled_channels:
         - true
         - true
         - false
         - true
     potentiometer:
-      min_voltages: [0.0, 0.0, 0.0, 0.0]
-      max_voltages: [3.0, 3.0, 3.0, 3.0]
-      min_angles: [0.0, 0.0, 0.0, 0.0]
-      max_angles: [180.0, 180.0, 180.0, 180.0]
-      enabled_channels: [true, true, false, false]
+      min_voltages:
+        - 1e-09
+        - 1e-09
+        - 1e-09
+        - 1e-09
+      max_voltages:
+        - 3.000000001
+        - 3.000000001
+        - 3.000000001
+        - 3.000000001
+      min_angles:
+        - 1e-09
+        - 1e-09
+        - 1e-09
+        - 1e-09
+      max_angles:
+        - 180.000000001
+        - 180.000000001
+        - 180.000000001
+        - 180.000000001
+      enabled_channels:
+        - true
+        - true
+        - false
+        - false
     servo:
       min_duty: [5.0, 5.0, 5.0, 5.0]
       max_duty: [10.0, 10.0, 10.0, 10.0]

@@ -52,6 +52,9 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
         (get_prefix() + get_param<std::string>("DRILL_MASS_CALIB_SCALE_TOPIC"), 10, std::bind(&BRoCoSubscriber::massDrillCalibScaleCallback, this, _1));
     this->mass_container_calib_scale_sub = parent->create_subscription<avionics_interfaces::msg::MassCalibScale>
         (get_prefix() + get_param<std::string>("CONTAINER_MASS_CALIB_SCALE_TOPIC"), 10, std::bind(&BRoCoSubscriber::massContainerCalibScaleCallback, this, _1));
+this->imu_calib_sub = parent->create_subscription<avionics_interfaces::msg::ImuCalib>
+        (get_prefix() + get_param<std::string>("IMU_CALIB_TOPIC"), 10, std::bind(&BRoCoSubscriber::imuCalibCallback, this, _1));
+
 
     RCLCPP_INFO(parent->get_logger(), "Subscribers created");
 }
