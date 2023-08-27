@@ -310,7 +310,7 @@ void BRoCoSubscriber::magConfigReqCallback(const avionics_interfaces::msg::MagCo
 
 
 void BRoCoSubscriber::massDrillCalibOffsetCallback(const avionics_interfaces::msg::MassCalibOffset::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -329,7 +329,7 @@ void BRoCoSubscriber::massDrillCalibOffsetCallback(const avionics_interfaces::ms
 }
 
 void BRoCoSubscriber::massContainerCalibOffsetCallback(const avionics_interfaces::msg::MassCalibOffset::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -348,7 +348,7 @@ void BRoCoSubscriber::massContainerCalibOffsetCallback(const avionics_interfaces
 }
 
 void BRoCoSubscriber::massDrillCalibScaleCallback(const avionics_interfaces::msg::MassCalibScale::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -367,7 +367,7 @@ void BRoCoSubscriber::massDrillCalibScaleCallback(const avionics_interfaces::msg
 }
 
 void BRoCoSubscriber::massContainerCalibScaleCallback(const avionics_interfaces::msg::MassCalibScale::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -386,7 +386,7 @@ void BRoCoSubscriber::massContainerCalibScaleCallback(const avionics_interfaces:
 }
 
 void BRoCoSubscriber::imuCalibCallback(const avionics_interfaces::msg::ImuCalib::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
