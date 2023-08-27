@@ -57,7 +57,7 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
 }
 
 void BRoCoSubscriber::spectroReqCallback(const avionics_interfaces::msg::SpectroRequest::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -71,7 +71,7 @@ void BRoCoSubscriber::spectroReqCallback(const avionics_interfaces::msg::Spectro
     bus->send(&packet);
 }
 void BRoCoSubscriber::servoReqCallback(const avionics_interfaces::msg::ServoRequest::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -86,7 +86,7 @@ void BRoCoSubscriber::servoReqCallback(const avionics_interfaces::msg::ServoRequ
 }
 
 void BRoCoSubscriber::laserReqCallback(const avionics_interfaces::msg::LaserRequest::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -100,7 +100,7 @@ void BRoCoSubscriber::laserReqCallback(const avionics_interfaces::msg::LaserRequ
 }
 
 void BRoCoSubscriber::ledReqCallback(const avionics_interfaces::msg::LEDRequest::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -114,7 +114,7 @@ void BRoCoSubscriber::ledReqCallback(const avionics_interfaces::msg::LEDRequest:
 }
 
 void BRoCoSubscriber::massConfigReqCallback(const avionics_interfaces::msg::MassConfigRequestJetson::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -145,7 +145,7 @@ void BRoCoSubscriber::massConfigReqCallback(const avionics_interfaces::msg::Mass
 }
 
 void BRoCoSubscriber::potConfigReqCallback(const avionics_interfaces::msg::PotConfigRequestJetson::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -191,7 +191,7 @@ void BRoCoSubscriber::potConfigReqCallback(const avionics_interfaces::msg::PotCo
 }
 
 void BRoCoSubscriber::servoConfigReqCallback(const avionics_interfaces::msg::ServoConfigRequestJetson::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -235,7 +235,7 @@ void BRoCoSubscriber::servoConfigReqCallback(const avionics_interfaces::msg::Ser
 }
 
 void BRoCoSubscriber::accelConfigReqCallback(const avionics_interfaces::msg::AccelConfigRequestJetson::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -255,11 +255,13 @@ void BRoCoSubscriber::accelConfigReqCallback(const avionics_interfaces::msg::Acc
 
     MAKE_IDENTIFIABLE(packet);
     set_destination_id(id);
+    // set_destination_id(get_node_id("GENERAL_NODE_ID"));
+    // set_destination_id(4);
     bus->send(&packet);
 }
 
 void BRoCoSubscriber::gyroConfigReqCallback(const avionics_interfaces::msg::GyroConfigRequestJetson::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -275,11 +277,13 @@ void BRoCoSubscriber::gyroConfigReqCallback(const avionics_interfaces::msg::Gyro
 
     MAKE_IDENTIFIABLE(packet);
     set_destination_id(id);
+    // set_destination_id(get_node_id("GENERAL_NODE_ID"));
+    // set_destination_id(4);
     bus->send(&packet);
 }
 
 void BRoCoSubscriber::magConfigReqCallback(const avionics_interfaces::msg::MagConfigRequestJetson::SharedPtr msg) {
-    uint32_t id = 0;
+    uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
@@ -299,6 +303,8 @@ void BRoCoSubscriber::magConfigReqCallback(const avionics_interfaces::msg::MagCo
 
     MAKE_IDENTIFIABLE(packet);
     set_destination_id(id);
+    // set_destination_id(get_node_id("GENERAL_NODE_ID"));
+    // set_destination_id(4);
     bus->send(&packet);
 }
 
@@ -401,11 +407,11 @@ uint32_t BRoCoSubscriber::get_node_id(std::string node_name) {
 }
 
 void BRoCoSubscriber::set_destination_id(std::string node_name) {
-    uint32_t id = dynamic_cast<BRoCoManager*>(parent)->get_param<uint32_t>(node_name);
+    uint16_t id = dynamic_cast<BRoCoManager*>(parent)->get_param<uint32_t>(node_name);
     dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
 }
 
-void BRoCoSubscriber::set_destination_id(uint32_t id) {
+void BRoCoSubscriber::set_destination_id(uint16_t id) {
     dynamic_cast<CanSocketDriver*>(bus->get_driver())->TxFrameConfig(id);
 }
 
