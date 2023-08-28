@@ -300,6 +300,7 @@ void BRoCoPublisher::handleSpectroPacket(uint8_t senderID, SpectroResponsePacket
 }
 
 void BRoCoPublisher::handleLaserPacket(uint8_t senderID, LaserResponsePacket* packet) {
+    RCLCPP_INFO(parent->get_logger(), "Laser response received");
     auto msg = avionics_interfaces::msg::LaserResponse();
 
     msg.id = packet->id;
