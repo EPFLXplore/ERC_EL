@@ -1,58 +1,58 @@
 /**:
   ros__parameters:
     # Publishers ============================
-    FOUR_IN_ONE_TOPIC:    "/four_in_one"
-    NPK_TOPIC:            "/npk"
-    VOLTAGE_TOPIC:        "/voltage"
-    DRILL_MASS_TOPIC:     "/drill/mass"
-    CONTAINER_MASS_TOPIC: "/container/mass"
-    IMU_TOPIC:            "/imu"
-    MAG_TOPIC:            "/mag"
-    POTENTIOMETER_TOPIC:  "/potentiometer"
-    SPECTRO_TOPIC:        "/spectro_response"
-    LASER_TOPIC:          "/laser_response"
-    SERVO_TOPIC:          "/servo_response"
-    LED_TOPIC:            "/led_response"
-    NODE_STATE_TOPIC:     "/node_state"
+    FOUR_IN_ONE_TOPIC:    "/EL/four_in_one"
+    NPK_TOPIC:            "/EL/npk"
+    VOLTAGE_TOPIC:        "/EL/voltage"
+    DRILL_MASS_TOPIC:     "/EL/drill/mass"
+    CONTAINER_MASS_TOPIC: "/EL/container/mass"
+    IMU_TOPIC:            "/EL/imu"
+    MAG_TOPIC:            "/EL/mag"
+    POTENTIOMETER_TOPIC:  "/EL/potentiometer"
+    SPECTRO_TOPIC:        "/EL/spectro_response"
+    LASER_TOPIC:          "/EL/laser_response"
+    SERVO_TOPIC:          "/EL/servo_response"
+    LED_TOPIC:            "/EL/led_response"
+    NODE_STATE_TOPIC:     "/EL/node_state"
 
     # Config
-    MASS_CONFIG_REQ_MCU_TOPIC:  "/mass_config_mcu_req"
-    MASS_CONFIG_TOPIC:          "/mass_config_response"
+    MASS_CONFIG_REQ_MCU_TOPIC:  "/EL/mass_config_mcu_req"
+    MASS_CONFIG_TOPIC:          "/EL/mass_config_response"
 
-    POT_CONFIG_REQ_MCU_TOPIC:  "/pot_config_mcu_req"
-    POT_CONFIG_TOPIC:          "/pot_config_response"
+    POT_CONFIG_REQ_MCU_TOPIC:  "/EL/pot_config_mcu_req"
+    POT_CONFIG_TOPIC:          "/EL/pot_config_response"
 
-    SERVO_CONFIG_REQ_MCU_TOPIC:  "/servo_config_mcu_req"
-    SERVO_CONFIG_TOPIC:          "/servo_config_response"
+    SERVO_CONFIG_REQ_MCU_TOPIC:  "/EL/servo_config_mcu_req"
+    SERVO_CONFIG_TOPIC:          "/EL/servo_config_response"
 
-    ACCEL_CONFIG_REQ_MCU_TOPIC:  "/accel_config_mcu_req"
-    ACCEL_CONFIG_TOPIC:          "/accel_config_response"
+    ACCEL_CONFIG_REQ_MCU_TOPIC:  "/EL/accel_config_mcu_req"
+    ACCEL_CONFIG_TOPIC:          "/EL/accel_config_response"
 
-    GYRO_CONFIG_REQ_MCU_TOPIC:  "/gyro_config_mcu_req"
-    GYRO_CONFIG_TOPIC:          "/gyro_config_response"
+    GYRO_CONFIG_REQ_MCU_TOPIC:  "/EL/gyro_config_mcu_req"
+    GYRO_CONFIG_TOPIC:          "/EL/gyro_config_response"
 
-    MAG_CONFIG_REQ_MCU_TOPIC:  "/mag_config_mcu_req"
-    MAG_CONFIG_TOPIC:          "/mag_config_response"
+    MAG_CONFIG_REQ_MCU_TOPIC:  "/EL/mag_config_mcu_req"
+    MAG_CONFIG_TOPIC:          "/EL/mag_config_response"
 
     # Subscribers ===========================
-    SPECTRO_REQ_TOPIC:    "/spectro_req"
-    SERVO_REQ_TOPIC:      "/servo_req"
-    LASER_REQ_TOPIC:      "/laser_req"
-    LED_REQ_TOPIC:        "/led_req"
+    SPECTRO_REQ_TOPIC:    "/EL/spectro_req"
+    SERVO_REQ_TOPIC:      "/EL/servo_req"
+    LASER_REQ_TOPIC:      "/EL/laser_req"
+    LED_REQ_TOPIC:        "/EL/led_req"
 
     # Config
-    MASS_CONFIG_REQ_JETSON_TOPIC:   "/mass_config_req"
-    POT_CONFIG_REQ_JETSON_TOPIC:    "/pot_config_req"
-    SERVO_CONFIG_REQ_JETSON_TOPIC:  "/servo_config_req"
-    ACCEL_CONFIG_REQ_JETSON_TOPIC:  "/accel_config_req"
-    GYRO_CONFIG_REQ_JETSON_TOPIC:   "/gyro_config_req"
-    MAG_CONFIG_REQ_JETSON_TOPIC:    "/mag_config_req"
+    MASS_CONFIG_REQ_JETSON_TOPIC:   "/EL/mass_config_req"
+    POT_CONFIG_REQ_JETSON_TOPIC:    "/EL/pot_config_req"
+    SERVO_CONFIG_REQ_JETSON_TOPIC:  "/EL/servo_config_req"
+    ACCEL_CONFIG_REQ_JETSON_TOPIC:  "/EL/accel_config_req"
+    GYRO_CONFIG_REQ_JETSON_TOPIC:   "/EL/gyro_config_req"
+    MAG_CONFIG_REQ_JETSON_TOPIC:    "/EL/mag_config_req"
 
     # Calibration
-    CONTAINER_MASS_CALIB_OFFSET_TOPIC:  "/container/mass_calib_offset"
-    DRILL_MASS_CALIB_OFFSET_TOPIC:      "/drill/mass_calib_offset"
+    CONTAINER_MASS_CALIB_OFFSET_TOPIC:  "/EL/container/mass_calib_offset"
+    DRILL_MASS_CALIB_OFFSET_TOPIC:      "/EL/drill/mass_calib_offset"
 
-    CONTAINER_MASS_CALIB_SCALE_TOPIC:   "/container/mass_calib_scale"
-    DRILL_MASS_CALIB_SCALE_TOPIC:       "/drill/mass_calib_offset"
+    CONTAINER_MASS_CALIB_SCALE_TOPIC:   "/EL/container/mass_calib_scale"
+    DRILL_MASS_CALIB_SCALE_TOPIC:       "/EL/drill/mass_calib_offset"
 
-    IMU_CALIB_TOPIC:                    "/imu_calib"
+    IMU_CALIB_TOPIC:                    "/EL/imu_calib"

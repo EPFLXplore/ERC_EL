@@ -85,10 +85,10 @@ MuxManager::MuxManager() : Node("mux_manager") {
     bus1_state.resize(max_number_nodes, false);
 
     bus0_node_state_sub = this->create_subscription<avionics_interfaces::msg::NodeStateArray>(
-        bus0 + "/node_state", 10, std::bind(&MuxManager::bus0StateCallback, this, std::placeholders::_1));
+        bus0 + get_param<std::string>("NODE_STATE_TOPIC"), 10, std::bind(&MuxManager::bus0StateCallback, this, std::placeholders::_1));
 
     bus1_node_state_sub = this->create_subscription<avionics_interfaces::msg::NodeStateArray>(
-        bus1 + "/node_state", 10, std::bind(&MuxManager::bus1StateCallback, this, std::placeholders::_1));
+        bus1 + get_param<std::string>("NODE_STATE_TOPIC"), 10, std::bind(&MuxManager::bus1StateCallback, this, std::placeholders::_1));
 
     four_in_one_mux = new MuxPublisher<avionics_interfaces::msg::FourInOne>(this, get_param<std::string>("FOUR_IN_ONE_TOPIC"));
     npk_mux = new MuxPublisher<avionics_interfaces::msg::NPK>(this, get_param<std::string>("NPK_TOPIC"));
