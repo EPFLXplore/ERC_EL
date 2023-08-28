@@ -10,10 +10,11 @@
 template<typename MessageT>
 MuxSubscriber<MessageT>::MuxSubscriber(
     rclcpp::Node* parent,
-    const std::string& topic_name
+    const std::string& topic_name, uint16_t default_id
 ) : parent(parent), topic_name(topic_name),
     bus0(dynamic_cast<MuxManager*>(parent)->get_param<std::string>("bus0")),
-    bus1(dynamic_cast<MuxManager*>(parent)->get_param<std::string>("bus1"))
+    bus1(dynamic_cast<MuxManager*>(parent)->get_param<std::string>("bus1")),
+    default_id(default_id)
 {
     pub0 = parent->create_publisher<MessageT>("/" + bus0 + topic_name, 10);
     pub1 = parent->create_publisher<MessageT>("/" + bus1 + topic_name, 10);
@@ -33,8 +34,15 @@ void MuxSubscriber<MessageT>::initCallback() {
 template<typename MessageT>
 void MuxSubscriber<MessageT>::callback(const typename MessageT::SharedPtr msg) {
     if (msg->destination_id < dynamic_cast<MuxManager*>(parent)->get_max_number_nodes()) {
-        bool bus0_state = dynamic_cast<MuxManager*>(parent)->get_bus0_state()[msg->destination_id];
-        bool bus1_state = dynamic_cast<MuxManager*>(parent)->get_bus1_state()[msg->destination_id];
+        bool bus0_state;
+        bool bus1_state;
+        if (msg->destination_id != 0) {
+            bus0_state = dynamic_cast<MuxManager*>(parent)->get_bus0_state()[msg->destination_id];
+            bus1_state = dynamic_cast<MuxManager*>(parent)->get_bus1_state()[msg->destination_id];
+        } else {
+            bus0_state = dynamic_cast<MuxManager*>(parent)->get_bus0_state()[default_id];
+            bus1_state = dynamic_cast<MuxManager*>(parent)->get_bus1_state()[default_id];
+        }
         switch(selected_bus(bus0_state, bus1_state)) {
             case 0:
                 pub0->publish(*msg);

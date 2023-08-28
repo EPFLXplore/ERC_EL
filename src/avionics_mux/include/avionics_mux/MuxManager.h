@@ -78,6 +78,7 @@ public:
     std::vector<bool> get_bus0_state() const;
     std::vector<bool> get_bus1_state() const;
     uint32_t get_max_number_nodes() const;
+    uint16_t get_node_id(std::string node_name);
 
 private:
     rclcpp::Subscription<avionics_interfaces::msg::NodeStateArray>::SharedPtr bus0_node_state_sub;

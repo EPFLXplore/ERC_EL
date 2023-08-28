@@ -12,8 +12,15 @@
 MuxManager::MuxManager() : Node("mux_manager") {
     
     this->declare_parameter("bus0");
-    this->declare_parameter("MAX_NUMBER_NODES");
+
+    // Node IDs
+    this->declare_parameter("JETSON_NODE_ID");
+    this->declare_parameter("SC_CONTAINER_NODE_ID");
+    this->declare_parameter("SC_DRILL_NODE_ID");
+    this->declare_parameter("NAV_NODE_ID");
+    this->declare_parameter("HD_NODE_ID");
     this->declare_parameter("GENERAL_NODE_ID");
+    this->declare_parameter("MAX_NUMBER_NODES");
 
     // Topic names =================================
     // Publishers
@@ -121,23 +128,23 @@ MuxManager::MuxManager() : Node("mux_manager") {
     mag_config_req_mcu_mux = new MuxPublisher<avionics_interfaces::msg::MagConfigRequestMCU>(this, get_param<std::string>("MAG_CONFIG_REQ_MCU_TOPIC"));
     mag_config_response_mux = new MuxPublisher<avionics_interfaces::msg::MagConfigResponse>(this, get_param<std::string>("MAG_CONFIG_TOPIC"));
 
-    laser_req_mux = new MuxSubscriber<avionics_interfaces::msg::LaserRequest>(this, get_param<std::string>("LASER_REQ_TOPIC"));
-    led_req_mux = new MuxSubscriber<avionics_interfaces::msg::LEDRequest>(this, get_param<std::string>("LED_REQ_TOPIC"));
-    servo_req_mux = new MuxSubscriber<avionics_interfaces::msg::ServoRequest>(this, get_param<std::string>("SERVO_REQ_TOPIC"));
-    spectro_req_mux = new MuxSubscriber<avionics_interfaces::msg::SpectroRequest>(this, get_param<std::string>("SPECTRO_REQ_TOPIC"));
+    laser_req_mux = new MuxSubscriber<avionics_interfaces::msg::LaserRequest>(this, get_param<std::string>("LASER_REQ_TOPIC"), get_node_id("HD_NODE_ID"));
+    led_req_mux = new MuxSubscriber<avionics_interfaces::msg::LEDRequest>(this, get_param<std::string>("LED_REQ_TOPIC"), get_node_id("NAV_NODE_ID"));
+    servo_req_mux = new MuxSubscriber<avionics_interfaces::msg::ServoRequest>(this, get_param<std::string>("SERVO_REQ_TOPIC"), get_node_id("HD_NODE_ID"));
+    spectro_req_mux = new MuxSubscriber<avionics_interfaces::msg::SpectroRequest>(this, get_param<std::string>("SPECTRO_REQ_TOPIC"), get_node_id("SC_DRILL_NODE_ID"));
 
-    mass_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::MassConfigRequestJetson>(this, get_param<std::string>("MASS_CONFIG_REQ_JETSON_TOPIC"));
-    pot_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::PotConfigRequestJetson>(this, get_param<std::string>("POT_CONFIG_REQ_JETSON_TOPIC"));
-    servo_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::ServoConfigRequestJetson>(this, get_param<std::string>("SERVO_CONFIG_REQ_JETSON_TOPIC"));
-    accel_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::AccelConfigRequestJetson>(this, get_param<std::string>("ACCEL_CONFIG_REQ_JETSON_TOPIC"));
-    gyro_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::GyroConfigRequestJetson>(this, get_param<std::string>("GYRO_CONFIG_REQ_JETSON_TOPIC"));
-    mag_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::MagConfigRequestJetson>(this, get_param<std::string>("MAG_CONFIG_REQ_JETSON_TOPIC"));
+    mass_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::MassConfigRequestJetson>(this, get_param<std::string>("MASS_CONFIG_REQ_JETSON_TOPIC"), get_node_id("GENERAL_NODE_ID"));
+    pot_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::PotConfigRequestJetson>(this, get_param<std::string>("POT_CONFIG_REQ_JETSON_TOPIC"), get_node_id("NAV_NODE_ID"));
+    servo_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::ServoConfigRequestJetson>(this, get_param<std::string>("SERVO_CONFIG_REQ_JETSON_TOPIC"), get_node_id("HD_NODE_ID"));
+    accel_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::AccelConfigRequestJetson>(this, get_param<std::string>("ACCEL_CONFIG_REQ_JETSON_TOPIC"), get_node_id("NAV_NODE_ID"));
+    gyro_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::GyroConfigRequestJetson>(this, get_param<std::string>("GYRO_CONFIG_REQ_JETSON_TOPIC"), get_node_id("NAV_NODE_ID"));
+    mag_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::MagConfigRequestJetson>(this, get_param<std::string>("MAG_CONFIG_REQ_JETSON_TOPIC"), get_node_id("NAV_NODE_ID"));
 
-    mass_container_calib_offset_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>(this, get_param<std::string>("CONTAINER_MASS_CALIB_OFFSET_TOPIC"));
-    mass_drill_calib_offset_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>(this, get_param<std::string>("DRILL_MASS_CALIB_OFFSET_TOPIC"));
-    mass_container_calib_scale_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibScale>(this, get_param<std::string>("CONTAINER_MASS_CALIB_SCALE_TOPIC"));
-    mass_drill_calib_scale_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibScale>(this, get_param<std::string>("DRILL_MASS_CALIB_SCALE_TOPIC"));
-    imu_calib_mux = new MuxSubscriber<avionics_interfaces::msg::ImuCalib>(this, get_param<std::string>("IMU_CALIB_TOPIC"));
+    mass_container_calib_offset_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>(this, get_param<std::string>("CONTAINER_MASS_CALIB_OFFSET_TOPIC"), get_node_id("SC_CONTAINER_NODE_ID"));
+    mass_drill_calib_offset_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>(this, get_param<std::string>("DRILL_MASS_CALIB_OFFSET_TOPIC"), get_node_id("SC_DRILL_NODE_ID"));
+    mass_container_calib_scale_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibScale>(this, get_param<std::string>("CONTAINER_MASS_CALIB_SCALE_TOPIC"), get_node_id("SC_CONTAINER_NODE_ID"));
+    mass_drill_calib_scale_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibScale>(this, get_param<std::string>("DRILL_MASS_CALIB_SCALE_TOPIC"), get_node_id("SC_DRILL_NODE_ID"));
+    imu_calib_mux = new MuxSubscriber<avionics_interfaces::msg::ImuCalib>(this, get_param<std::string>("IMU_CALIB_TOPIC"), get_node_id("NAV_NODE_ID"));
 }
 
 MuxManager::~MuxManager() {
@@ -217,4 +224,8 @@ std::vector<bool> MuxManager::get_bus1_state() const {
 
 uint32_t MuxManager::get_max_number_nodes() const {
     return max_number_nodes;
+}
+
+uint16_t MuxManager::get_node_id(std::string node_name) {
+    return get_param<uint32_t>(node_name);
 }

@@ -53,6 +53,6 @@
     DRILL_MASS_CALIB_OFFSET_TOPIC:      "/EL/drill/mass_calib_offset"
 
     CONTAINER_MASS_CALIB_SCALE_TOPIC:   "/EL/container/mass_calib_scale"
-    DRILL_MASS_CALIB_SCALE_TOPIC:       "/EL/drill/mass_calib_offset"
+    DRILL_MASS_CALIB_SCALE_TOPIC:       "/EL/drill/mass_calib_scale"
 
     IMU_CALIB_TOPIC:                    "/EL/imu_calib"

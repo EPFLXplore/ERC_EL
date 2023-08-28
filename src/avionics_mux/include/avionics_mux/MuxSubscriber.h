@@ -15,7 +15,8 @@ class MuxSubscriber {
 public:
     MuxSubscriber(
         rclcpp::Node* parent,
-        const std::string& topic_name);
+        const std::string& topic_name,
+        uint16_t default_id);
 
     void callback(const typename MessageT::SharedPtr msg);
 
@@ -24,6 +25,7 @@ private:
     std::string topic_name;
     std::string bus0 = "";
     std::string bus1 = "";
+    uint16_t default_id = 0;
     typename rclcpp::Publisher<MessageT>::SharedPtr pub0;
     typename rclcpp::Publisher<MessageT>::SharedPtr pub1;
     typename rclcpp::Subscription<MessageT>::SharedPtr sub;
