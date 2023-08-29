@@ -6,8 +6,11 @@
     VOLTAGE_TOPIC:        "/EL/voltage"
     DRILL_MASS_TOPIC:     "/EL/drill/mass"
     CONTAINER_MASS_TOPIC: "/EL/container/mass"
-    IMU_TOPIC:            "/EL/imu"
-    MAG_TOPIC:            "/EL/mag"
+    IMU_TOPIC:            "/EL/imu_data" # avionics_interfaces/msg/Imu.msg
+    IMU_NAV_TOPIC:        "/EL/imu" # sensor_msgs/Imu.msg
+    MAG_TOPIC:            "/EL/mag_data"
+    MAG_CAL_TOPIC:        "/EL/mag"
+    MAG_RAW_TOPIC:        "/EL/mag_raw"
     POTENTIOMETER_TOPIC:  "/EL/potentiometer"
     SPECTRO_TOPIC:        "/EL/spectro_response"
     LASER_TOPIC:          "/EL/laser_response"

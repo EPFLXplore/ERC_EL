@@ -1,3 +1,9 @@
+#
+# avionics_launch.py
+#
+#      Author: Vincent Nguyen
+#
+
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
@@ -109,5 +115,21 @@ def generate_launch_description():
             '--param', 'bus1:=' + bus1_name]
     )
     ld.add_action(node_mux)
+
+    # Define the package and executable names for the converter node
+    converter_package_name = 'avionics_converter'
+    converter_executable_name = 'avionics_converter'
+
+    # Launch the mux node with parameters
+    node_converter = Node(
+        package=converter_package_name,
+        executable=converter_executable_name,
+        namespace=ns,
+        parameters=[topic_names_params_file, id_params_file, calibration_params_file, connection_params_file],
+        output='screen',
+        arguments=['--ros-args',
+            '--log-level', logger]
+    )
+    ld.add_action(node_converter)
 
     return ld

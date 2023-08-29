@@ -30,10 +30,10 @@
         - 451.8432922363281
       alpha: 0.8
       enabled_channels:
-        - true
-        - true
         - false
         - true
+        - false
+        - false
     potentiometer:
       min_voltages:
         - 1e-09
