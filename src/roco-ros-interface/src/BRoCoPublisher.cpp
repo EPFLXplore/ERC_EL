@@ -242,13 +242,13 @@ void BRoCoPublisher::handleMagPacket(uint8_t senderID, MagPacket* packet) {
     msg.mag_raw.header.frame_id = "imu";
     msg.mag_cal.header.frame_id = "imu";
 
-    msg.mag_raw.magnetic_field.x = packet->mag_raw[0]*1000000;
-    msg.mag_raw.magnetic_field.y = packet->mag_raw[1]*1000000;
-    msg.mag_raw.magnetic_field.z = packet->mag_raw[2]*1000000;
+    msg.mag_raw.magnetic_field.x = packet->mag_raw[0]/1000000;
+    msg.mag_raw.magnetic_field.y = packet->mag_raw[1]/1000000;
+    msg.mag_raw.magnetic_field.z = packet->mag_raw[2]/1000000;
 
-    msg.mag_cal.magnetic_field.x = packet->mag[0]*1000000;
-    msg.mag_cal.magnetic_field.y = packet->mag[1]*1000000;
-    msg.mag_cal.magnetic_field.z = packet->mag[2]*1000000;
+    msg.mag_cal.magnetic_field.x = packet->mag[0]/1000000;
+    msg.mag_cal.magnetic_field.y = packet->mag[1]/1000000;
+    msg.mag_cal.magnetic_field.z = packet->mag[2]/1000000;
 
     // To change
     msg.mag_raw.magnetic_field_covariance[0] = 3.2e-7;

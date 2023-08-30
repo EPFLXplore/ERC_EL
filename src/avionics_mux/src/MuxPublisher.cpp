@@ -46,8 +46,8 @@ void MuxPublisher<MessageT>::callback0(const typename MessageT::SharedPtr msg) {
         if (selected_bus(bus0_state, bus1_state) == 0 or selected_bus(bus0_state, bus1_state) == NOBUS)
             pub->publish(*msg);
     } else {
-        RCLCPP_ERROR(parent->get_logger(), "Invalid node ID for " + bus0 + topic_name + ": " + std::to_string(msg->id) + ". Publishing anyway...");
-        pub->publish(*msg);
+        RCLCPP_ERROR(parent->get_logger(), "Invalid node ID for " + bus0 + topic_name + ": " + std::to_string(msg->id) + ". Not publishing...");
+        // pub->publish(*msg);
     }
 }
 
@@ -60,8 +60,8 @@ void MuxPublisher<MessageT>::callback1(const typename MessageT::SharedPtr msg) {
         if (selected_bus(bus0_state, bus1_state) == 1 or selected_bus(bus0_state, bus1_state) == NOBUS)
             pub->publish(*msg);
     } else {
-        RCLCPP_ERROR(parent->get_logger(), "Invalid node ID for " + bus1 + topic_name + ": " + std::to_string(msg->id) + ". Publishing anyway...");
-        pub->publish(*msg);
+        RCLCPP_ERROR(parent->get_logger(), "Invalid node ID for " + bus1 + topic_name + ": " + std::to_string(msg->id) + ". Not publishing...");
+        // pub->publish(*msg);
     }
 }
 
