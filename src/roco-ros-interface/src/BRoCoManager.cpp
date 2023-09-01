@@ -131,6 +131,7 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
     this->declare_parameter("mag.soft_iron");
 
     if (get_param<bool>("ATTEMPT_RETRY") == true) {
+        RCLCPP_INFO(this->get_logger(), "Attempting connection on " + bus_name);
         // Create a timer to periodically attempt connection
         retry_timer = this->create_wall_timer(
             std::chrono::milliseconds(get_param<uint32_t>("CONNECTION_RETRY_INTERVAL")),
