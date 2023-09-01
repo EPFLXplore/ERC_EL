@@ -230,29 +230,29 @@ void BRoCoPublisher::handleIMUPacket(uint8_t senderID, IMUPacket* packet) {
 
     // To change
 
-    msg.imu.orientation_covariance[0] = 1e-4;
-    msg.imu.orientation_covariance[3] = 1e-4;
-    msg.imu.orientation_covariance[6] = 1e-4;
+    msg.imu.orientation_covariance[0] = 0;
+    msg.imu.orientation_covariance[3] = 0;
+    msg.imu.orientation_covariance[6] = 0;
 
-    msg.imu.linear_acceleration_covariance[0] = 1.4e-3;
-    msg.imu.linear_acceleration_covariance[1] = 1.0e-4;
-    msg.imu.linear_acceleration_covariance[2] = 4.5e-5;
-    msg.imu.linear_acceleration_covariance[3] = 1.0e-4;
-    msg.imu.linear_acceleration_covariance[4] = 2.1e-3;
-    msg.imu.linear_acceleration_covariance[5] = 2.5e-4;
-    msg.imu.linear_acceleration_covariance[6] = 4.5e-5;
-    msg.imu.linear_acceleration_covariance[7] = 2.5e-4;
-    msg.imu.linear_acceleration_covariance[8] = 2.0e-3;
+    msg.imu.linear_acceleration_covariance[0] = 0;
+    msg.imu.linear_acceleration_covariance[1] = 0;
+    msg.imu.linear_acceleration_covariance[2] = 0;
+    msg.imu.linear_acceleration_covariance[3] = 0;
+    msg.imu.linear_acceleration_covariance[4] = 0;
+    msg.imu.linear_acceleration_covariance[5] = 0;
+    msg.imu.linear_acceleration_covariance[6] = 0;
+    msg.imu.linear_acceleration_covariance[7] = 0;
+    msg.imu.linear_acceleration_covariance[8] = 0;
 
-    msg.imu.angular_velocity_covariance[0] = 1.6e-2;
-    msg.imu.angular_velocity_covariance[1] = -4.1e-5;
-    msg.imu.angular_velocity_covariance[2] = 4.7e-3;
-    msg.imu.angular_velocity_covariance[3] = -4.1e-5;
-    msg.imu.angular_velocity_covariance[4] = 1.7e-2;
-    msg.imu.angular_velocity_covariance[5] = 1.1e-4;
-    msg.imu.angular_velocity_covariance[6] = 4.7e-3;
-    msg.imu.angular_velocity_covariance[7] = 1.1e-4;
-    msg.imu.angular_velocity_covariance[8] = 2.5e-2;
+    msg.imu.angular_velocity_covariance[0] = 0;
+    msg.imu.angular_velocity_covariance[1] = 0;
+    msg.imu.angular_velocity_covariance[2] = 0;
+    msg.imu.angular_velocity_covariance[3] = 0;
+    msg.imu.angular_velocity_covariance[4] = 0;
+    msg.imu.angular_velocity_covariance[5] = 0;
+    msg.imu.angular_velocity_covariance[6] = 0;
+    msg.imu.angular_velocity_covariance[7] = 0;
+    msg.imu.angular_velocity_covariance[8] = 0;
 
     imu_pub->publish(msg);
 }
