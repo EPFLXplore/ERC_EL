@@ -70,6 +70,7 @@ void BRoCoSubscriber::spectroReqCallback(const avionics_interfaces::msg::Spectro
     static SpectroPacket packet;
     packet.measure = msg->measure;
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }
@@ -84,6 +85,7 @@ void BRoCoSubscriber::servoReqCallback(const avionics_interfaces::msg::ServoRequ
     packet.channel = msg->channel;
     packet.angle = msg->angle;
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }
@@ -98,6 +100,7 @@ void BRoCoSubscriber::laserReqCallback(const avionics_interfaces::msg::LaserRequ
     static LaserPacket packet;
     packet.enable = msg->enable;
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }
@@ -112,6 +115,7 @@ void BRoCoSubscriber::ledReqCallback(const avionics_interfaces::msg::LEDRequest:
     static LEDPacket packet;
     packet.state = msg->state;
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }
@@ -143,6 +147,7 @@ void BRoCoSubscriber::massConfigReqCallback(const avionics_interfaces::msg::Mass
     packet.alpha = msg->alpha;
 
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }
@@ -189,6 +194,7 @@ void BRoCoSubscriber::potConfigReqCallback(const avionics_interfaces::msg::PotCo
     }
 
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }
@@ -233,6 +239,7 @@ void BRoCoSubscriber::servoConfigReqCallback(const avionics_interfaces::msg::Ser
     }
     
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }
@@ -257,9 +264,8 @@ void BRoCoSubscriber::accelConfigReqCallback(const avionics_interfaces::msg::Acc
         packet.transform[i] = msg->transform[i];
 
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
-    // set_destination_id(get_node_id("GENERAL_NODE_ID"));
-    // set_destination_id(4);
     bus->send(&packet);
 }
 
@@ -279,9 +285,8 @@ void BRoCoSubscriber::gyroConfigReqCallback(const avionics_interfaces::msg::Gyro
         packet.bias[i] = msg->bias[i];
 
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
-    // set_destination_id(get_node_id("GENERAL_NODE_ID"));
-    // set_destination_id(4);
     bus->send(&packet);
 }
 
@@ -305,9 +310,8 @@ void BRoCoSubscriber::magConfigReqCallback(const avionics_interfaces::msg::MagCo
         packet.soft_iron[i] = msg->soft_iron[i];
 
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
-    // set_destination_id(get_node_id("GENERAL_NODE_ID"));
-    // set_destination_id(4);
     bus->send(&packet);
 }
 
@@ -327,6 +331,7 @@ void BRoCoSubscriber::massDrillCalibOffsetCallback(const avionics_interfaces::ms
     packet.expected_weight = 1;
 
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }
@@ -346,6 +351,7 @@ void BRoCoSubscriber::massContainerCalibOffsetCallback(const avionics_interfaces
     packet.expected_weight = 1;
 
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }
@@ -365,6 +371,7 @@ void BRoCoSubscriber::massDrillCalibScaleCallback(const avionics_interfaces::msg
     packet.expected_weight = msg->expected_weight;
 
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }
@@ -384,6 +391,7 @@ void BRoCoSubscriber::massContainerCalibScaleCallback(const avionics_interfaces:
     packet.expected_weight = msg->expected_weight;
 
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }
@@ -401,6 +409,7 @@ void BRoCoSubscriber::imuCalibCallback(const avionics_interfaces::msg::ImuCalib:
     packet.calib_offset_gyro = msg->calib_offset_gyro;
 
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id(id);
     bus->send(&packet);
 }

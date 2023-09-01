@@ -107,6 +107,7 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
 void BRoCoPublisher::timerPingCallback() {
     static PingPacket packet;
     MAKE_IDENTIFIABLE(packet);
+    MAKE_RELIABLE(packet);
     set_destination_id("GENERAL_NODE_ID");
     bus->send(&packet);
 }
@@ -124,6 +125,10 @@ void BRoCoPublisher::watchdogCallback(size_t nodeID) {
 }
 
 void BRoCoPublisher::handlePingPacket(uint8_t senderID, PingPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable ping packet");
+		return;
+	}
     uint16_t id = packet->id;
     if (id < watchdog_timers.size()) {
         watchdog_timers[id]->reset();
@@ -134,6 +139,10 @@ void BRoCoPublisher::handlePingPacket(uint8_t senderID, PingPacket* packet) {
 }
 
 void BRoCoPublisher::handleFourInOnePacket(uint8_t senderID, FOURINONEPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable four in one packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::FourInOne();
 
     msg.id = packet->id;
@@ -147,6 +156,10 @@ void BRoCoPublisher::handleFourInOnePacket(uint8_t senderID, FOURINONEPacket* pa
 }
 
 void BRoCoPublisher::handleNPKPacket(uint8_t senderID, NPKPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable NPK packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::NPK();
 
     msg.id = packet->id;
@@ -159,6 +172,10 @@ void BRoCoPublisher::handleNPKPacket(uint8_t senderID, NPKPacket* packet) {
 }
 
 void BRoCoPublisher::handleVoltmeterPacket(uint8_t senderID, VoltmeterPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable voltmeter packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::Voltage();
 
     msg.id = packet->id;
@@ -169,6 +186,10 @@ void BRoCoPublisher::handleVoltmeterPacket(uint8_t senderID, VoltmeterPacket* pa
 }
 
 void BRoCoPublisher::handleMassPacket(uint8_t senderID, MassPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable mass packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::MassArray();
 
     msg.id = packet->id;
@@ -184,6 +205,10 @@ void BRoCoPublisher::handleMassPacket(uint8_t senderID, MassPacket* packet) {
 }
 
 void BRoCoPublisher::handleIMUPacket(uint8_t senderID, IMUPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable IMU packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::Imu();
 
     msg.id = packet->id;
@@ -233,6 +258,10 @@ void BRoCoPublisher::handleIMUPacket(uint8_t senderID, IMUPacket* packet) {
 }
 
 void BRoCoPublisher::handleMagPacket(uint8_t senderID, MagPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable magnetometer packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::Mag();
 
     msg.id = packet->id;
@@ -275,6 +304,10 @@ void BRoCoPublisher::handleMagPacket(uint8_t senderID, MagPacket* packet) {
 }
 
 void BRoCoPublisher::handlePotentiometerPacket(uint8_t senderID, PotentiometerPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable potentiometer packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::AngleArray();
 
     msg.id = packet->id;
@@ -286,6 +319,10 @@ void BRoCoPublisher::handlePotentiometerPacket(uint8_t senderID, PotentiometerPa
 }
 
 void BRoCoPublisher::handleSpectroPacket(uint8_t senderID, SpectroResponsePacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable spectro packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::SpectroResponse();
 
     msg.id = packet->id;
@@ -300,6 +337,10 @@ void BRoCoPublisher::handleSpectroPacket(uint8_t senderID, SpectroResponsePacket
 }
 
 void BRoCoPublisher::handleLaserPacket(uint8_t senderID, LaserResponsePacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable laser packet");
+		return;
+	}
     RCLCPP_INFO(parent->get_logger(), "Laser response received");
     auto msg = avionics_interfaces::msg::LaserResponse();
 
@@ -311,6 +352,10 @@ void BRoCoPublisher::handleLaserPacket(uint8_t senderID, LaserResponsePacket* pa
 }
 
 void BRoCoPublisher::handleServoPacket(uint8_t senderID, ServoResponsePacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable servo packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::ServoResponse();
 
     msg.id = packet->id;
@@ -323,6 +368,10 @@ void BRoCoPublisher::handleServoPacket(uint8_t senderID, ServoResponsePacket* pa
 }
 
 void BRoCoPublisher::handleLEDPacket(uint8_t senderID, LEDResponsePacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable LED packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::LEDResponse();
 
     msg.id = packet->id;
@@ -334,6 +383,10 @@ void BRoCoPublisher::handleLEDPacket(uint8_t senderID, LEDResponsePacket* packet
 }
 
 void BRoCoPublisher::handleMassConfigReqPacket(uint8_t senderID, MassConfigRequestPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable mass config request packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::MassConfigRequestMCU();
 
     msg.id = packet->id;
@@ -347,11 +400,14 @@ void BRoCoPublisher::handleMassConfigReqPacket(uint8_t senderID, MassConfigReque
 }
 
 void BRoCoPublisher::handleMassConfigPacket(uint8_t senderID, MassConfigResponsePacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable mass config response packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::MassConfigResponse();
 
     msg.id = packet->id;
 
-    msg.remote_command = packet->remote_command;
     msg.set_offset = packet->set_offset;
     msg.set_scale = packet->set_scale;
     msg.set_alpha = packet->set_alpha;
@@ -404,6 +460,10 @@ void BRoCoPublisher::handleMassConfigPacket(uint8_t senderID, MassConfigResponse
 }
 
 void BRoCoPublisher::handlePotConfigReqPacket(uint8_t senderID, PotentiometerConfigRequestPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable potentiometer config request packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::PotConfigRequestMCU();
 
     msg.id = packet->id;
@@ -418,11 +478,14 @@ void BRoCoPublisher::handlePotConfigReqPacket(uint8_t senderID, PotentiometerCon
 }
 
 void BRoCoPublisher::handlePotConfigPacket(uint8_t senderID, PotentiometerConfigResponsePacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable potentiometer config response packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::PotConfigResponse();
 
     msg.id = packet->id;
 
-    msg.remote_command = packet->remote_command;
     msg.set_min_voltages = packet->set_min_voltages;
     msg.set_max_voltages = packet->set_max_voltages;
     msg.set_min_angles = packet->set_min_angles;
@@ -473,6 +536,10 @@ void BRoCoPublisher::handlePotConfigPacket(uint8_t senderID, PotentiometerConfig
 }
 
 void BRoCoPublisher::handleServoConfigReqPacket(uint8_t senderID, ServoConfigRequestPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable servo config request packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::ServoConfigRequestMCU();
 
     msg.id = packet->id;
@@ -486,11 +553,14 @@ void BRoCoPublisher::handleServoConfigReqPacket(uint8_t senderID, ServoConfigReq
 }
 
 void BRoCoPublisher::handleServoConfigPacket(uint8_t senderID, ServoConfigResponsePacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable servo config response packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::ServoConfigResponse();
 
     msg.id = packet->id;
 
-    msg.remote_command = packet->remote_command;
     msg.set_min_duty = packet->set_min_duty;
     msg.set_max_duty = packet->set_max_duty;
     msg.set_min_angles = packet->set_min_angles;
@@ -534,6 +604,10 @@ void BRoCoPublisher::handleServoConfigPacket(uint8_t senderID, ServoConfigRespon
 }
 
 void BRoCoPublisher::handleAccelConfigReqPacket(uint8_t senderID, AccelConfigRequestPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable acceleromter config request packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::AccelConfigRequestMCU();
 
     msg.id = packet->id;
@@ -545,11 +619,14 @@ void BRoCoPublisher::handleAccelConfigReqPacket(uint8_t senderID, AccelConfigReq
 }
 
 void BRoCoPublisher::handleAccelConfigPacket(uint8_t senderID, AccelConfigResponsePacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable accelerometer config response packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::AccelConfigResponse();
 
     msg.id = packet->id;
 
-    msg.remote_command = packet->remote_command;
     msg.set_bias = packet->set_bias;
     msg.set_transform = packet->set_transform;
     msg.success = packet->success;
@@ -579,6 +656,10 @@ void BRoCoPublisher::handleAccelConfigPacket(uint8_t senderID, AccelConfigRespon
 }
 
 void BRoCoPublisher::handleGyroConfigReqPacket(uint8_t senderID, GyroConfigRequestPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable gyroscope config request packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::GyroConfigRequestMCU();
 
     msg.id = packet->id;
@@ -589,11 +670,14 @@ void BRoCoPublisher::handleGyroConfigReqPacket(uint8_t senderID, GyroConfigReque
 }
 
 void BRoCoPublisher::handleGyroConfigPacket(uint8_t senderID, GyroConfigResponsePacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable gyroscope config response packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::GyroConfigResponse();
 
     msg.id = packet->id;
 
-    msg.remote_command = packet->remote_command;
     msg.set_bias = packet->set_bias;
     msg.success = packet->success;
 
@@ -613,6 +697,10 @@ void BRoCoPublisher::handleGyroConfigPacket(uint8_t senderID, GyroConfigResponse
 }
 
 void BRoCoPublisher::handleMagConfigReqPacket(uint8_t senderID, MagConfigRequestPacket* packet) {
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable mass config request packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::MagConfigRequestMCU();
 
     msg.id = packet->id;
@@ -624,12 +712,14 @@ void BRoCoPublisher::handleMagConfigReqPacket(uint8_t senderID, MagConfigRequest
 }
 
 void BRoCoPublisher::handleMagConfigPacket(uint8_t senderID, MagConfigResponsePacket* packet) {
-    RCLCPP_INFO(parent->get_logger(), "Mag config response received from MCU");
+    if(!(IS_RELIABLE(*packet))) {
+		RCLCPP_ERROR(parent->get_logger(), "Unreliable mass config response packet");
+		return;
+	}
     auto msg = avionics_interfaces::msg::MagConfigResponse();
 
     msg.id = packet->id;
 
-    msg.remote_command = packet->remote_command;
     msg.set_hard_iron = packet->set_hard_iron;
     msg.set_soft_iron = packet->set_soft_iron;
     msg.success = packet->success;

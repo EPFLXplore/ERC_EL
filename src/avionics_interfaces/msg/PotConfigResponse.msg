@@ -5,7 +5,6 @@ float32[4] max_voltages
 float32[4] min_angles
 float32[4] max_angles
 bool[4] enabled_channels
-bool remote_command
 bool set_min_voltages
 bool set_max_voltages
 bool set_min_angles
