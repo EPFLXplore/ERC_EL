@@ -136,15 +136,15 @@ MuxManager::MuxManager() : Node("mux_manager") {
     mass_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::MassConfigRequestJetson>(this, get_param<std::string>("MASS_CONFIG_REQ_JETSON_TOPIC"), get_node_id("GENERAL_NODE_ID"));
     pot_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::PotConfigRequestJetson>(this, get_param<std::string>("POT_CONFIG_REQ_JETSON_TOPIC"), get_node_id("NAV_NODE_ID"));
     servo_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::ServoConfigRequestJetson>(this, get_param<std::string>("SERVO_CONFIG_REQ_JETSON_TOPIC"), get_node_id("HD_NODE_ID"));
-    accel_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::AccelConfigRequestJetson>(this, get_param<std::string>("ACCEL_CONFIG_REQ_JETSON_TOPIC"), get_node_id("SC_CONTAINER_NODE_ID"));
-    gyro_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::GyroConfigRequestJetson>(this, get_param<std::string>("GYRO_CONFIG_REQ_JETSON_TOPIC"), get_node_id("SC_CONTAINER_NODE_ID"));
-    mag_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::MagConfigRequestJetson>(this, get_param<std::string>("MAG_CONFIG_REQ_JETSON_TOPIC"), get_node_id("SC_CONTAINER_NODE_ID"));
+    accel_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::AccelConfigRequestJetson>(this, get_param<std::string>("ACCEL_CONFIG_REQ_JETSON_TOPIC"), get_node_id("NAV_NODE_ID"));
+    gyro_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::GyroConfigRequestJetson>(this, get_param<std::string>("GYRO_CONFIG_REQ_JETSON_TOPIC"), get_node_id("NAV_NODE_ID"));
+    mag_config_req_jetson_mux = new MuxSubscriber<avionics_interfaces::msg::MagConfigRequestJetson>(this, get_param<std::string>("MAG_CONFIG_REQ_JETSON_TOPIC"), get_node_id("NAV_NODE_ID"));
 
     mass_container_calib_offset_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>(this, get_param<std::string>("CONTAINER_MASS_CALIB_OFFSET_TOPIC"), get_node_id("SC_CONTAINER_NODE_ID"));
     mass_drill_calib_offset_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>(this, get_param<std::string>("DRILL_MASS_CALIB_OFFSET_TOPIC"), get_node_id("SC_DRILL_NODE_ID"));
     mass_container_calib_scale_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibScale>(this, get_param<std::string>("CONTAINER_MASS_CALIB_SCALE_TOPIC"), get_node_id("SC_CONTAINER_NODE_ID"));
     mass_drill_calib_scale_mux = new MuxSubscriber<avionics_interfaces::msg::MassCalibScale>(this, get_param<std::string>("DRILL_MASS_CALIB_SCALE_TOPIC"), get_node_id("SC_DRILL_NODE_ID"));
-    imu_calib_mux = new MuxSubscriber<avionics_interfaces::msg::ImuCalib>(this, get_param<std::string>("IMU_CALIB_TOPIC"), get_node_id("SC_CONTAINER_NODE_ID"));
+    imu_calib_mux = new MuxSubscriber<avionics_interfaces::msg::ImuCalib>(this, get_param<std::string>("IMU_CALIB_TOPIC"), get_node_id("NAV_NODE_ID"));
 }
 
 MuxManager::~MuxManager() {

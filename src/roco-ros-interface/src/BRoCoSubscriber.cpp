@@ -249,7 +249,7 @@ void BRoCoSubscriber::accelConfigReqCallback(const avionics_interfaces::msg::Acc
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
-        id = get_node_id("SC_CONTAINER_NODE_ID");
+        id = get_node_id("NAV_NODE_ID");
 
     RCLCPP_INFO(parent->get_logger(), "Sending Accel config to node ID " + std::to_string(id) + "...");
     static AccelConfigPacket packet;
@@ -274,7 +274,7 @@ void BRoCoSubscriber::gyroConfigReqCallback(const avionics_interfaces::msg::Gyro
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
-        id = get_node_id("SC_CONTAINER_NODE_ID");
+        id = get_node_id("NAV_NODE_ID");
 
     RCLCPP_INFO(parent->get_logger(), "Sending Gyro config to node ID " + std::to_string(id) + "...");
     static GyroConfigPacket packet;
@@ -295,7 +295,7 @@ void BRoCoSubscriber::magConfigReqCallback(const avionics_interfaces::msg::MagCo
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
-        id = get_node_id("SC_CONTAINER_NODE_ID");
+        id = get_node_id("NAV_NODE_ID");
 
     RCLCPP_INFO(parent->get_logger(), "Sending Mag config to node ID " + std::to_string(id) + "...");
     static MagConfigPacket packet;
@@ -401,7 +401,7 @@ void BRoCoSubscriber::imuCalibCallback(const avionics_interfaces::msg::ImuCalib:
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
-        id = get_node_id("SC_CONTAINER_NODE_ID");
+        id = get_node_id("NAV_NODE_ID");
 
     RCLCPP_INFO(parent->get_logger(), "Sending IMU calibration request to node ID " + std::to_string(id) + "...");
     static ImuCalibPacket packet;
