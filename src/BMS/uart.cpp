@@ -1,6 +1,13 @@
 #include <CppLinuxSerial/SerialPort.hpp>
 
 using namespace mn::CppLinuxSerial;
+ 
+ struct DATA_BMS {
+  float voltage;
+  float current;
+  uint16_t status;
+  uint16_t battery_cells_v[7];
+};
 
 const static uint16_t crcTable[256]={
 0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
@@ -46,41 +53,53 @@ uint16_t CRC16 (const uint8_t* data, uint16_t length)
 		tmp = *data++ ^ crcWord;
 		crcWord >>= 8;
 		crcWord ^= crcTable[tmp];
-		//printf("crcword 0x%04X\n", crcWord);
 	}
 	return crcWord;
 }
 
-void Send_Data(std::vector<uint8_t> command, SerialPort *serialPort){
+#define REG_LEN 2
+#define MAX_RESPONSE_LEN 10
 
-	
+/**** Commands ****/
+#define RESET_BMS 0xAA02
+#define NEWEST_EVENTS 0xAA11 // (PL)
+#define READ_ALL_EVENTS 0xAA12 // get all events (PL)
+#define GET_VOLTAGE 0xAA14 // reg 36 get voltage of whole battery pack --> utile
+#define GET_CURRENT 0xAA15 // reg 38 -->utile
+#define MAX_VOLTAGE 0xAA16 // reg 41 these are limits
+#define MIN_VOLTAGE 0xAA17 // reg 40
+#define GET_STATUS 0xAA18 // different status are defined below -->utile
+#define LIFETIME
+#define BATTERY_PACK_CELLS_V 0xAA1C //(PL) --> utile
+
+void Send_Command(SerialPort *serialPort, std::vector<uint8_t> command){
 	serialPort->SetTimeout(100); // Block for up to 100ms to receive data
 	serialPort->Open();
 
 	serialPort->WriteBinary(command);
+	printf("Sent : ");
 	for(int i = 0; i <command.size(); i++){
-		printf(" valeur envoyee: 0x%04X\n", command[i]);
-
+		printf("%02X ", command[i]);
 	}
-
+	printf("\n");
 }
 
-std::vector<uint8_t> Read_Data(SerialPort *serialPort){
+std::vector<uint8_t> Read_Data(SerialPort *serialPort, uint8_t response_len){
 
-	std::string readData;
-	std::vector<uint8_t> v2;
-	v2.reserve(30);
+	std::vector<uint8_t> BMS_response;
+	BMS_response.reserve(response_len);
 
-	while(1){
-		serialPort->ReadBinary(v2);
-		for (size_t i = 0; i < v2.size(); ++i) {
-			// Afficher la valeur lue en hexadécimal
-			printf("valeur lue 0x%02X\n", v2[i]);
-		}
-		std::cout << '\n';
+	serialPort->ReadBinary(BMS_response);
+	printf("Received: ");
+	for (size_t i = 0; i < BMS_response.size(); ++i) {
+		// Afficher la valeur lue en hexadécimal
+		printf("%02X ", BMS_response[i]);
 	}
-	return v2;
+	std::cout << '\n';
+
+	return BMS_response;
 }
+
 void All_Events(SerialPort *serialPort, std::vector<uint8_t> command, uint16_t length){
 	
 	uint16_t crc_result_read_all_events = CRC16((uint8_t *)command.data(), 2);		//CRC
@@ -96,16 +115,40 @@ void All_Events(SerialPort *serialPort, std::vector<uint8_t> command, uint16_t l
 	//printf("LSB 0x%04X\n",command[2]);
 	//printf("MSB 0x%04X\n",command[3]);		//check the right value if wanted
 
-	Send_Data(command, serialPort);
+	Send_Command(serialPort, command);
 
 
 	std::vector<uint8_t> ValeurRecue;
-	ValeurRecue = Read_Data(serialPort);
+	ValeurRecue = Read_Data(serialPort, MAX_RESPONSE_LEN);
 
 
 	uint16_t crc_result = CRC16((uint8_t *)ValeurRecue.data(), 9);
 	printf("valeurs CRC 0x%04X\n",crc_result);
+}
+bool check_CRC(std::vector<uint8_t> valeursRecue, uint8_t len){
+	uint16_t BMS_crc = (valeursRecue[len]) | (valeursRecue[len+1] << 8); // MSB | LSB
+	uint16_t calculated_crc = CRC16((uint8_t *)valeursRecue.data(), len);
+	return calculated_crc == BMS_crc;
+}/**/
 
+bool Get_Data_From_BMS(SerialPort *serialPort, uint16_t reg, uint8_t length){
+	
+	uint8_t regs[2] = {reg >> 8, reg & 0xFF}; // split register into array of 8 bits
+
+	uint16_t crc = CRC16(regs, length); // calc crc
+	uint8_t crc_msb = crc >> 8; 
+	uint8_t crc_lsb = crc & 0xFF;
+
+	std::vector<uint8_t> command = {regs[0], regs[1], crc_lsb, crc_msb}; //ALL Events
+
+	Send_Command(serialPort, command);
+
+	std::vector<uint8_t> ValeursRecue;
+	ValeursRecue = Read_Data(serialPort, MAX_RESPONSE_LEN);
+	uint8_t payload_len = ValeursRecue[2]; // always in 3rd byte received
+
+	bool good_packet = check_CRC(ValeursRecue, payload_len);
+	return good_packet;
 }
 
 int main() {
@@ -117,8 +160,11 @@ int main() {
 
 	// WARNING: If using the Arduino Uno or similar, you may want to delay here, as opening the serial port causes
 	// the micro to reset!
-    std::vector<uint8_t> valeur_send = {0xAA, 0x12, 0x00,0x00 }; //ALL Events
-	All_Events(&serialPort, valeur_send,2);			//5s of delay when turning on BMS before working
+    //std::vector<uint8_t> valeur_send = {0xAA, 0x12, 0x00,0x00 }; //ALL Events
+	//All_Events(&serialPort, valeur_send,2);			//5s of delay when turning on BMS before working
+
+
+	Get_Data_From_BMS(&serialPort, RESET_BMS, REG_LEN);
 
 	// Close the serial port
 	serialPort.Close();
