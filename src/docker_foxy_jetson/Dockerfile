@@ -16,6 +16,17 @@ RUN /etc/init.d/udev restart
 
 USER $USERNAME
 
+# Install Custom library
+
+# Clone the library repository from GitHub
+RUN git clone git@github.com:gbmhunter/CppLinuxSerial.git /home/$USERNAME/lib/CppLinuxSerial
+# Create and set the working directory for the build
+WORKDIR /home/$USERNAME/lib/CppLinuxSerial/build
+# Configure and build the library using CMake
+RUN cmake .. && make
+# Optionally install the library system-wide
+RUN sudo make install
+
 # Set a diretory to store the project
 WORKDIR /home/$USERNAME/dev_ws/src
 COPY . .
