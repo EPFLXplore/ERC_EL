@@ -4,8 +4,7 @@
  * Purpose:   Uart Communication driver for tiny BMS: https://enepaq.com/product/battery-management-system-bms/
  */
 
-#include "CppLinuxSerial/SerialPort.hpp"
-
+#include "BMS_control.hpp"
 using namespace mn::CppLinuxSerial;
 
 const static uint16_t crcTable[256] = {
@@ -43,127 +42,24 @@ const static uint16_t crcTable[256] = {
     0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040
 };
 
-/**** BMS ADDRESS 8 bits ****/
-#define ADDR 0xAA
-
-/**** BMS COMMANDS: 8 bits ****/
-#define RESET       0x12
-#define NEW_EVENTS  0x11 // get all new events: packet length (bytes) in 3rd byte of response
-#define ALL_EVENTS  0x12 // get all events: packet length (bytes) in 3rd byte of response
-
-#define PACK_VOLTAGE 0x14 //sum of voltage of all cells
-#define PACK_CURRENT 0x15 //sum of current of all cells
-
-#define MAX_CELL_VOLT 0x16 //max cell voltage configuration
-#define MIN_CELL_VOLT 0x17 //min cell voltage configuration
-
-#define STATUS              0x18 //get status of BMS: see status ids below
-#define LIFETIME_COUNTER    0x19 //get lifetime counter of BMS
-#define TEMPERATURE         0x1B //get temperatures of BMS: 16 bits; internal_temp, ext_temp1, ext_temp2
-
-#define CELLS_VOLTAGE 0x1C //get voltage of all cells: 16 bits per cell, length in bytes defined in 3rd byte
-
-#define VERSION 0x1E //get version of BMS: 16 bits; length in bytes defined in 3rd byte of response
-
-#define READ_INDIVIDUAL_REGISTERS   0x09 //get individual registers: 16 bits per register, length in bytes defined in 3rd byte of request
-#define WRITE_INDIVIDUAL_REGISTERS  0x0D //set individual registers: 16 bits per register, length in bytes defined in 3rd byte of request
-
-/**** BMS RESET OPTIONS: 8 bits ****/
-#define EVENTS  0x01
-#define Stats   0x02
-#define BMS     0x05
-
-/**** BMS RESPONSES: 8 bits ****/
-#define NACK_UART_ERROR 0x00
-#define ACK_UART        0x01
-
-/*** SPECIAL_ERROR types ***/
-#define CMD_ERROR 0x00
-#define CRC_ERROR 0x01
-
-/**** STATUS IDS: 16 bits ****/
-#define CHARGING        0x91
-#define CHARGED         0x92
-#define DISCHARGING     0x93
-#define REGEN           0x96
-#define IDLE            0x97
-#define FAULT           0x9B
-
-/**** Data positions ****/
-#define DATA_ADDR   0
-#define DATA_ACK    1
-#define DATA_PL     2
-#define DATA_CMD    2
-
-//check if command has a dynamic length response
-#define IS_DYNAMIC_LEN(command) (command == NEW_EVENTS || command == ALL_EVENTS || command == CELLS_VOLTAGE || command == VERSION)
-
-void init_BMS_comm(SerialPort& serialPort);
-
-// API
-bool reset_BMS(SerialPort& serialPort, uint8_t option);
-bool send_command(SerialPort& serialPort, uint8_t command);
-std::vector<uint8_t> send_read_command(SerialPort& serialPort, uint8_t command);
-bool write_individual_registers(SerialPort& serialPort, std::vector<uint16_t> addresses, std::vector<uint16_t> data);
-std::vector<uint8_t> read_individual_registers(SerialPort& serialPort, std::vector<uint16_t> addresses);
-
-// WRITE FUNCTIONS
-uint16_t write_1_byte(SerialPort& serialPort, uint8_t data);
-uint16_t write_n_bytes(SerialPort& serialPort, uint8_t command, std::vector<uint16_t> data);
-
-// READ FUNCTION
-std::vector<uint8_t> read_n_bytes(SerialPort& serialPort, uint8_t command, uint16_t crc);
-
-// UTILS
-bool check_packet_error(std::vector<uint8_t> response, uint8_t command, uint16_t crc);
-uint16_t append_crc(std::vector<uint8_t>& packet);
-inline uint16_t CRC16(const uint8_t* data, uint16_t length);
-
-struct report{
-    uint8_t event;
-    uint8_t length;
-    uint8_t* data;
-};
-
-// Example usage
-int main() {
-    SerialPort serialPort("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE, HardwareFlowControl::ON, SoftwareFlowControl::OFF);
-    init_BMS_comm(serialPort);
-
-    // reset BMS
-    reset_BMS(serialPort, BMS);
-
-    // get total voltage
-    std::vector<uint8_t> pack_voltage = send_read_command(serialPort, PACK_VOLTAGE);
-    std::cout << "PACK_VOLTAGE: " << pack_voltage[0] << std::endl;
-
-    // get temperature readings
-    std::vector<uint8_t> temps = send_read_command(serialPort, TEMPERATURE);
-    for(uint8_t val : temps)
-        std::cout << (int)val << std::endl;
-
-    serialPort.Close();
-    return 0;
-}
-
-void init_BMS_comm(SerialPort& serialPort){
+void BMSControl::init_BMS_comm(){
     //init serial port
-    serialPort.SetTimeout(1000); // Block when reading for 1000ms
-    serialPort.Open();
+    this->serialPort.SetTimeout(1000); // Block when reading for 1000ms
+    this->serialPort.Open();
 }
 
 /**** API: functions that are recommended to be used ****/
 
 // reset BMS with option(see above): ADDR, RESET, option, CRC(LSB), CRC(MSB)
-bool reset_BMS(SerialPort& serialPort, uint8_t option){
+bool BMSControl::reset_BMS(uint8_t option){
     std::vector<uint8_t> packet = {ADDR, RESET, option};
     uint16_t crc = append_crc(packet);
-    serialPort.WriteBinary(packet);
-    return (read_n_bytes(serialPort, RESET, crc)[0] != -1);
+    this->serialPort.WriteBinary(packet);
+    return (read_n_bytes(RESET, crc)[0] != -1);
 }
 
-bool send_command(SerialPort& serialPort, uint8_t command){
-    uint16_t crc = write_1_byte(serialPort, command);
+bool BMSControl::send_command(uint8_t command){
+    uint16_t crc = write_1_byte(command);
 
     std::vector<uint8_t> response;
     serialPort.ReadBinary(response);
@@ -173,13 +69,13 @@ bool send_command(SerialPort& serialPort, uint8_t command){
     return true;
 }
 
-std::vector<uint8_t> send_read_command(SerialPort& serialPort, uint8_t command){
-    uint16_t crc = write_1_byte(serialPort, command);
-    return read_n_bytes(serialPort, command, crc);
+std::vector<uint8_t> BMSControl::send_read_command(uint8_t command){
+    uint16_t crc = write_1_byte(command);
+    return read_n_bytes(command, crc);
 }
 
 // write data to specific registers
-bool write_individual_registers(SerialPort& serialPort, std::vector<uint16_t> addresses, std::vector<uint16_t> data){
+bool BMSControl::write_individual_registers(std::vector<uint16_t> addresses, std::vector<uint16_t> data){
     if(addresses.size() != data.size()){ // error lengths don't match
         return false;
     }
@@ -189,10 +85,10 @@ bool write_individual_registers(SerialPort& serialPort, std::vector<uint16_t> ad
         new_data.push_back(data[i]);
     }
 
-    uint16_t crc = write_n_bytes(serialPort, WRITE_INDIVIDUAL_REGISTERS, new_data);
+    uint16_t crc = write_n_bytes(WRITE_INDIVIDUAL_REGISTERS, new_data);
     if (crc != -1){ //no crc error
         std::vector<uint8_t> response;
-        serialPort.ReadBinary(response);
+        this->serialPort.ReadBinary(response);
 
         if(!check_packet_error(response, WRITE_INDIVIDUAL_REGISTERS, crc))
             return true; //properly acknowledged
@@ -200,24 +96,24 @@ bool write_individual_registers(SerialPort& serialPort, std::vector<uint16_t> ad
     return false; // not properly acknowledged
 }
 
-std::vector<uint8_t> read_individual_registers(SerialPort& serialPort, std::vector<uint16_t> addresses){
-    uint16_t crc = write_n_bytes(serialPort, READ_INDIVIDUAL_REGISTERS, addresses);
+std::vector<uint8_t> BMSControl::read_individual_registers(std::vector<uint16_t> addresses){
+    uint16_t crc = write_n_bytes(READ_INDIVIDUAL_REGISTERS, addresses);
 
-    return read_n_bytes(serialPort, CELLS_VOLTAGE, crc);
+    return read_n_bytes(CELLS_VOLTAGE, crc);
 }
 
 /**** Write functions ****/
 
 // write 1 byte command to BMS: ADDR, data, CRC(LSB), CRC(MSB)
-uint16_t write_1_byte(SerialPort& serialPort, uint8_t data){
+uint16_t BMSControl::write_1_byte(uint8_t data){
     std::vector<uint8_t> packet = {ADDR, data};
     uint16_t crc = append_crc(packet);
-    serialPort.WriteBinary(packet);
+    this->serialPort.WriteBinary(packet);
     return crc;
 }
 
 // write n(max (2^5-1)) bytes to BMS: ADDR, data, CRC(LSB), CRC(MSB)
-uint16_t write_n_bytes(SerialPort& serialPort, uint8_t command, std::vector<uint16_t> data){
+uint16_t BMSControl::write_n_bytes(uint8_t command, std::vector<uint16_t> data){
     if(data.size() > 2^5 - 1){ // too much data to be written
         //ERROR: print error?
         return -1;
@@ -229,17 +125,17 @@ uint16_t write_n_bytes(SerialPort& serialPort, uint8_t command, std::vector<uint
         packet.push_back(value >> 8);  // MSB
     }
     uint16_t crc = append_crc(packet);
-    serialPort.WriteBinary(packet);
+    this->serialPort.WriteBinary(packet);
     return crc;
 }
 
 /**** Read functions ****/
 
 // read a variable length packet from BMS based on command
-std::vector<uint8_t> read_n_bytes(SerialPort& serialPort, uint8_t command, uint16_t crc){
+std::vector<uint8_t> BMSControl::read_n_bytes(uint8_t command, uint16_t crc){
     //read response
     std::vector<uint8_t> response;
-    serialPort.ReadBinary(response);
+    this->serialPort.ReadBinary(response);
 
     if(check_packet_error(response, command, crc)){ //if error return empty vector
         return {};
@@ -257,7 +153,7 @@ std::vector<uint8_t> read_n_bytes(SerialPort& serialPort, uint8_t command, uint1
 /**** UTILS ****/
 
 // return true if error in packet
-bool check_packet_error(std::vector<uint8_t> response, uint8_t command, uint16_t crc){
+bool BMSControl::check_packet_error(std::vector<uint8_t> response, uint8_t command, uint16_t crc){
     if(response[DATA_ADDR] != ADDR){
         //ERROR: print error?
         return true;
@@ -294,7 +190,7 @@ bool check_packet_error(std::vector<uint8_t> response, uint8_t command, uint16_t
     return false; // no error
 }
 
-uint16_t append_crc(std::vector<uint8_t>& packet){
+uint16_t BMSControl::append_crc(std::vector<uint8_t>& packet){
     // add 0s for crc
     packet.push_back(0);
     packet.push_back(0);
@@ -306,7 +202,7 @@ uint16_t append_crc(std::vector<uint8_t>& packet){
 }
 
 // function defined in datasheet
-inline uint16_t CRC16(const uint8_t* data, uint16_t length){
+inline uint16_t BMSControl::CRC16(const uint8_t* data, uint16_t length){
     uint8_t tmp;
     uint16_t crcWord = 0xFFFF;
     while (length--){

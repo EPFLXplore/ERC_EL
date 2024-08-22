@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -std=c++11 -pthread
+CXXFLAGS = -std=c++11 #-pthread
 
 # Include directories
 #INCLUDES = -I/pathToDirectories
@@ -13,10 +13,10 @@ LIBS = -lCppLinuxSerial
 BIN_DIR = bin
 
 # Executable name
-TARGET = $(BIN_DIR)/BMS_control
+TARGET = $(BIN_DIR)/BMS_control_example
 
 # Source files
-SRCS = BMS_control.cpp  # Add your source files here
+SRCS = BMS_control.cpp  example_usage.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 # Default rule to build the executable
