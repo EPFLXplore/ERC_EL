@@ -110,10 +110,13 @@ void BRoCoSubscriber::ledReqCallback(const avionics_interfaces::msg::LEDRequest:
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
-        id = get_node_id("NAV_NODE_ID");
+        id = get_node_id("GENERAL_NODE_ID");
     RCLCPP_INFO(parent->get_logger(), "Sending LED request to node ID " + std::to_string(id) + "...");
     static LEDPacket packet;
-    packet.state = msg->state;
+    packet.time_blink = msg->time_blink;
+    packet.r=msg->r;
+    packet.g=msg->g;
+    packet.b=msg->b;
     MAKE_IDENTIFIABLE(packet);
     MAKE_RELIABLE(packet);
     set_destination_id(id);

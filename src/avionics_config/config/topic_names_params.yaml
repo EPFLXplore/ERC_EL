@@ -41,7 +41,7 @@
     SPECTRO_REQ_TOPIC:    "/EL/spectro_req"
     SERVO_REQ_TOPIC:      "/EL/servo_req"
     LASER_REQ_TOPIC:      "/EL/laser_req"
-    LED_REQ_TOPIC:        "/EL/led_req"
+    LED_REQ_TOPIC:        "/EL/LedCommands"
 
     # Config
     MASS_CONFIG_REQ_JETSON_TOPIC:   "/EL/mass_config_req"
