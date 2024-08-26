@@ -2,3 +2,6 @@
 	path = src/BRoCo
 	url = git@github.com:EPFLXplore/BRoCo.git
 	branch = EL-BRoCo
+[submodule "src/avionics_interfaces/custom_msg"]
+	path = src/avionics_interfaces/custom_msg
+	url = git@github.com:EPFLXplore/ERC_SE_CustomMessages.git
