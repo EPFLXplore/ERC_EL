@@ -1,0 +1,1 @@
+docker exec -it elec_foxy_desktop bash
