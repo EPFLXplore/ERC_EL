@@ -80,7 +80,10 @@ uint8_t MuxSubscriber<MessageT>::selected_bus(bool node_state_bus0, bool node_st
 }
 
 template class MuxSubscriber<custom_msg::msg::LaserRequest>;
-template class MuxSubscriber<custom_msg::msg::LEDRequest>;
+template class MuxSubscriber<custom_msg::msg::
+>;
+template class MuxSubscriber<custom_msg::msg::Led>;
+template class MuxSubscriber<custom_msg::msg::LedsCommand>;
 template class MuxSubscriber<custom_msg::msg::ServoRequest>;
 template class MuxSubscriber<custom_msg::msg::SpectroRequest>;
 

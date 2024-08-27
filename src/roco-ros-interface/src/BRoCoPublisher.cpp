@@ -376,7 +376,6 @@ void BRoCoPublisher::handleLEDPacket(uint8_t senderID, LEDResponsePacket* packet
 
     msg.id = packet->id;
 
-    msg.state = packet->state;
     msg.success = packet->success;
 
     led_response_pub->publish(msg);

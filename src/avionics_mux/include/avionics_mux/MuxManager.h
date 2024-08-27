@@ -128,6 +128,8 @@ private:
 
     MuxSubscriber<custom_msg::msg::LaserRequest>* laser_req_mux;
     MuxSubscriber<custom_msg::msg::LEDRequest>* led_req_mux;
+    MuxSubscriber<custom_msg::msg::Led>* led_mux;
+    MuxSubscriber<custom_msg::msg::LedsCommand>* led_command_mux;
     MuxSubscriber<custom_msg::msg::ServoRequest>* servo_req_mux;
     MuxSubscriber<custom_msg::msg::SpectroRequest>* spectro_req_mux;
 

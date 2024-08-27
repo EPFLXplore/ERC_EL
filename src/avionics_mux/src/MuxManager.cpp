@@ -130,6 +130,7 @@ MuxManager::MuxManager() : Node("mux_manager") {
 
     laser_req_mux = new MuxSubscriber<custom_msg::msg::LaserRequest>(this, get_param<std::string>("LASER_REQ_TOPIC"), get_node_id("HD_NODE_ID"));
     led_req_mux = new MuxSubscriber<custom_msg::msg::LEDRequest>(this, get_param<std::string>("LED_REQ_TOPIC"), get_node_id("NAV_NODE_ID"));
+    led_command_mux = new MuxSubscriber<custom_msg::msg::LedsCommand> (this, get_param<std::string("LedsCommand"),get_node_id("GENERAL_NODE_ID"));
     servo_req_mux = new MuxSubscriber<custom_msg::msg::ServoRequest>(this, get_param<std::string>("SERVO_REQ_TOPIC"), get_node_id("HD_NODE_ID"));
     spectro_req_mux = new MuxSubscriber<custom_msg::msg::SpectroRequest>(this, get_param<std::string>("SPECTRO_REQ_TOPIC"), get_node_id("SC_DRILL_NODE_ID"));
 

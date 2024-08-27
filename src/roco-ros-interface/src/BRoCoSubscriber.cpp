@@ -28,9 +28,10 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
         (get_prefix() + get_param<std::string>("SERVO_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::servoReqCallback, this, _1));
     this->laser_req_sub = parent->create_subscription<custom_msg::msg::LaserRequest>
         (get_prefix() + get_param<std::string>("LASER_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
-    this->led_req_sub = parent->create_subscription<custom_msg::msg::LEDRequest>
-        (get_prefix() + get_param<std::string>("LED_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
-
+    /* this->led_req_sub = parent->create_subscription<custom_msg::msg::LEDRequest>
+        (get_prefix() + get_param<std::string>("LED_COM_TOPIC"), 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1)); */
+    this->led_req_sub = parent->create_subscription<custom_msg::msg::LedsCommand>
+        (get_prefix() + get_param<std::string>("LED_COM_TOPIC"), 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
     this->mass_config_req_sub = parent->create_subscription<custom_msg::msg::MassConfigRequestJetson>
         (get_prefix() + get_param<std::string>("MASS_CONFIG_REQ_JETSON_TOPIC"), 10, std::bind(&BRoCoSubscriber::massConfigReqCallback, this, _1));
     this->pot_config_req_sub = parent->create_subscription<custom_msg::msg::PotConfigRequestJetson>
@@ -104,8 +105,7 @@ void BRoCoSubscriber::laserReqCallback(const custom_msg::msg::LaserRequest::Shar
     set_destination_id(id);
     bus->send(&packet);
 }
-
-void BRoCoSubscriber::ledReqCallback(const custom_msg::msg::LEDRequest::SharedPtr msg) {
+void BRoCoSubscriber::ledReqCallback(const custom_msg::msg::Led::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -114,6 +114,10 @@ void BRoCoSubscriber::ledReqCallback(const custom_msg::msg::LEDRequest::SharedPt
     RCLCPP_INFO(parent->get_logger(), "Sending LED request to node ID " + std::to_string(id) + "...");
     static LEDPacket packet;
     // packet.state = msg->state;
+    packet.low=msg->low;
+    packet.high=msg->high;
+    packet.system=msg->system;
+    packet.mode=msg->mode;
     MAKE_IDENTIFIABLE(packet);
     MAKE_RELIABLE(packet);
     set_destination_id(id);
