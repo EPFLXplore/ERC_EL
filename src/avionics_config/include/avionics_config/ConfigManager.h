@@ -11,30 +11,30 @@
 #include <fstream>
 #include "yaml-cpp/yaml.h"
 
-#include "avionics_interfaces/msg/mass_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/mass_config_response.hpp"
+#include "custom_msg/msg/mass_config_request_mcu.hpp"
+#include "custom_msg/msg/mass_config_response.hpp"
 
-#include "avionics_interfaces/msg/pot_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/pot_config_response.hpp"
+#include "custom_msg/msg/pot_config_request_mcu.hpp"
+#include "custom_msg/msg/pot_config_response.hpp"
 
-#include "avionics_interfaces/msg/servo_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/servo_config_response.hpp"
+#include "custom_msg/msg/servo_config_request_mcu.hpp"
+#include "custom_msg/msg/servo_config_response.hpp"
 
-#include "avionics_interfaces/msg/accel_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/accel_config_response.hpp"
+#include "custom_msg/msg/accel_config_request_mcu.hpp"
+#include "custom_msg/msg/accel_config_response.hpp"
 
-#include "avionics_interfaces/msg/gyro_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/gyro_config_response.hpp"
+#include "custom_msg/msg/gyro_config_request_mcu.hpp"
+#include "custom_msg/msg/gyro_config_response.hpp"
 
-#include "avionics_interfaces/msg/mag_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/mag_config_response.hpp"
+#include "custom_msg/msg/mag_config_request_mcu.hpp"
+#include "custom_msg/msg/mag_config_response.hpp"
 
-#include "avionics_interfaces/msg/mass_config_request_jetson.hpp"
-#include "avionics_interfaces/msg/pot_config_request_jetson.hpp"
-#include "avionics_interfaces/msg/servo_config_request_jetson.hpp"
-#include "avionics_interfaces/msg/accel_config_request_jetson.hpp"
-#include "avionics_interfaces/msg/gyro_config_request_jetson.hpp"
-#include "avionics_interfaces/msg/mag_config_request_jetson.hpp"
+#include "custom_msg/msg/mass_config_request_jetson.hpp"
+#include "custom_msg/msg/pot_config_request_jetson.hpp"
+#include "custom_msg/msg/servo_config_request_jetson.hpp"
+#include "custom_msg/msg/accel_config_request_jetson.hpp"
+#include "custom_msg/msg/gyro_config_request_jetson.hpp"
+#include "custom_msg/msg/mag_config_request_jetson.hpp"
 
 class ConfigManager : public rclcpp::Node {
 public:
@@ -115,48 +115,48 @@ public:
     }
 
 private:
-    rclcpp::Subscription<avionics_interfaces::msg::MassConfigResponse>::SharedPtr mass_config_response_sub;
-    rclcpp::Subscription<avionics_interfaces::msg::MassConfigRequestMCU>::SharedPtr mass_config_req_sub;
+    rclcpp::Subscription<custom_msg::msg::MassConfigResponse>::SharedPtr mass_config_response_sub;
+    rclcpp::Subscription<custom_msg::msg::MassConfigRequestMCU>::SharedPtr mass_config_req_sub;
 
-    rclcpp::Subscription<avionics_interfaces::msg::PotConfigResponse>::SharedPtr pot_config_response_sub;
-    rclcpp::Subscription<avionics_interfaces::msg::PotConfigRequestMCU>::SharedPtr pot_config_req_sub;
+    rclcpp::Subscription<custom_msg::msg::PotConfigResponse>::SharedPtr pot_config_response_sub;
+    rclcpp::Subscription<custom_msg::msg::PotConfigRequestMCU>::SharedPtr pot_config_req_sub;
 
-    rclcpp::Subscription<avionics_interfaces::msg::ServoConfigResponse>::SharedPtr servo_config_response_sub;
-    rclcpp::Subscription<avionics_interfaces::msg::ServoConfigRequestMCU>::SharedPtr servo_config_req_sub;
+    rclcpp::Subscription<custom_msg::msg::ServoConfigResponse>::SharedPtr servo_config_response_sub;
+    rclcpp::Subscription<custom_msg::msg::ServoConfigRequestMCU>::SharedPtr servo_config_req_sub;
 
-    rclcpp::Subscription<avionics_interfaces::msg::AccelConfigResponse>::SharedPtr accel_config_response_sub;
-    rclcpp::Subscription<avionics_interfaces::msg::AccelConfigRequestMCU>::SharedPtr accel_config_req_sub;
+    rclcpp::Subscription<custom_msg::msg::AccelConfigResponse>::SharedPtr accel_config_response_sub;
+    rclcpp::Subscription<custom_msg::msg::AccelConfigRequestMCU>::SharedPtr accel_config_req_sub;
 
-    rclcpp::Subscription<avionics_interfaces::msg::GyroConfigResponse>::SharedPtr gyro_config_response_sub;
-    rclcpp::Subscription<avionics_interfaces::msg::GyroConfigRequestMCU>::SharedPtr gyro_config_req_sub;
+    rclcpp::Subscription<custom_msg::msg::GyroConfigResponse>::SharedPtr gyro_config_response_sub;
+    rclcpp::Subscription<custom_msg::msg::GyroConfigRequestMCU>::SharedPtr gyro_config_req_sub;
 
-    rclcpp::Subscription<avionics_interfaces::msg::MagConfigResponse>::SharedPtr mag_config_response_sub;
-    rclcpp::Subscription<avionics_interfaces::msg::MagConfigRequestMCU>::SharedPtr mag_config_req_sub;
+    rclcpp::Subscription<custom_msg::msg::MagConfigResponse>::SharedPtr mag_config_response_sub;
+    rclcpp::Subscription<custom_msg::msg::MagConfigRequestMCU>::SharedPtr mag_config_req_sub;
 
-    rclcpp::Publisher<avionics_interfaces::msg::MassConfigRequestJetson>::SharedPtr mass_config_req_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::PotConfigRequestJetson>::SharedPtr pot_config_req_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::ServoConfigRequestJetson>::SharedPtr servo_config_req_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::AccelConfigRequestJetson>::SharedPtr accel_config_req_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::GyroConfigRequestJetson>::SharedPtr gyro_config_req_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::MagConfigRequestJetson>::SharedPtr mag_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::MassConfigRequestJetson>::SharedPtr mass_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::PotConfigRequestJetson>::SharedPtr pot_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::ServoConfigRequestJetson>::SharedPtr servo_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::AccelConfigRequestJetson>::SharedPtr accel_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::GyroConfigRequestJetson>::SharedPtr gyro_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::MagConfigRequestJetson>::SharedPtr mag_config_req_pub;
 
-    void massConfigReqCallback(const avionics_interfaces::msg::MassConfigRequestMCU::SharedPtr msg);
-    void massConfigResponseCallback(const avionics_interfaces::msg::MassConfigResponse::SharedPtr msg);
+    void massConfigReqCallback(const custom_msg::msg::MassConfigRequestMCU::SharedPtr msg);
+    void massConfigResponseCallback(const custom_msg::msg::MassConfigResponse::SharedPtr msg);
 
-    void potConfigReqCallback(const avionics_interfaces::msg::PotConfigRequestMCU::SharedPtr msg);
-    void potConfigResponseCallback(const avionics_interfaces::msg::PotConfigResponse::SharedPtr msg);
+    void potConfigReqCallback(const custom_msg::msg::PotConfigRequestMCU::SharedPtr msg);
+    void potConfigResponseCallback(const custom_msg::msg::PotConfigResponse::SharedPtr msg);
 
-    void servoConfigReqCallback(const avionics_interfaces::msg::ServoConfigRequestMCU::SharedPtr msg);
-    void servoConfigResponseCallback(const avionics_interfaces::msg::ServoConfigResponse::SharedPtr msg);
+    void servoConfigReqCallback(const custom_msg::msg::ServoConfigRequestMCU::SharedPtr msg);
+    void servoConfigResponseCallback(const custom_msg::msg::ServoConfigResponse::SharedPtr msg);
 
-    void accelConfigReqCallback(const avionics_interfaces::msg::AccelConfigRequestMCU::SharedPtr msg);
-    void accelConfigResponseCallback(const avionics_interfaces::msg::AccelConfigResponse::SharedPtr msg);
+    void accelConfigReqCallback(const custom_msg::msg::AccelConfigRequestMCU::SharedPtr msg);
+    void accelConfigResponseCallback(const custom_msg::msg::AccelConfigResponse::SharedPtr msg);
 
-    void gyroConfigReqCallback(const avionics_interfaces::msg::GyroConfigRequestMCU::SharedPtr msg);
-    void gyroConfigResponseCallback(const avionics_interfaces::msg::GyroConfigResponse::SharedPtr msg);
+    void gyroConfigReqCallback(const custom_msg::msg::GyroConfigRequestMCU::SharedPtr msg);
+    void gyroConfigResponseCallback(const custom_msg::msg::GyroConfigResponse::SharedPtr msg);
 
-    void magConfigReqCallback(const avionics_interfaces::msg::MagConfigRequestMCU::SharedPtr msg);
-    void magConfigResponseCallback(const avionics_interfaces::msg::MagConfigResponse::SharedPtr msg);
+    void magConfigReqCallback(const custom_msg::msg::MagConfigRequestMCU::SharedPtr msg);
+    void magConfigResponseCallback(const custom_msg::msg::MagConfigResponse::SharedPtr msg);
 };
 
 #endif /* CONFIG_MANAGER_H */

@@ -21,7 +21,7 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(BRoCo REQUIRED)
-find_package(avionics_interfaces REQUIRED)
+find_package(custom_msg REQUIRED)
 
 include_directories(
   ${BRoCo_INCLUDE_DIRS} 
@@ -50,7 +50,7 @@ add_executable(roco_interface
   src/Utils.cpp
 )
 
-ament_target_dependencies(roco_interface rclcpp sensor_msgs BRoCo avionics_interfaces)
+ament_target_dependencies(roco_interface rclcpp sensor_msgs BRoCo custom_msg)
 
 install(TARGETS
   roco_interface
