@@ -6,11 +6,11 @@ using namespace mn::CppLinuxSerial;
 int main() {
     SerialPort serialPort("/dev/ttyUSB0", BaudRate::B_9600, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE, HardwareFlowControl::ON, SoftwareFlowControl::OFF);
     BMSControl TinyBMS(serialPort);
+    std::cout << "Test" << std::endl;
     TinyBMS.init_BMS_comm();
-
     // reset BMS
     TinyBMS.reset_BMS(BMS);
-
+    std::cout << "Test" << std::endl;
     // get total voltage
     std::vector<uint8_t> pack_voltage = TinyBMS.send_read_command(PACK_VOLTAGE);
     std::cout << "PACK_VOLTAGE: " << pack_voltage[0] << std::endl;

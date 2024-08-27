@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -std=c++11 #-pthread
+CXXFLAGS = -std=c++11 -O0 -g #-pthread
 
 # Include directories
 #INCLUDES = -I/pathToDirectories
@@ -13,7 +13,7 @@ LIBS = -lCppLinuxSerial
 BIN_DIR = bin
 
 # Executable name
-TARGET = $(BIN_DIR)/BMS_control_example
+TARGET = example_usage
 
 # Source files
 SRCS = BMS_control.cpp  example_usage.cpp
@@ -24,7 +24,7 @@ all: $(TARGET)
 
 # Rule to build the executable
 $(TARGET): $(OBJS)
-	@mkdir -p $(BIN_DIR)  # Create the bin directory if it doesn't exist
+	#@mkdir -p $(BIN_DIR)  # Create the bin directory if it doesn't exist
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJS) $(LIBS)
 
 # Rule to compile source files into object files
@@ -33,4 +33,4 @@ $(TARGET): $(OBJS)
 
 # Clean up
 clean:
-	rm -rf $(OBJS) $(BIN_DIR)
+	rm -rf $(OBJS) $(BIN_DIR) $(TARGET)

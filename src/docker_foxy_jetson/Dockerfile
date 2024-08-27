@@ -19,7 +19,7 @@ USER $USERNAME
 # Install Custom library
 
 # Clone the library repository from GitHub
-RUN git clone git@github.com:gbmhunter/CppLinuxSerial.git /home/$USERNAME/lib/CppLinuxSerial
+RUN git clone https://github.com/gbmhunter/CppLinuxSerial.git /home/$USERNAME/lib/CppLinuxSerial
 # Create and set the working directory for the build
 WORKDIR /home/$USERNAME/lib/CppLinuxSerial/build
 # Configure and build the library using CMake
