@@ -74,15 +74,20 @@ void BRoCoSubscriber::spectroReqCallback(const custom_msg::msg::SpectroRequest::
     set_destination_id(id);
     bus->send(&packet);
 }
+
+
+#define DEFAULT_SERVO_CHANNEL 2
 void BRoCoSubscriber::servoReqCallback(const custom_msg::msg::ServoRequest::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
-        id = get_node_id("HD_NODE_ID");
+        id = get_node_id("SC_DRILL_NODE_ID");
     RCLCPP_INFO(parent->get_logger(), "Sending servo request to node ID " + std::to_string(id) + "...");
     static ServoPacket packet;
     packet.channel = msg->channel;
+    if (msg->channel ==0)
+        packet.channel=DEFAULT_SERVO_CHANNEL;
     packet.angle = msg->angle;
     MAKE_IDENTIFIABLE(packet);
     MAKE_RELIABLE(packet);
