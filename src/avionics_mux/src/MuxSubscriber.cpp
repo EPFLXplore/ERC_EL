@@ -79,18 +79,19 @@ uint8_t MuxSubscriber<MessageT>::selected_bus(bool node_state_bus0, bool node_st
         return NOBUS;
 }
 
-template class MuxSubscriber<avionics_interfaces::msg::LaserRequest>;
-template class MuxSubscriber<avionics_interfaces::msg::LEDRequest>;
-template class MuxSubscriber<avionics_interfaces::msg::ServoRequest>;
-template class MuxSubscriber<avionics_interfaces::msg::SpectroRequest>;
+template class MuxSubscriber<custom_msg::msg::LaserRequest>;
+// template class MuxSubscriber<custom_msg::msg::LEDRequest>;
+template class MuxSubscriber<custom_msg::msg::LedsCommand>;
+template class MuxSubscriber<custom_msg::msg::ServoRequest>;
+template class MuxSubscriber<custom_msg::msg::SpectroRequest>;
 
-template class MuxSubscriber<avionics_interfaces::msg::MassConfigRequestJetson>;
-template class MuxSubscriber<avionics_interfaces::msg::PotConfigRequestJetson>;
-template class MuxSubscriber<avionics_interfaces::msg::ServoConfigRequestJetson>;
-template class MuxSubscriber<avionics_interfaces::msg::AccelConfigRequestJetson>;
-template class MuxSubscriber<avionics_interfaces::msg::GyroConfigRequestJetson>;
-template class MuxSubscriber<avionics_interfaces::msg::MagConfigRequestJetson>;
+template class MuxSubscriber<custom_msg::msg::MassConfigRequestJetson>;
+template class MuxSubscriber<custom_msg::msg::PotConfigRequestJetson>;
+template class MuxSubscriber<custom_msg::msg::ServoConfigRequestJetson>;
+template class MuxSubscriber<custom_msg::msg::AccelConfigRequestJetson>;
+template class MuxSubscriber<custom_msg::msg::GyroConfigRequestJetson>;
+template class MuxSubscriber<custom_msg::msg::MagConfigRequestJetson>;
 
-template class MuxSubscriber<avionics_interfaces::msg::MassCalibOffset>;
-template class MuxSubscriber<avionics_interfaces::msg::MassCalibScale>;
-template class MuxSubscriber<avionics_interfaces::msg::ImuCalib>;
+template class MuxSubscriber<custom_msg::msg::MassCalibOffset>;
+template class MuxSubscriber<custom_msg::msg::MassCalibScale>;
+template class MuxSubscriber<custom_msg::msg::ImuCalib>;

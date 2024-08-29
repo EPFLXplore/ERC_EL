@@ -20,7 +20,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(avionics_interfaces REQUIRED)
+find_package(custom_msg REQUIRED)
 
 include_directories(
   include/avionics_converter
@@ -43,7 +43,7 @@ add_executable(avionics_converter
   src/ConverterPublisher.cpp
 )
 
-ament_target_dependencies(avionics_converter rclcpp sensor_msgs avionics_interfaces)
+ament_target_dependencies(avionics_converter rclcpp sensor_msgs custom_msg)
 
 install(TARGETS
   avionics_converter

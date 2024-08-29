@@ -79,42 +79,42 @@ ConfigManager::ConfigManager() : Node("config_manager") {
     this->declare_parameter("mag.hard_iron");
     this->declare_parameter("mag.soft_iron");
 
-    this->mass_config_req_pub = this->create_publisher<avionics_interfaces::msg::MassConfigRequestJetson>
+    this->mass_config_req_pub = this->create_publisher<custom_msg::msg::MassConfigRequestJetson>
         (get_param<std::string>("MASS_CONFIG_REQ_JETSON_TOPIC"), 10);
-    this->pot_config_req_pub = this->create_publisher<avionics_interfaces::msg::PotConfigRequestJetson>
+    this->pot_config_req_pub = this->create_publisher<custom_msg::msg::PotConfigRequestJetson>
         (get_param<std::string>("POT_CONFIG_REQ_JETSON_TOPIC"), 10);
-    this->servo_config_req_pub = this->create_publisher<avionics_interfaces::msg::ServoConfigRequestJetson>
+    this->servo_config_req_pub = this->create_publisher<custom_msg::msg::ServoConfigRequestJetson>
         (get_param<std::string>("SERVO_CONFIG_REQ_JETSON_TOPIC"), 10);
-    this->accel_config_req_pub = this->create_publisher<avionics_interfaces::msg::AccelConfigRequestJetson>
+    this->accel_config_req_pub = this->create_publisher<custom_msg::msg::AccelConfigRequestJetson>
         (get_param<std::string>("ACCEL_CONFIG_REQ_JETSON_TOPIC"), 10);
-    this->gyro_config_req_pub = this->create_publisher<avionics_interfaces::msg::GyroConfigRequestJetson>
+    this->gyro_config_req_pub = this->create_publisher<custom_msg::msg::GyroConfigRequestJetson>
         (get_param<std::string>("GYRO_CONFIG_REQ_JETSON_TOPIC"), 10);
-    this->mag_config_req_pub = this->create_publisher<avionics_interfaces::msg::MagConfigRequestJetson>
+    this->mag_config_req_pub = this->create_publisher<custom_msg::msg::MagConfigRequestJetson>
         (get_param<std::string>("MAG_CONFIG_REQ_JETSON_TOPIC"), 10);
 
-    this->mass_config_response_sub = this->create_subscription<avionics_interfaces::msg::MassConfigResponse>
+    this->mass_config_response_sub = this->create_subscription<custom_msg::msg::MassConfigResponse>
         (get_param<std::string>("MASS_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::massConfigResponseCallback, this, _1));
-    this->mass_config_req_sub = this->create_subscription<avionics_interfaces::msg::MassConfigRequestMCU>
+    this->mass_config_req_sub = this->create_subscription<custom_msg::msg::MassConfigRequestMCU>
         (get_param<std::string>("MASS_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::massConfigReqCallback, this, _1));
-    this->pot_config_req_sub = this->create_subscription<avionics_interfaces::msg::PotConfigRequestMCU>
+    this->pot_config_req_sub = this->create_subscription<custom_msg::msg::PotConfigRequestMCU>
         (get_param<std::string>("POT_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::potConfigReqCallback, this, _1));
-    this->pot_config_response_sub = this->create_subscription<avionics_interfaces::msg::PotConfigResponse>
+    this->pot_config_response_sub = this->create_subscription<custom_msg::msg::PotConfigResponse>
         (get_param<std::string>("POT_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::potConfigResponseCallback, this, _1));
-    this->servo_config_req_sub = this->create_subscription<avionics_interfaces::msg::ServoConfigRequestMCU>
+    this->servo_config_req_sub = this->create_subscription<custom_msg::msg::ServoConfigRequestMCU>
         (get_param<std::string>("SERVO_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::servoConfigReqCallback, this, _1));
-    this->servo_config_response_sub = this->create_subscription<avionics_interfaces::msg::ServoConfigResponse>
+    this->servo_config_response_sub = this->create_subscription<custom_msg::msg::ServoConfigResponse>
         (get_param<std::string>("SERVO_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::servoConfigResponseCallback, this, _1));
-    this->accel_config_req_sub = this->create_subscription<avionics_interfaces::msg::AccelConfigRequestMCU>
+    this->accel_config_req_sub = this->create_subscription<custom_msg::msg::AccelConfigRequestMCU>
         (get_param<std::string>("ACCEL_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::accelConfigReqCallback, this, _1));
-    this->accel_config_response_sub = this->create_subscription<avionics_interfaces::msg::AccelConfigResponse>
+    this->accel_config_response_sub = this->create_subscription<custom_msg::msg::AccelConfigResponse>
         (get_param<std::string>("ACCEL_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::accelConfigResponseCallback, this, _1));
-    this->gyro_config_req_sub = this->create_subscription<avionics_interfaces::msg::GyroConfigRequestMCU>
+    this->gyro_config_req_sub = this->create_subscription<custom_msg::msg::GyroConfigRequestMCU>
         (get_param<std::string>("GYRO_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::gyroConfigReqCallback, this, _1));
-    this->gyro_config_response_sub = this->create_subscription<avionics_interfaces::msg::GyroConfigResponse>
+    this->gyro_config_response_sub = this->create_subscription<custom_msg::msg::GyroConfigResponse>
         (get_param<std::string>("GYRO_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::gyroConfigResponseCallback, this, _1));
-    this->mag_config_req_sub = this->create_subscription<avionics_interfaces::msg::MagConfigRequestMCU>
+    this->mag_config_req_sub = this->create_subscription<custom_msg::msg::MagConfigRequestMCU>
         (get_param<std::string>("MAG_CONFIG_REQ_MCU_TOPIC"), 10, std::bind(&ConfigManager::magConfigReqCallback, this, _1));
-    this->mag_config_response_sub = this->create_subscription<avionics_interfaces::msg::MagConfigResponse>
+    this->mag_config_response_sub = this->create_subscription<custom_msg::msg::MagConfigResponse>
         (get_param<std::string>("MAG_CONFIG_TOPIC"), 10, std::bind(&ConfigManager::magConfigResponseCallback, this, _1));
 
 }
@@ -123,8 +123,8 @@ ConfigManager::~ConfigManager() {
     RCLCPP_INFO(this->get_logger(), "Deleting Config Manager");
 }
 
-void ConfigManager::massConfigReqCallback(const avionics_interfaces::msg::MassConfigRequestMCU::SharedPtr msg) {
-    auto msg_req = avionics_interfaces::msg::MassConfigRequestJetson();
+void ConfigManager::massConfigReqCallback(const custom_msg::msg::MassConfigRequestMCU::SharedPtr msg) {
+    auto msg_req = custom_msg::msg::MassConfigRequestJetson();
     msg_req.destination_id = msg->id;
     msg_req.remote_command = false; // request from MCU (and not from Jetson) -> false
     msg_req.set_offset = msg->req_offset;
@@ -162,7 +162,7 @@ void ConfigManager::massConfigReqCallback(const avionics_interfaces::msg::MassCo
     }
 }
 
-void ConfigManager::massConfigResponseCallback(const avionics_interfaces::msg::MassConfigResponse::SharedPtr msg) {
+void ConfigManager::massConfigResponseCallback(const custom_msg::msg::MassConfigResponse::SharedPtr msg) {
 
     std::string sensor;
     bool valid_id = false;
@@ -203,8 +203,8 @@ void ConfigManager::massConfigResponseCallback(const avionics_interfaces::msg::M
     }
 }
 
-void ConfigManager::potConfigReqCallback(const avionics_interfaces::msg::PotConfigRequestMCU::SharedPtr msg) {
-    auto msg_req = avionics_interfaces::msg::PotConfigRequestJetson();
+void ConfigManager::potConfigReqCallback(const custom_msg::msg::PotConfigRequestMCU::SharedPtr msg) {
+    auto msg_req = custom_msg::msg::PotConfigRequestJetson();
     msg_req.destination_id = msg->id;
     msg_req.remote_command = false; // request from MCU (and not from Jetson) -> false
     msg_req.set_min_angles = msg->req_min_angles;
@@ -232,7 +232,7 @@ void ConfigManager::potConfigReqCallback(const avionics_interfaces::msg::PotConf
 }
 
 
-void ConfigManager::potConfigResponseCallback(const avionics_interfaces::msg::PotConfigResponse::SharedPtr msg) {
+void ConfigManager::potConfigResponseCallback(const custom_msg::msg::PotConfigResponse::SharedPtr msg) {
 
     std::string sensor = "potentiometer";
 
@@ -263,8 +263,8 @@ void ConfigManager::potConfigResponseCallback(const avionics_interfaces::msg::Po
         set_param_calib(sensor, "enabled_channels", enabled_channels_vector);
 }
 
-void ConfigManager::servoConfigReqCallback(const avionics_interfaces::msg::ServoConfigRequestMCU::SharedPtr msg) {
-    auto msg_req = avionics_interfaces::msg::ServoConfigRequestJetson();
+void ConfigManager::servoConfigReqCallback(const custom_msg::msg::ServoConfigRequestMCU::SharedPtr msg) {
+    auto msg_req = custom_msg::msg::ServoConfigRequestJetson();
     msg_req.destination_id = msg->id;
     msg_req.remote_command = false; // request from MCU (and not from Jetson) -> false
     msg_req.set_min_angles = msg->req_min_angles;
@@ -289,7 +289,7 @@ void ConfigManager::servoConfigReqCallback(const avionics_interfaces::msg::Servo
     servo_config_req_pub->publish(msg_req);
 }
 
-void ConfigManager::servoConfigResponseCallback(const avionics_interfaces::msg::ServoConfigResponse::SharedPtr msg) {
+void ConfigManager::servoConfigResponseCallback(const custom_msg::msg::ServoConfigResponse::SharedPtr msg) {
     std::string sensor = "servo";
 
     RCLCPP_INFO(this->get_logger(), "Saving servo calibration parameters into YAML file...");
@@ -315,8 +315,8 @@ void ConfigManager::servoConfigResponseCallback(const avionics_interfaces::msg::
         set_param_calib(sensor, "max_duty", max_duty_vector);
 }
 
-void ConfigManager::accelConfigReqCallback(const avionics_interfaces::msg::AccelConfigRequestMCU::SharedPtr msg) {
-    auto msg_req = avionics_interfaces::msg::AccelConfigRequestJetson();
+void ConfigManager::accelConfigReqCallback(const custom_msg::msg::AccelConfigRequestMCU::SharedPtr msg) {
+    auto msg_req = custom_msg::msg::AccelConfigRequestJetson();
     msg_req.destination_id = msg->id;
     msg_req.remote_command = false; // request from MCU (and not from Jetson) -> false
     msg_req.set_bias = msg->req_bias;
@@ -336,7 +336,7 @@ void ConfigManager::accelConfigReqCallback(const avionics_interfaces::msg::Accel
     accel_config_req_pub->publish(msg_req);
 }
 
-void ConfigManager::accelConfigResponseCallback(const avionics_interfaces::msg::AccelConfigResponse::SharedPtr msg) {
+void ConfigManager::accelConfigResponseCallback(const custom_msg::msg::AccelConfigResponse::SharedPtr msg) {
     std::string sensor = "accel";
 
     RCLCPP_INFO(this->get_logger(), "Saving accelerometer calibration parameters into YAML file...");
@@ -355,8 +355,8 @@ void ConfigManager::accelConfigResponseCallback(const avionics_interfaces::msg::
         set_param_calib(sensor, "transform", transform_vector);
 }
 
-void ConfigManager::gyroConfigReqCallback(const avionics_interfaces::msg::GyroConfigRequestMCU::SharedPtr msg) {
-    auto msg_req = avionics_interfaces::msg::GyroConfigRequestJetson();
+void ConfigManager::gyroConfigReqCallback(const custom_msg::msg::GyroConfigRequestMCU::SharedPtr msg) {
+    auto msg_req = custom_msg::msg::GyroConfigRequestJetson();
     msg_req.destination_id = msg->id;
     msg_req.remote_command = false; // request from MCU (and not from Jetson) -> false
     msg_req.set_bias = msg->req_bias;
@@ -371,7 +371,7 @@ void ConfigManager::gyroConfigReqCallback(const avionics_interfaces::msg::GyroCo
     gyro_config_req_pub->publish(msg_req);
 }
 
-void ConfigManager::gyroConfigResponseCallback(const avionics_interfaces::msg::GyroConfigResponse::SharedPtr msg) {
+void ConfigManager::gyroConfigResponseCallback(const custom_msg::msg::GyroConfigResponse::SharedPtr msg) {
     std::string sensor = "gyro";
 
     RCLCPP_INFO(this->get_logger(), "Saving gyroscope calibration parameters into YAML file...");
@@ -385,8 +385,8 @@ void ConfigManager::gyroConfigResponseCallback(const avionics_interfaces::msg::G
         set_param_calib(sensor, "bias", bias_vector);
 }
 
-void ConfigManager::magConfigReqCallback(const avionics_interfaces::msg::MagConfigRequestMCU::SharedPtr msg) {
-    auto msg_req = avionics_interfaces::msg::MagConfigRequestJetson();
+void ConfigManager::magConfigReqCallback(const custom_msg::msg::MagConfigRequestMCU::SharedPtr msg) {
+    auto msg_req = custom_msg::msg::MagConfigRequestJetson();
     msg_req.destination_id = msg->id;
     msg_req.remote_command = false; // request from MCU (and not from Jetson) -> false
     msg_req.set_hard_iron = msg->req_hard_iron;
@@ -406,7 +406,7 @@ void ConfigManager::magConfigReqCallback(const avionics_interfaces::msg::MagConf
     mag_config_req_pub->publish(msg_req);
 }
 
-void ConfigManager::magConfigResponseCallback(const avionics_interfaces::msg::MagConfigResponse::SharedPtr msg) {
+void ConfigManager::magConfigResponseCallback(const custom_msg::msg::MagConfigResponse::SharedPtr msg) {
     std::string sensor = "mag";
 
     RCLCPP_INFO(this->get_logger(), "Saving magnetometer calibration parameters into YAML file...");

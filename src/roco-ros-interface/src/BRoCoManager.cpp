@@ -79,7 +79,7 @@ BRoCoManager::BRoCoManager() : Node("broco_manager") {
     this->declare_parameter("SPECTRO_REQ_TOPIC");
     this->declare_parameter("SERVO_REQ_TOPIC");
     this->declare_parameter("LASER_REQ_TOPIC");
-    this->declare_parameter("LED_REQ_TOPIC");
+    this->declare_parameter("LED_COM_TOPIC");
 
     this->declare_parameter("MASS_CONFIG_REQ_JETSON_TOPIC");
     this->declare_parameter("POT_CONFIG_REQ_JETSON_TOPIC");
