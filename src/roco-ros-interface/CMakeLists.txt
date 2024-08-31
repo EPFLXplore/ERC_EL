@@ -50,6 +50,10 @@ add_executable(roco_interface
   src/Utils.cpp
 )
 
+find_package(CppLinuxSerial REQUIRED)
+# Link CppLinuxSerial library to the target
+target_link_libraries(roco_interface CppLinuxSerial::CppLinuxSerial)
+
 ament_target_dependencies(roco_interface rclcpp sensor_msgs BRoCo custom_msg)
 
 install(TARGETS

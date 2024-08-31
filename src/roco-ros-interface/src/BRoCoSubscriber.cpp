@@ -15,9 +15,27 @@
 #include <chrono>
 #include <memory>
 #include <functional>
+#include <CppLinuxSerial/SerialPort.hpp>
 
 using namespace std::chrono_literals;
 using std::placeholders::_1;
+using namespace mn::CppLinuxSerial;
+
+
+// Travail de cochon :
+#define BAUD_RATE 9600
+mn::CppLinuxSerial::SerialPort serialPort;
+
+void serial_init(const std::string& port, mn::CppLinuxSerial::BaudRate baudRate) {
+    // Initialize the SerialPort object with the given port and baud rate
+    serialPort = SerialPort(port, baudRate, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE);
+    
+    // Open the serial port
+    serialPort.Open();
+    
+    std::cout << "Serial port " << port << " initialized with baud rate " 
+              << static_cast<int>(baudRate) << std::endl;
+}
 
 BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
     this->clk = parent->get_clock();
@@ -28,8 +46,10 @@ BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), 
         (get_prefix() + get_param<std::string>("SERVO_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::servoReqCallback, this, _1));
     this->laser_req_sub = parent->create_subscription<custom_msg::msg::LaserRequest>
         (get_prefix() + get_param<std::string>("LASER_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
-    this->led_req_sub = parent->create_subscription<custom_msg::msg::LEDRequest>
+    this->led_req_sub = parent->create_subscription<custom_msg::msg::LedsCommand>
         (get_prefix() + get_param<std::string>("LED_COM_TOPIC"), 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
+
+    serial_init("/dev/my_serial_device", mn::CppLinuxSerial::BaudRate::B_9600);
 
     this->mass_config_req_sub = parent->create_subscription<custom_msg::msg::MassConfigRequestJetson>
         (get_prefix() + get_param<std::string>("MASS_CONFIG_REQ_JETSON_TOPIC"), 10, std::bind(&BRoCoSubscriber::massConfigReqCallback, this, _1));
@@ -74,20 +94,15 @@ void BRoCoSubscriber::spectroReqCallback(const custom_msg::msg::SpectroRequest::
     set_destination_id(id);
     bus->send(&packet);
 }
-
-
-#define DEFAULT_SERVO_CHANNEL 2
 void BRoCoSubscriber::servoReqCallback(const custom_msg::msg::ServoRequest::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
-        id = get_node_id("SC_DRILL_NODE_ID");
+        id = get_node_id("HD_NODE_ID");
     RCLCPP_INFO(parent->get_logger(), "Sending servo request to node ID " + std::to_string(id) + "...");
     static ServoPacket packet;
     packet.channel = msg->channel;
-    if (msg->channel ==0)
-        packet.channel=DEFAULT_SERVO_CHANNEL;
     packet.angle = msg->angle;
     MAKE_IDENTIFIABLE(packet);
     MAKE_RELIABLE(packet);
@@ -110,26 +125,31 @@ void BRoCoSubscriber::laserReqCallback(const custom_msg::msg::LaserRequest::Shar
     bus->send(&packet);
 }
 
-// void BRoCoSubscriber::ledReqCallback(const custom_msg::msg::LEDRequest::SharedPtr msg) {
-//     uint16_t id = 0;
-//     if (msg->destination_id != 0)
-//         id = msg->destination_id;
-//     else
-//         id = get_node_id("NAV_NODE_ID");
-//     RCLCPP_INFO(parent->get_logger(), "Sending LED request to node ID " + std::to_string(id) + "...");
-//     static LEDPacket packet;
+
+
+// void BRoCoSubscriber::ledReqCallback(const custom_msg::msg::LedsCommand::SharedPtr msg) {
+//     // uint16_t id = 0;
+//     // if (msg->destination_id != 0)
+//     //     id = msg->destination_id;
+//     // else
+//     //     id = get_node_id("NAV_NODE_ID");
+//     // RCLCPP_INFO(parent->get_logger(), "Sending LED request to node ID " + std::to_string(id) + "...");
+
+//     // static LEDPacket packet;
 //     // packet.state = msg->state;
-//     packet.low=msg->low;
-//     packet.high=msg->high;
-//     packet.system=msg->system;
-//     packet.mode=msg->mode;
-//     MAKE_IDENTIFIABLE(packet);
-//     MAKE_RELIABLE(packet);
-//     set_destination_id(id);
-//     bus->send(&packet);
+//     // MAKE_IDENTIFIABLE(packet);
+//     // MAKE_RELIABLE(packet);
+//     // set_destination_id(id);
+//     // bus->send(&packet);
+//     serialPort.Write( (uint8_t) msg->low);
+//     serialPort.Write( (uint8_t) msg->high);
+//     serialPort.Write( (uint8_t) msg->system);
+//     serialPort.Write( (uint8_t) msg->mode);
 // }
 
 void BRoCoSubscriber::ledReqCallback(const custom_msg::msg::LedsCommand::SharedPtr msg) {
+    serialPort.Open();
+    std::cout<<"ca part avant"<<std::endl;
     for (const auto& led_request : msg->leds) {
         uint16_t id = 0;
         if (msg->destination_id != 0)
@@ -139,19 +159,16 @@ void BRoCoSubscriber::ledReqCallback(const custom_msg::msg::LedsCommand::SharedP
 
         RCLCPP_INFO(parent->get_logger(), "Sending LED request to node ID " + std::to_string(id) + "...");
 
-        static LEDPacket packet;
-        // packet.state = led_request.state;
-        packet.low = led_request.low;
-        packet.high = led_request.high;
-        packet.system = led_request.system;
-        packet.mode = led_request.mode;
-        MAKE_IDENTIFIABLE(packet);
-        MAKE_RELIABLE(packet);
-        set_destination_id(id);
-        bus->send(&packet);
+        std::string bla = std::to_string(led_request.low) + " " + 
+        std::to_string(led_request.high) + " " + 
+        std::to_string(led_request.system) + " " + 
+        std::to_string(led_request.mode);
+
+        std::cout<<bla<<std::endl;
+        serialPort.Write(bla);
+        serialPort.Close();
     }
 }
-
 
 void BRoCoSubscriber::massConfigReqCallback(const custom_msg::msg::MassConfigRequestJetson::SharedPtr msg) {
     uint16_t id = 0;
@@ -212,7 +229,6 @@ void BRoCoSubscriber::potConfigReqCallback(const custom_msg::msg::PotConfigReque
         min_angles[i] = msg->min_angles[i];
         max_angles[i] = msg->max_angles[i];
     }
-
 
     packet.min_voltages_max_val = get_max_val(min_voltages, 4);
     packet.max_voltages_max_val = get_max_val(max_voltages, 4);
