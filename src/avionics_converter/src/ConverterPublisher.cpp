@@ -18,17 +18,17 @@ ConverterPublisher::ConverterPublisher(rclcpp::Node* parent) : parent(parent) {
     this->mag_cal_pub = parent->create_publisher<sensor_msgs::msg::MagneticField>(get_param<std::string>("MAG_CAL_TOPIC"), 10);
     this->mag_raw_pub = parent->create_publisher<sensor_msgs::msg::MagneticField>(get_param<std::string>("MAG_RAW_TOPIC"), 10);
 
-    this->imu_sub = parent->create_subscription<avionics_interfaces::msg::Imu>
+    this->imu_sub = parent->create_subscription<custom_msg::msg::Imu>
         (get_param<std::string>("IMU_TOPIC"), 10, std::bind(&ConverterPublisher::imuCallback, this, _1));
-    this->mag_sub = parent->create_subscription<avionics_interfaces::msg::Mag>
+    this->mag_sub = parent->create_subscription<custom_msg::msg::Mag>
         (get_param<std::string>("MAG_TOPIC"), 10, std::bind(&ConverterPublisher::magCallback, this, _1));
 }
 
-void ConverterPublisher::imuCallback(const avionics_interfaces::msg::Imu::SharedPtr msg) {
+void ConverterPublisher::imuCallback(const custom_msg::msg::Imu::SharedPtr msg) {
     imu_pub->publish(msg->imu);
 }
 
-void ConverterPublisher::magCallback(const avionics_interfaces::msg::Mag::SharedPtr msg) {
+void ConverterPublisher::magCallback(const custom_msg::msg::Mag::SharedPtr msg) {
     mag_cal_pub->publish(msg->mag_cal);
     mag_raw_pub->publish(msg->mag_raw);
 }

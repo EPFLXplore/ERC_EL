@@ -6,7 +6,7 @@
     VOLTAGE_TOPIC:        "/EL/voltage"
     DRILL_MASS_TOPIC:     "/EL/drill/mass"
     CONTAINER_MASS_TOPIC: "/EL/container/mass"
-    IMU_TOPIC:            "/EL/imu_data" # avionics_interfaces/msg/Imu.msg
+    IMU_TOPIC:            "/EL/imu_data" # custom_msg/msg/Imu.msg
     IMU_NAV_TOPIC:        "/EL/imu" # sensor_msgs/Imu.msg
     MAG_TOPIC:            "/EL/mag_data"
     MAG_CAL_TOPIC:        "/EL/mag"
@@ -41,7 +41,7 @@
     SPECTRO_REQ_TOPIC:    "/EL/spectro_req"
     SERVO_REQ_TOPIC:      "/EL/servo_req"
     LASER_REQ_TOPIC:      "/EL/laser_req"
-    LED_REQ_TOPIC:        "/EL/led_req"
+    LED_REQ_TOPIC:        "/EL/LedCommands"
 
     # Config
     MASS_CONFIG_REQ_JETSON_TOPIC:   "/EL/mass_config_req"

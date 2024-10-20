@@ -5,7 +5,6 @@
  */
 
 #include "BMS_control.hpp"
-using namespace mn::CppLinuxSerial;
 
 const static uint16_t crcTable[256] = {
     0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
@@ -42,20 +41,21 @@ const static uint16_t crcTable[256] = {
     0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040
 };
 
+/**** API: functions that are recommended to be used ****/
+
 void BMSControl::init_BMS_comm(){
     //init serial port
-    this->serialPort.SetTimeout(1000); // Block when reading for 1000ms
+    this->serialPort.SetTimeout(100); // Block when reading for 100ms
     this->serialPort.Open();
 }
-
-/**** API: functions that are recommended to be used ****/
 
 // reset BMS with option(see above): ADDR, RESET, option, CRC(LSB), CRC(MSB)
 bool BMSControl::reset_BMS(uint8_t option){
     std::vector<uint8_t> packet = {ADDR, RESET, option};
     uint16_t crc = append_crc(packet);
     this->serialPort.WriteBinary(packet);
-    return (read_n_bytes(RESET, crc)[0] != -1);
+    std::vector<uint8_t> response = read_n_bytes(RESET, crc);
+    return !(response.empty() || response[0] == -1); // won't check for error if empty
 }
 
 bool BMSControl::send_command(uint8_t command){
@@ -136,7 +136,9 @@ std::vector<uint8_t> BMSControl::read_n_bytes(uint8_t command, uint16_t crc){
     //read response
     std::vector<uint8_t> response;
     this->serialPort.ReadBinary(response);
-
+    if(response.empty()){ //no response
+        return {};
+    }
     if(check_packet_error(response, command, crc)){ //if error return empty vector
         return {};
     }
@@ -193,17 +195,17 @@ bool BMSControl::check_packet_error(std::vector<uint8_t> response, uint8_t comma
 uint16_t BMSControl::append_crc(std::vector<uint8_t>& packet){
     // add 0s for crc
     packet.push_back(0);
-    packet.push_back(0);
+    // packet.push_back(0);
 
     uint16_t crc = CRC16(packet.data(), packet.size());
-    *(packet.end() - 2) = crc & 0xFF; //LSB in 2nd last byte
-    *(packet.end() - 1) = crc >> 8; //MSB in last byte
+    packet.push_back(crc & 0xFF); //LSB in 2nd last byte
+    packet.push_back(crc >> 8); //MSB in last byte
     return crc;
 }
 
 // function defined in datasheet
 inline uint16_t BMSControl::CRC16(const uint8_t* data, uint16_t length){
-    uint8_t tmp;
+    uint8_t tmp = 0;
     uint16_t crcWord = 0xFFFF;
     while (length--){
         tmp = *data++ ^ crcWord;
@@ -212,4 +214,21 @@ inline uint16_t BMSControl::CRC16(const uint8_t* data, uint16_t length){
     }
     return crcWord;
 }
+
+// inline uint16_t BMSControl::CRC16(const uint8_t* data, uint16_t length){
+//     uint16_t crc = 0xFFFF;
+
+//     for(size_t i = 0; i < length; i++){
+//         crc = (crc >> 8) ^ crcTable[(crc ^ data[i]) & 0xFF];
+//         crc ^= data[i];
+
+//         for(int j = 0; j < 8; j++){
+//             if(crc & 0x0001)
+//                 crc = (crc >> 1) ^ 0xA001;
+//             else
+//                 crc >>= 1;
+//         }
+//     }
+//     return crc;
+// }
 

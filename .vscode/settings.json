@@ -61,6 +61,12 @@
         "strstream": "cpp",
         "list": "cpp",
         "cfenv": "cpp",
-        "variant": "cpp"
-    }
+        "variant": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp"
+    },
+    "cmake.sourceDirectory": "/home/Xplore_AV/Documents/Josef/ERC_EL/src/avionics_converter"
 }

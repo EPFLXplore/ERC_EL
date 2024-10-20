@@ -22,44 +22,44 @@ using std::placeholders::_1;
 BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
     this->clk = parent->get_clock();
     RCLCPP_INFO(parent->get_logger(), "Creating subscribers");
-    this->spectro_req_sub = parent->create_subscription<avionics_interfaces::msg::SpectroRequest>
+    this->spectro_req_sub = parent->create_subscription<custom_msg::msg::SpectroRequest>
         (get_prefix() + get_param<std::string>("SPECTRO_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::spectroReqCallback, this, _1));
-    this->servo_req_sub = parent->create_subscription<avionics_interfaces::msg::ServoRequest>
+    this->servo_req_sub = parent->create_subscription<custom_msg::msg::ServoRequest>
         (get_prefix() + get_param<std::string>("SERVO_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::servoReqCallback, this, _1));
-    this->laser_req_sub = parent->create_subscription<avionics_interfaces::msg::LaserRequest>
+    this->laser_req_sub = parent->create_subscription<custom_msg::msg::LaserRequest>
         (get_prefix() + get_param<std::string>("LASER_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::laserReqCallback,this,  _1));
-    this->led_req_sub = parent->create_subscription<avionics_interfaces::msg::LEDRequest>
+    this->led_req_sub = parent->create_subscription<custom_msg::msg::LedsCommand>
         (get_prefix() + get_param<std::string>("LED_REQ_TOPIC"), 10, std::bind(&BRoCoSubscriber::ledReqCallback, this, _1));
 
-    this->mass_config_req_sub = parent->create_subscription<avionics_interfaces::msg::MassConfigRequestJetson>
+    this->mass_config_req_sub = parent->create_subscription<custom_msg::msg::MassConfigRequestJetson>
         (get_prefix() + get_param<std::string>("MASS_CONFIG_REQ_JETSON_TOPIC"), 10, std::bind(&BRoCoSubscriber::massConfigReqCallback, this, _1));
-    this->pot_config_req_sub = parent->create_subscription<avionics_interfaces::msg::PotConfigRequestJetson>
+    this->pot_config_req_sub = parent->create_subscription<custom_msg::msg::PotConfigRequestJetson>
         (get_prefix() + get_param<std::string>("POT_CONFIG_REQ_JETSON_TOPIC"), 10, std::bind(&BRoCoSubscriber::potConfigReqCallback, this, _1));
-    this->servo_config_req_sub = parent->create_subscription<avionics_interfaces::msg::ServoConfigRequestJetson>
+    this->servo_config_req_sub = parent->create_subscription<custom_msg::msg::ServoConfigRequestJetson>
         (get_prefix() + get_param<std::string>("SERVO_CONFIG_REQ_JETSON_TOPIC"), 10, std::bind(&BRoCoSubscriber::servoConfigReqCallback, this, _1));
-    this->accel_config_req_sub = parent->create_subscription<avionics_interfaces::msg::AccelConfigRequestJetson>
+    this->accel_config_req_sub = parent->create_subscription<custom_msg::msg::AccelConfigRequestJetson>
         (get_prefix() + get_param<std::string>("ACCEL_CONFIG_REQ_JETSON_TOPIC"), 10, std::bind(&BRoCoSubscriber::accelConfigReqCallback, this, _1));
-    this->gyro_config_req_sub = parent->create_subscription<avionics_interfaces::msg::GyroConfigRequestJetson>
+    this->gyro_config_req_sub = parent->create_subscription<custom_msg::msg::GyroConfigRequestJetson>
         (get_prefix() + get_param<std::string>("GYRO_CONFIG_REQ_JETSON_TOPIC"), 10, std::bind(&BRoCoSubscriber::gyroConfigReqCallback, this, _1));
-    this->mag_config_req_sub = parent->create_subscription<avionics_interfaces::msg::MagConfigRequestJetson>
+    this->mag_config_req_sub = parent->create_subscription<custom_msg::msg::MagConfigRequestJetson>
         (get_prefix() + get_param<std::string>("MAG_CONFIG_REQ_JETSON_TOPIC"), 10, std::bind(&BRoCoSubscriber::magConfigReqCallback, this, _1));
     
-    this->mass_drill_calib_offset_sub = parent->create_subscription<avionics_interfaces::msg::MassCalibOffset>
+    this->mass_drill_calib_offset_sub = parent->create_subscription<custom_msg::msg::MassCalibOffset>
         (get_prefix() + get_param<std::string>("DRILL_MASS_CALIB_OFFSET_TOPIC"), 10, std::bind(&BRoCoSubscriber::massDrillCalibOffsetCallback, this, _1));
-    this->mass_container_calib_offset_sub = parent->create_subscription<avionics_interfaces::msg::MassCalibOffset>
+    this->mass_container_calib_offset_sub = parent->create_subscription<custom_msg::msg::MassCalibOffset>
         (get_prefix() + get_param<std::string>("CONTAINER_MASS_CALIB_OFFSET_TOPIC"), 10, std::bind(&BRoCoSubscriber::massContainerCalibOffsetCallback, this, _1));
-    this->mass_drill_calib_scale_sub = parent->create_subscription<avionics_interfaces::msg::MassCalibScale>
+    this->mass_drill_calib_scale_sub = parent->create_subscription<custom_msg::msg::MassCalibScale>
         (get_prefix() + get_param<std::string>("DRILL_MASS_CALIB_SCALE_TOPIC"), 10, std::bind(&BRoCoSubscriber::massDrillCalibScaleCallback, this, _1));
-    this->mass_container_calib_scale_sub = parent->create_subscription<avionics_interfaces::msg::MassCalibScale>
+    this->mass_container_calib_scale_sub = parent->create_subscription<custom_msg::msg::MassCalibScale>
         (get_prefix() + get_param<std::string>("CONTAINER_MASS_CALIB_SCALE_TOPIC"), 10, std::bind(&BRoCoSubscriber::massContainerCalibScaleCallback, this, _1));
-this->imu_calib_sub = parent->create_subscription<avionics_interfaces::msg::ImuCalib>
+this->imu_calib_sub = parent->create_subscription<custom_msg::msg::ImuCalib>
         (get_prefix() + get_param<std::string>("IMU_CALIB_TOPIC"), 10, std::bind(&BRoCoSubscriber::imuCalibCallback, this, _1));
 
 
     RCLCPP_INFO(parent->get_logger(), "Subscribers created");
 }
 
-void BRoCoSubscriber::spectroReqCallback(const avionics_interfaces::msg::SpectroRequest::SharedPtr msg) {
+void BRoCoSubscriber::spectroReqCallback(const custom_msg::msg::SpectroRequest::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -74,7 +74,7 @@ void BRoCoSubscriber::spectroReqCallback(const avionics_interfaces::msg::Spectro
     set_destination_id(id);
     bus->send(&packet);
 }
-void BRoCoSubscriber::servoReqCallback(const avionics_interfaces::msg::ServoRequest::SharedPtr msg) {
+void BRoCoSubscriber::servoReqCallback(const custom_msg::msg::ServoRequest::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -90,7 +90,7 @@ void BRoCoSubscriber::servoReqCallback(const avionics_interfaces::msg::ServoRequ
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::laserReqCallback(const avionics_interfaces::msg::LaserRequest::SharedPtr msg) {
+void BRoCoSubscriber::laserReqCallback(const custom_msg::msg::LaserRequest::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -105,7 +105,7 @@ void BRoCoSubscriber::laserReqCallback(const avionics_interfaces::msg::LaserRequ
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::ledReqCallback(const avionics_interfaces::msg::LEDRequest::SharedPtr msg) {
+void BRoCoSubscriber::ledReqCallback(const custom_msg::msg::LEDRequest::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -120,7 +120,7 @@ void BRoCoSubscriber::ledReqCallback(const avionics_interfaces::msg::LEDRequest:
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::massConfigReqCallback(const avionics_interfaces::msg::MassConfigRequestJetson::SharedPtr msg) {
+void BRoCoSubscriber::massConfigReqCallback(const custom_msg::msg::MassConfigRequestJetson::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -152,7 +152,7 @@ void BRoCoSubscriber::massConfigReqCallback(const avionics_interfaces::msg::Mass
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::potConfigReqCallback(const avionics_interfaces::msg::PotConfigRequestJetson::SharedPtr msg) {
+void BRoCoSubscriber::potConfigReqCallback(const custom_msg::msg::PotConfigRequestJetson::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -199,7 +199,7 @@ void BRoCoSubscriber::potConfigReqCallback(const avionics_interfaces::msg::PotCo
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::servoConfigReqCallback(const avionics_interfaces::msg::ServoConfigRequestJetson::SharedPtr msg) {
+void BRoCoSubscriber::servoConfigReqCallback(const custom_msg::msg::ServoConfigRequestJetson::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -244,7 +244,7 @@ void BRoCoSubscriber::servoConfigReqCallback(const avionics_interfaces::msg::Ser
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::accelConfigReqCallback(const avionics_interfaces::msg::AccelConfigRequestJetson::SharedPtr msg) {
+void BRoCoSubscriber::accelConfigReqCallback(const custom_msg::msg::AccelConfigRequestJetson::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -269,7 +269,7 @@ void BRoCoSubscriber::accelConfigReqCallback(const avionics_interfaces::msg::Acc
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::gyroConfigReqCallback(const avionics_interfaces::msg::GyroConfigRequestJetson::SharedPtr msg) {
+void BRoCoSubscriber::gyroConfigReqCallback(const custom_msg::msg::GyroConfigRequestJetson::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -290,7 +290,7 @@ void BRoCoSubscriber::gyroConfigReqCallback(const avionics_interfaces::msg::Gyro
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::magConfigReqCallback(const avionics_interfaces::msg::MagConfigRequestJetson::SharedPtr msg) {
+void BRoCoSubscriber::magConfigReqCallback(const custom_msg::msg::MagConfigRequestJetson::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -316,7 +316,7 @@ void BRoCoSubscriber::magConfigReqCallback(const avionics_interfaces::msg::MagCo
 }
 
 
-void BRoCoSubscriber::massDrillCalibOffsetCallback(const avionics_interfaces::msg::MassCalibOffset::SharedPtr msg) {
+void BRoCoSubscriber::massDrillCalibOffsetCallback(const custom_msg::msg::MassCalibOffset::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -336,7 +336,7 @@ void BRoCoSubscriber::massDrillCalibOffsetCallback(const avionics_interfaces::ms
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::massContainerCalibOffsetCallback(const avionics_interfaces::msg::MassCalibOffset::SharedPtr msg) {
+void BRoCoSubscriber::massContainerCalibOffsetCallback(const custom_msg::msg::MassCalibOffset::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -356,7 +356,7 @@ void BRoCoSubscriber::massContainerCalibOffsetCallback(const avionics_interfaces
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::massDrillCalibScaleCallback(const avionics_interfaces::msg::MassCalibScale::SharedPtr msg) {
+void BRoCoSubscriber::massDrillCalibScaleCallback(const custom_msg::msg::MassCalibScale::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -376,7 +376,7 @@ void BRoCoSubscriber::massDrillCalibScaleCallback(const avionics_interfaces::msg
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::massContainerCalibScaleCallback(const avionics_interfaces::msg::MassCalibScale::SharedPtr msg) {
+void BRoCoSubscriber::massContainerCalibScaleCallback(const custom_msg::msg::MassCalibScale::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;
@@ -396,7 +396,7 @@ void BRoCoSubscriber::massContainerCalibScaleCallback(const avionics_interfaces:
     bus->send(&packet);
 }
 
-void BRoCoSubscriber::imuCalibCallback(const avionics_interfaces::msg::ImuCalib::SharedPtr msg) {
+void BRoCoSubscriber::imuCalibCallback(const custom_msg::msg::ImuCalib::SharedPtr msg) {
     uint16_t id = 0;
     if (msg->destination_id != 0)
         id = msg->destination_id;

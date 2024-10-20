@@ -20,7 +20,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(avionics_interfaces REQUIRED)
+find_package(custom_msg REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
 include_directories(
@@ -44,7 +44,7 @@ add_executable(avionics_config
   src/ConfigManager.cpp
 )
 
-ament_target_dependencies(avionics_config rclcpp sensor_msgs avionics_interfaces yaml-cpp)
+ament_target_dependencies(avionics_config rclcpp sensor_msgs custom_msg yaml-cpp)
 target_link_libraries(avionics_config ${YAML_CPP_LIBRARIES})
 
 install(TARGETS

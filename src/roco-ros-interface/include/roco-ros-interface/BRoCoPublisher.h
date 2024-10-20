@@ -12,37 +12,37 @@
 
 #include "rclcpp/rclcpp.hpp"
 
-#include "avionics_interfaces/msg/four_in_one.hpp"
-#include "avionics_interfaces/msg/npk.hpp"
-#include "avionics_interfaces/msg/voltage.hpp"
-#include "avionics_interfaces/msg/mass_array.hpp"
-#include "avionics_interfaces/msg/imu.hpp"
-#include "avionics_interfaces/msg/mag.hpp"
-#include "avionics_interfaces/msg/angle_array.hpp"
-#include "avionics_interfaces/msg/spectro_response.hpp"
-#include "avionics_interfaces/msg/laser_response.hpp"
-#include "avionics_interfaces/msg/servo_response.hpp"
-#include "avionics_interfaces/msg/led_response.hpp"
-#include "avionics_interfaces/msg/node_state_array.hpp"
+#include "custom_msg/msg/four_in_one.hpp"
+#include "custom_msg/msg/npk.hpp"
+#include "custom_msg/msg/voltage.hpp"
+#include "custom_msg/msg/mass_array.hpp"
+#include "custom_msg/msg/imu.hpp"
+#include "custom_msg/msg/mag.hpp"
+#include "custom_msg/msg/angle_array.hpp"
+#include "custom_msg/msg/spectro_response.hpp"
+#include "custom_msg/msg/laser_response.hpp"
+#include "custom_msg/msg/servo_response.hpp"
+#include "custom_msg/msg/led_response.hpp"
+#include "custom_msg/msg/node_state_array.hpp"
 
 // config messages
-#include "avionics_interfaces/msg/mass_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/mass_config_response.hpp"
+#include "custom_msg/msg/mass_config_request_mcu.hpp"
+#include "custom_msg/msg/mass_config_response.hpp"
 
-#include "avionics_interfaces/msg/pot_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/pot_config_response.hpp"
+#include "custom_msg/msg/pot_config_request_mcu.hpp"
+#include "custom_msg/msg/pot_config_response.hpp"
 
-#include "avionics_interfaces/msg/servo_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/servo_config_response.hpp"
+#include "custom_msg/msg/servo_config_request_mcu.hpp"
+#include "custom_msg/msg/servo_config_response.hpp"
 
-#include "avionics_interfaces/msg/accel_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/accel_config_response.hpp"
+#include "custom_msg/msg/accel_config_request_mcu.hpp"
+#include "custom_msg/msg/accel_config_response.hpp"
 
-#include "avionics_interfaces/msg/gyro_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/gyro_config_response.hpp"
+#include "custom_msg/msg/gyro_config_request_mcu.hpp"
+#include "custom_msg/msg/gyro_config_response.hpp"
 
-#include "avionics_interfaces/msg/mag_config_request_mcu.hpp"
-#include "avionics_interfaces/msg/mag_config_response.hpp"
+#include "custom_msg/msg/mag_config_request_mcu.hpp"
+#include "custom_msg/msg/mag_config_response.hpp"
 
 #include "BRoCo/CANBus.h"
 #include "Protocol/Protocol.h"
@@ -60,38 +60,38 @@ private:
     std::vector<bool> node_state;
 
     // Publishers
-    rclcpp::Publisher<avionics_interfaces::msg::FourInOne>::SharedPtr four_in_one_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::NPK>::SharedPtr npk_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::Voltage>::SharedPtr voltage_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::MassArray>::SharedPtr drill_mass_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::MassArray>::SharedPtr container_mass_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::Imu>::SharedPtr imu_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::Mag>::SharedPtr mag_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::AngleArray>::SharedPtr potentiometer_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::SpectroResponse>::SharedPtr spectro_response_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::LaserResponse>::SharedPtr laser_response_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::ServoResponse>::SharedPtr servo_response_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::LEDResponse>::SharedPtr led_response_pub;
+    rclcpp::Publisher<custom_msg::msg::FourInOne>::SharedPtr four_in_one_pub;
+    rclcpp::Publisher<custom_msg::msg::NPK>::SharedPtr npk_pub;
+    rclcpp::Publisher<custom_msg::msg::Voltage>::SharedPtr voltage_pub;
+    rclcpp::Publisher<custom_msg::msg::MassArray>::SharedPtr drill_mass_pub;
+    rclcpp::Publisher<custom_msg::msg::MassArray>::SharedPtr container_mass_pub;
+    rclcpp::Publisher<custom_msg::msg::Imu>::SharedPtr imu_pub;
+    rclcpp::Publisher<custom_msg::msg::Mag>::SharedPtr mag_pub;
+    rclcpp::Publisher<custom_msg::msg::AngleArray>::SharedPtr potentiometer_pub;
+    rclcpp::Publisher<custom_msg::msg::SpectroResponse>::SharedPtr spectro_response_pub;
+    rclcpp::Publisher<custom_msg::msg::LaserResponse>::SharedPtr laser_response_pub;
+    rclcpp::Publisher<custom_msg::msg::ServoResponse>::SharedPtr servo_response_pub;
+    rclcpp::Publisher<custom_msg::msg::LEDResponse>::SharedPtr led_response_pub;
 
-    rclcpp::Publisher<avionics_interfaces::msg::NodeStateArray>::SharedPtr node_state_pub;
+    rclcpp::Publisher<custom_msg::msg::NodeStateArray>::SharedPtr node_state_pub;
 
-    rclcpp::Publisher<avionics_interfaces::msg::MassConfigRequestMCU>::SharedPtr mass_config_req_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::MassConfigResponse>::SharedPtr mass_config_response_pub;
+    rclcpp::Publisher<custom_msg::msg::MassConfigRequestMCU>::SharedPtr mass_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::MassConfigResponse>::SharedPtr mass_config_response_pub;
 
-    rclcpp::Publisher<avionics_interfaces::msg::PotConfigRequestMCU>::SharedPtr pot_config_req_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::PotConfigResponse>::SharedPtr pot_config_response_pub;
+    rclcpp::Publisher<custom_msg::msg::PotConfigRequestMCU>::SharedPtr pot_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::PotConfigResponse>::SharedPtr pot_config_response_pub;
 
-    rclcpp::Publisher<avionics_interfaces::msg::ServoConfigRequestMCU>::SharedPtr servo_config_req_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::ServoConfigResponse>::SharedPtr servo_config_response_pub;
+    rclcpp::Publisher<custom_msg::msg::ServoConfigRequestMCU>::SharedPtr servo_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::ServoConfigResponse>::SharedPtr servo_config_response_pub;
 
-    rclcpp::Publisher<avionics_interfaces::msg::AccelConfigRequestMCU>::SharedPtr accel_config_req_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::AccelConfigResponse>::SharedPtr accel_config_response_pub;
+    rclcpp::Publisher<custom_msg::msg::AccelConfigRequestMCU>::SharedPtr accel_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::AccelConfigResponse>::SharedPtr accel_config_response_pub;
 
-    rclcpp::Publisher<avionics_interfaces::msg::GyroConfigRequestMCU>::SharedPtr gyro_config_req_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::GyroConfigResponse>::SharedPtr gyro_config_response_pub;
+    rclcpp::Publisher<custom_msg::msg::GyroConfigRequestMCU>::SharedPtr gyro_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::GyroConfigResponse>::SharedPtr gyro_config_response_pub;
 
-    rclcpp::Publisher<avionics_interfaces::msg::MagConfigRequestMCU>::SharedPtr mag_config_req_pub;
-    rclcpp::Publisher<avionics_interfaces::msg::MagConfigResponse>::SharedPtr mag_config_response_pub;
+    rclcpp::Publisher<custom_msg::msg::MagConfigRequestMCU>::SharedPtr mag_config_req_pub;
+    rclcpp::Publisher<custom_msg::msg::MagConfigResponse>::SharedPtr mag_config_response_pub;
 
     rclcpp::TimerBase::SharedPtr timer;
     std::vector<rclcpp::TimerBase::SharedPtr> watchdog_timers;

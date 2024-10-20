@@ -23,37 +23,37 @@ BRoCoPublisher::BRoCoPublisher(CANBus* bus, rclcpp::Node* parent) : bus(bus), pa
     RCLCPP_INFO(parent->get_logger(), "Creating publishers");
     this->timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_PING_INTERVAL")), std::bind(&BRoCoPublisher::timerPingCallback, this));
     this->node_state_pub_timer = parent->create_wall_timer(std::chrono::milliseconds(get_param<uint32_t>("NODE_STATE_PUBLISH_INTERVAL")), std::bind(&BRoCoPublisher::nodeStateCallback, this));
-    this->four_in_one_pub = parent->create_publisher<avionics_interfaces::msg::FourInOne>(get_prefix() + get_param<std::string>("FOUR_IN_ONE_TOPIC"), 10);
-    this->npk_pub = parent->create_publisher<avionics_interfaces::msg::NPK>(get_prefix() + get_param<std::string>("NPK_TOPIC"), 10);
-    this->voltage_pub = parent->create_publisher<avionics_interfaces::msg::Voltage>(get_prefix() + get_param<std::string>("VOLTAGE_TOPIC"), 10);
-    this->drill_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_prefix() + get_param<std::string>("DRILL_MASS_TOPIC"), 10);
-    this->container_mass_pub = parent->create_publisher<avionics_interfaces::msg::MassArray>(get_prefix() + get_param<std::string>("CONTAINER_MASS_TOPIC"), 10);
-    this->imu_pub = parent->create_publisher<avionics_interfaces::msg::Imu>(get_prefix() + get_param<std::string>("IMU_TOPIC"), 10);
-    this->mag_pub = parent->create_publisher<avionics_interfaces::msg::Mag>(get_prefix() + get_param<std::string>("MAG_TOPIC"), 10);
-    this->potentiometer_pub = parent->create_publisher<avionics_interfaces::msg::AngleArray>(get_prefix() + get_param<std::string>("POTENTIOMETER_TOPIC"), 10);
-    this->spectro_response_pub = parent->create_publisher<avionics_interfaces::msg::SpectroResponse>(get_prefix() + get_param<std::string>("SPECTRO_TOPIC"), 10);
-    this->laser_response_pub = parent->create_publisher<avionics_interfaces::msg::LaserResponse>(get_prefix() + get_param<std::string>("LASER_TOPIC"), 10);
-    this->servo_response_pub = parent->create_publisher<avionics_interfaces::msg::ServoResponse>(get_prefix() + get_param<std::string>("SERVO_TOPIC"), 10);
-    this->led_response_pub = parent->create_publisher<avionics_interfaces::msg::LEDResponse>(get_prefix() + get_param<std::string>("LED_TOPIC"), 10);
-    this->node_state_pub = parent->create_publisher<avionics_interfaces::msg::NodeStateArray>(get_prefix() + get_param<std::string>("NODE_STATE_TOPIC"), 10);
+    this->four_in_one_pub = parent->create_publisher<custom_msg::msg::FourInOne>(get_prefix() + get_param<std::string>("FOUR_IN_ONE_TOPIC"), 10);
+    this->npk_pub = parent->create_publisher<custom_msg::msg::NPK>(get_prefix() + get_param<std::string>("NPK_TOPIC"), 10);
+    this->voltage_pub = parent->create_publisher<custom_msg::msg::Voltage>(get_prefix() + get_param<std::string>("VOLTAGE_TOPIC"), 10);
+    this->drill_mass_pub = parent->create_publisher<custom_msg::msg::MassArray>(get_prefix() + get_param<std::string>("DRILL_MASS_TOPIC"), 10);
+    this->container_mass_pub = parent->create_publisher<custom_msg::msg::MassArray>(get_prefix() + get_param<std::string>("CONTAINER_MASS_TOPIC"), 10);
+    this->imu_pub = parent->create_publisher<custom_msg::msg::Imu>(get_prefix() + get_param<std::string>("IMU_TOPIC"), 10);
+    this->mag_pub = parent->create_publisher<custom_msg::msg::Mag>(get_prefix() + get_param<std::string>("MAG_TOPIC"), 10);
+    this->potentiometer_pub = parent->create_publisher<custom_msg::msg::AngleArray>(get_prefix() + get_param<std::string>("POTENTIOMETER_TOPIC"), 10);
+    this->spectro_response_pub = parent->create_publisher<custom_msg::msg::SpectroResponse>(get_prefix() + get_param<std::string>("SPECTRO_TOPIC"), 10);
+    this->laser_response_pub = parent->create_publisher<custom_msg::msg::LaserResponse>(get_prefix() + get_param<std::string>("LASER_TOPIC"), 10);
+    this->servo_response_pub = parent->create_publisher<custom_msg::msg::ServoResponse>(get_prefix() + get_param<std::string>("SERVO_TOPIC"), 10);
+    this->led_response_pub = parent->create_publisher<custom_msg::msg::LEDResponse>(get_prefix() + get_param<std::string>("LED_TOPIC"), 10);
+    this->node_state_pub = parent->create_publisher<custom_msg::msg::NodeStateArray>(get_prefix() + get_param<std::string>("NODE_STATE_TOPIC"), 10);
 
-    this->mass_config_req_pub = parent->create_publisher<avionics_interfaces::msg::MassConfigRequestMCU>(get_prefix() + get_param<std::string>("MASS_CONFIG_REQ_MCU_TOPIC"), 10);
-    this->mass_config_response_pub = parent->create_publisher<avionics_interfaces::msg::MassConfigResponse>(get_prefix() + get_param<std::string>("MASS_CONFIG_TOPIC"), 10);
+    this->mass_config_req_pub = parent->create_publisher<custom_msg::msg::MassConfigRequestMCU>(get_prefix() + get_param<std::string>("MASS_CONFIG_REQ_MCU_TOPIC"), 10);
+    this->mass_config_response_pub = parent->create_publisher<custom_msg::msg::MassConfigResponse>(get_prefix() + get_param<std::string>("MASS_CONFIG_TOPIC"), 10);
 
-    this->pot_config_req_pub = parent->create_publisher<avionics_interfaces::msg::PotConfigRequestMCU>(get_prefix() + get_param<std::string>("POT_CONFIG_REQ_MCU_TOPIC"), 10);
-    this->pot_config_response_pub = parent->create_publisher<avionics_interfaces::msg::PotConfigResponse>(get_prefix() + get_param<std::string>("POT_CONFIG_TOPIC"), 10);
+    this->pot_config_req_pub = parent->create_publisher<custom_msg::msg::PotConfigRequestMCU>(get_prefix() + get_param<std::string>("POT_CONFIG_REQ_MCU_TOPIC"), 10);
+    this->pot_config_response_pub = parent->create_publisher<custom_msg::msg::PotConfigResponse>(get_prefix() + get_param<std::string>("POT_CONFIG_TOPIC"), 10);
 
-    this->servo_config_req_pub = parent->create_publisher<avionics_interfaces::msg::ServoConfigRequestMCU>(get_prefix() + get_param<std::string>("SERVO_CONFIG_REQ_MCU_TOPIC"), 10);
-    this->servo_config_response_pub = parent->create_publisher<avionics_interfaces::msg::ServoConfigResponse>(get_prefix() + get_param<std::string>("SERVO_CONFIG_TOPIC"), 10);
+    this->servo_config_req_pub = parent->create_publisher<custom_msg::msg::ServoConfigRequestMCU>(get_prefix() + get_param<std::string>("SERVO_CONFIG_REQ_MCU_TOPIC"), 10);
+    this->servo_config_response_pub = parent->create_publisher<custom_msg::msg::ServoConfigResponse>(get_prefix() + get_param<std::string>("SERVO_CONFIG_TOPIC"), 10);
 
-    this->accel_config_req_pub = parent->create_publisher<avionics_interfaces::msg::AccelConfigRequestMCU>(get_prefix() + get_param<std::string>("ACCEL_CONFIG_REQ_MCU_TOPIC"), 10);
-    this->accel_config_response_pub = parent->create_publisher<avionics_interfaces::msg::AccelConfigResponse>(get_prefix() + get_param<std::string>("ACCEL_CONFIG_TOPIC"), 10);
+    this->accel_config_req_pub = parent->create_publisher<custom_msg::msg::AccelConfigRequestMCU>(get_prefix() + get_param<std::string>("ACCEL_CONFIG_REQ_MCU_TOPIC"), 10);
+    this->accel_config_response_pub = parent->create_publisher<custom_msg::msg::AccelConfigResponse>(get_prefix() + get_param<std::string>("ACCEL_CONFIG_TOPIC"), 10);
 
-    this->gyro_config_req_pub = parent->create_publisher<avionics_interfaces::msg::GyroConfigRequestMCU>(get_prefix() + get_param<std::string>("GYRO_CONFIG_REQ_MCU_TOPIC"), 10);
-    this->gyro_config_response_pub = parent->create_publisher<avionics_interfaces::msg::GyroConfigResponse>(get_prefix() + get_param<std::string>("GYRO_CONFIG_TOPIC"), 10);
+    this->gyro_config_req_pub = parent->create_publisher<custom_msg::msg::GyroConfigRequestMCU>(get_prefix() + get_param<std::string>("GYRO_CONFIG_REQ_MCU_TOPIC"), 10);
+    this->gyro_config_response_pub = parent->create_publisher<custom_msg::msg::GyroConfigResponse>(get_prefix() + get_param<std::string>("GYRO_CONFIG_TOPIC"), 10);
 
-    this->mag_config_req_pub = parent->create_publisher<avionics_interfaces::msg::MagConfigRequestMCU>(get_prefix() + get_param<std::string>("MAG_CONFIG_REQ_MCU_TOPIC"), 10);
-    this->mag_config_response_pub = parent->create_publisher<avionics_interfaces::msg::MagConfigResponse>(get_prefix() + get_param<std::string>("MAG_CONFIG_TOPIC"), 10);
+    this->mag_config_req_pub = parent->create_publisher<custom_msg::msg::MagConfigRequestMCU>(get_prefix() + get_param<std::string>("MAG_CONFIG_REQ_MCU_TOPIC"), 10);
+    this->mag_config_response_pub = parent->create_publisher<custom_msg::msg::MagConfigResponse>(get_prefix() + get_param<std::string>("MAG_CONFIG_TOPIC"), 10);
 
     RCLCPP_INFO(parent->get_logger(), "Publishers created");
 
@@ -113,7 +113,7 @@ void BRoCoPublisher::timerPingCallback() {
 }
 
 void BRoCoPublisher::nodeStateCallback() {
-    auto msg = avionics_interfaces::msg::NodeStateArray();
+    auto msg = custom_msg::msg::NodeStateArray();
     for (int i = 0; i < node_state.size(); ++i)
     msg.node_state.push_back(node_state[i]);
     node_state_pub->publish(msg);
@@ -143,7 +143,7 @@ void BRoCoPublisher::handleFourInOnePacket(uint8_t senderID, FOURINONEPacket* pa
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable four in one packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::FourInOne();
+    auto msg = custom_msg::msg::FourInOne();
 
     msg.id = packet->id;
 
@@ -160,7 +160,7 @@ void BRoCoPublisher::handleNPKPacket(uint8_t senderID, NPKPacket* packet) {
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable NPK packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::NPK();
+    auto msg = custom_msg::msg::NPK();
 
     msg.id = packet->id;
 
@@ -176,7 +176,7 @@ void BRoCoPublisher::handleVoltmeterPacket(uint8_t senderID, VoltmeterPacket* pa
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable voltmeter packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::Voltage();
+    auto msg = custom_msg::msg::Voltage();
 
     msg.id = packet->id;
 
@@ -190,7 +190,7 @@ void BRoCoPublisher::handleMassPacket(uint8_t senderID, MassPacket* packet) {
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable mass packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::MassArray();
+    auto msg = custom_msg::msg::MassArray();
 
     msg.id = packet->id;
 
@@ -209,7 +209,7 @@ void BRoCoPublisher::handleIMUPacket(uint8_t senderID, IMUPacket* packet) {
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable IMU packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::Imu();
+    auto msg = custom_msg::msg::Imu();
 
     msg.id = packet->id;
 
@@ -262,7 +262,7 @@ void BRoCoPublisher::handleMagPacket(uint8_t senderID, MagPacket* packet) {
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable magnetometer packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::Mag();
+    auto msg = custom_msg::msg::Mag();
 
     msg.id = packet->id;
 
@@ -308,7 +308,7 @@ void BRoCoPublisher::handlePotentiometerPacket(uint8_t senderID, PotentiometerPa
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable potentiometer packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::AngleArray();
+    auto msg = custom_msg::msg::AngleArray();
 
     msg.id = packet->id;
 
@@ -323,7 +323,7 @@ void BRoCoPublisher::handleSpectroPacket(uint8_t senderID, SpectroResponsePacket
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable spectro packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::SpectroResponse();
+    auto msg = custom_msg::msg::SpectroResponse();
 
     msg.id = packet->id;
 
@@ -342,7 +342,7 @@ void BRoCoPublisher::handleLaserPacket(uint8_t senderID, LaserResponsePacket* pa
 		return;
 	}
     RCLCPP_INFO(parent->get_logger(), "Laser response received");
-    auto msg = avionics_interfaces::msg::LaserResponse();
+    auto msg = custom_msg::msg::LaserResponse();
 
     msg.id = packet->id;
 
@@ -356,7 +356,7 @@ void BRoCoPublisher::handleServoPacket(uint8_t senderID, ServoResponsePacket* pa
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable servo packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::ServoResponse();
+    auto msg = custom_msg::msg::ServoResponse();
 
     msg.id = packet->id;
 
@@ -372,7 +372,7 @@ void BRoCoPublisher::handleLEDPacket(uint8_t senderID, LEDResponsePacket* packet
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable LED packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::LEDResponse();
+    auto msg = custom_msg::msg::LEDResponse();
 
     msg.id = packet->id;
 
@@ -387,7 +387,7 @@ void BRoCoPublisher::handleMassConfigReqPacket(uint8_t senderID, MassConfigReque
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable mass config request packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::MassConfigRequestMCU();
+    auto msg = custom_msg::msg::MassConfigRequestMCU();
 
     msg.id = packet->id;
 
@@ -404,7 +404,7 @@ void BRoCoPublisher::handleMassConfigPacket(uint8_t senderID, MassConfigResponse
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable mass config response packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::MassConfigResponse();
+    auto msg = custom_msg::msg::MassConfigResponse();
 
     msg.id = packet->id;
 
@@ -464,7 +464,7 @@ void BRoCoPublisher::handlePotConfigReqPacket(uint8_t senderID, PotentiometerCon
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable potentiometer config request packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::PotConfigRequestMCU();
+    auto msg = custom_msg::msg::PotConfigRequestMCU();
 
     msg.id = packet->id;
 
@@ -482,7 +482,7 @@ void BRoCoPublisher::handlePotConfigPacket(uint8_t senderID, PotentiometerConfig
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable potentiometer config response packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::PotConfigResponse();
+    auto msg = custom_msg::msg::PotConfigResponse();
 
     msg.id = packet->id;
 
@@ -540,7 +540,7 @@ void BRoCoPublisher::handleServoConfigReqPacket(uint8_t senderID, ServoConfigReq
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable servo config request packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::ServoConfigRequestMCU();
+    auto msg = custom_msg::msg::ServoConfigRequestMCU();
 
     msg.id = packet->id;
 
@@ -557,7 +557,7 @@ void BRoCoPublisher::handleServoConfigPacket(uint8_t senderID, ServoConfigRespon
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable servo config response packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::ServoConfigResponse();
+    auto msg = custom_msg::msg::ServoConfigResponse();
 
     msg.id = packet->id;
 
@@ -608,7 +608,7 @@ void BRoCoPublisher::handleAccelConfigReqPacket(uint8_t senderID, AccelConfigReq
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable acceleromter config request packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::AccelConfigRequestMCU();
+    auto msg = custom_msg::msg::AccelConfigRequestMCU();
 
     msg.id = packet->id;
 
@@ -623,7 +623,7 @@ void BRoCoPublisher::handleAccelConfigPacket(uint8_t senderID, AccelConfigRespon
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable accelerometer config response packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::AccelConfigResponse();
+    auto msg = custom_msg::msg::AccelConfigResponse();
 
     msg.id = packet->id;
 
@@ -660,7 +660,7 @@ void BRoCoPublisher::handleGyroConfigReqPacket(uint8_t senderID, GyroConfigReque
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable gyroscope config request packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::GyroConfigRequestMCU();
+    auto msg = custom_msg::msg::GyroConfigRequestMCU();
 
     msg.id = packet->id;
 
@@ -674,7 +674,7 @@ void BRoCoPublisher::handleGyroConfigPacket(uint8_t senderID, GyroConfigResponse
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable gyroscope config response packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::GyroConfigResponse();
+    auto msg = custom_msg::msg::GyroConfigResponse();
 
     msg.id = packet->id;
 
@@ -701,7 +701,7 @@ void BRoCoPublisher::handleMagConfigReqPacket(uint8_t senderID, MagConfigRequest
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable mass config request packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::MagConfigRequestMCU();
+    auto msg = custom_msg::msg::MagConfigRequestMCU();
 
     msg.id = packet->id;
 
@@ -716,7 +716,7 @@ void BRoCoPublisher::handleMagConfigPacket(uint8_t senderID, MagConfigResponsePa
 		RCLCPP_ERROR(parent->get_logger(), "Unreliable mass config response packet");
 		return;
 	}
-    auto msg = avionics_interfaces::msg::MagConfigResponse();
+    auto msg = custom_msg::msg::MagConfigResponse();
 
     msg.id = packet->id;
 

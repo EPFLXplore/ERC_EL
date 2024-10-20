@@ -58,12 +58,10 @@
 //check if command has a dynamic length response
 #define IS_DYNAMIC_LEN(command) (command == NEW_EVENTS || command == ALL_EVENTS || command == CELLS_VOLTAGE || command == VERSION)
 
-
 class BMSControl {
 public:
-    using SerialPort = mn::CppLinuxSerial::SerialPort;
     // Constructor
-    BMSControl(SerialPort& serialPort) : serialPort(serialPort) {}
+    BMSControl(mn::CppLinuxSerial::SerialPort& serialPort) : serialPort(serialPort) {}
 
     // Destructor
     ~BMSControl() {this->serialPort.Close();} // automatically close serial port
@@ -95,7 +93,7 @@ public:
     };
 
 private:
-    SerialPort& serialPort;
+    mn::CppLinuxSerial::SerialPort& serialPort;
 };
 
 #endif // BMS_CONTROL_H
