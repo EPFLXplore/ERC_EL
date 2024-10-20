@@ -194,6 +194,7 @@ void BRoCoPublisher::handleMassPacket(uint8_t senderID, MassPacket* packet) {
 
     msg.id = packet->id;
 
+
     for (uint8_t i = 0; i < msg.mass.size(); ++i)
         msg.mass[i] = packet->mass[i];
     if (packet->id == get_node_id("SC_DRILL_NODE_ID"))

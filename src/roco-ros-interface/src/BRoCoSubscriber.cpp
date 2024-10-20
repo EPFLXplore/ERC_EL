@@ -27,14 +27,14 @@ using namespace mn::CppLinuxSerial;
 mn::CppLinuxSerial::SerialPort serialPort;
 
 void serial_init(const std::string& port, mn::CppLinuxSerial::BaudRate baudRate) {
-    // Initialize the SerialPort object with the given port and baud rate
-    serialPort = SerialPort(port, baudRate, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE);
+    // // Initialize the SerialPort object with the given port and baud rate
+    // serialPort = SerialPort(port, baudRate, NumDataBits::EIGHT, Parity::NONE, NumStopBits::ONE);
     
-    // Open the serial port
-    serialPort.Open();
+    // // Open the serial port
+    // serialPort.Open();
     
-    std::cout << "Serial port " << port << " initialized with baud rate " 
-              << static_cast<int>(baudRate) << std::endl;
+    // std::cout << "Serial port " << port << " initialized with baud rate " 
+    //           << static_cast<int>(baudRate) << std::endl;
 }
 
 BRoCoSubscriber::BRoCoSubscriber(CANBus* bus, rclcpp::Node* parent) : bus(bus), parent(parent) {
@@ -99,10 +99,12 @@ void BRoCoSubscriber::servoReqCallback(const custom_msg::msg::ServoRequest::Shar
     if (msg->destination_id != 0)
         id = msg->destination_id;
     else
-        id = get_node_id("HD_NODE_ID");
+        id = get_node_id("SC_DRILL_NODE_ID");
+        id=2;
     RCLCPP_INFO(parent->get_logger(), "Sending servo request to node ID " + std::to_string(id) + "...");
     static ServoPacket packet;
     packet.channel = msg->channel;
+    if (packet.channel==0) packet.channel=2;
     packet.angle = msg->angle;
     MAKE_IDENTIFIABLE(packet);
     MAKE_RELIABLE(packet);
@@ -250,48 +252,48 @@ void BRoCoSubscriber::potConfigReqCallback(const custom_msg::msg::PotConfigReque
 }
 
 void BRoCoSubscriber::servoConfigReqCallback(const custom_msg::msg::ServoConfigRequestJetson::SharedPtr msg) {
-    uint16_t id = 0;
-    if (msg->destination_id != 0)
-        id = msg->destination_id;
-    else
-        id = get_node_id("HD_NODE_ID");
+    // uint16_t id = 0;
+    // if (msg->destination_id != 0)
+    //     id = msg->destination_id;
+    // else
+    //     id = get_node_id("HD_NODE_ID");
 
-    RCLCPP_INFO(parent->get_logger(), "Sending Servo config to node ID " + std::to_string(id) + "...");
-    static ServoConfigPacket packet;
-    packet.remote_command = msg->remote_command;
-    packet.set_min_duty = msg->set_min_duty;
-    packet.set_max_duty = msg->set_max_duty;
-    packet.set_min_angles = msg->set_min_angles;
-    packet.set_max_angles = msg->set_max_angles;
+    // RCLCPP_INFO(parent->get_logger(), "Sending Servo config to node ID " + std::to_string(id) + "...");
+    // static ServoConfigPacket packet;
+    // packet.remote_command = msg->remote_command;
+    // packet.set_min_duty = msg->set_min_duty;
+    // packet.set_max_duty = msg->set_max_duty;
+    // packet.set_min_angles = msg->set_min_angles;
+    // packet.set_max_angles = msg->set_max_angles;
 
-    float min_duty[4];
-    float max_duty[4];
-    float min_angles[4];
-    float max_angles[4];
+    // float min_duty[4];
+    // float max_duty[4];
+    // float min_angles[4];
+    // float max_angles[4];
 
-    for (uint8_t i = 0; i < 4; ++i) {
-        min_duty[i] = msg->min_duty[i];
-        max_duty[i] = msg->max_duty[i];
-        min_angles[i] = msg->min_angles[i];
-        max_angles[i] = msg->max_angles[i];
-    }
+    // for (uint8_t i = 0; i < 4; ++i) {
+    //     min_duty[i] = msg->min_duty[i];
+    //     max_duty[i] = msg->max_duty[i];
+    //     min_angles[i] = msg->min_angles[i];
+    //     max_angles[i] = msg->max_angles[i];
+    // }
 
-    packet.min_duty_max_val = get_max_val(min_duty, 4);
-    packet.max_duty_max_val = get_max_val(max_duty, 4);
-    packet.min_angles_max_val = get_max_val(min_angles, 4);
-    packet.max_angles_max_val = get_max_val(max_angles, 4);
+    // packet.min_duty_max_val = get_max_val(min_duty, 4);
+    // packet.max_duty_max_val = get_max_val(max_duty, 4);
+    // packet.min_angles_max_val = get_max_val(min_angles, 4);
+    // packet.max_angles_max_val = get_max_val(max_angles, 4);
 
-    for (uint8_t i = 0; i < 4; ++i) {
-        packet.min_duty[i] = floatToScaledUInt16(min_duty[i], packet.min_duty_max_val);
-        packet.max_duty[i] = floatToScaledUInt16(max_duty[i], packet.max_duty_max_val);
-        packet.min_angles[i] = floatToScaledUInt16(min_angles[i], packet.min_angles_max_val);
-        packet.max_angles[i] = floatToScaledUInt16(max_angles[i], packet.max_angles_max_val);
-    }
+    // for (uint8_t i = 0; i < 4; ++i) {
+    //     packet.min_duty[i] = floatToScaledUInt16(min_duty[i], packet.min_duty_max_val);
+    //     packet.max_duty[i] = floatToScaledUInt16(max_duty[i], packet.max_duty_max_val);
+    //     packet.min_angles[i] = floatToScaledUInt16(min_angles[i], packet.min_angles_max_val);
+    //     packet.max_angles[i] = floatToScaledUInt16(max_angles[i], packet.max_angles_max_val);
+    // }
     
-    MAKE_IDENTIFIABLE(packet);
-    MAKE_RELIABLE(packet);
-    set_destination_id(id);
-    bus->send(&packet);
+    // MAKE_IDENTIFIABLE(packet);
+    // MAKE_RELIABLE(packet);
+    // set_destination_id(id);
+    // bus->send(&packet);
 }
 
 void BRoCoSubscriber::accelConfigReqCallback(const custom_msg::msg::AccelConfigRequestJetson::SharedPtr msg) {
